@@ -7,6 +7,9 @@
 
 #pragma once
 
+namespace headshake {
 
+void Update();
+void CreateMove();
 
-
+}
