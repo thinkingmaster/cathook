@@ -384,18 +384,23 @@ void FrameStageNotify_hook(void* _this, int stage) {
 		angles::Update();
 		hacks::shared::anticheat::CreateMove();
 	}
-	if (resolver && cathook && !g_Settings.bInvalid && stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START) {
-		PROF_SECTION(FSN_resolver);
-		for (int i = 1; i < 32 && i < HIGHEST_ENTITY; i++) {
-			if (i == g_IEngine->GetLocalPlayer()) continue;
-			ent = g_IEntityList->GetClientEntity(i);
-			if (ent && !ent->IsDormant() && !NET_BYTE(ent, netvar.iLifeState)) {
-				Vector& angles = NET_VECTOR(ent, netvar.m_angEyeAngles);
-				if (angles.x >= 90) angles.x = -89;
-				if (angles.x <= -90) angles.x = 89;
-				angles.y = fmod(angles.y + 180.0f, 360.0f);
-				if (angles.y < 0) angles.y += 360.0f;
-				angles.y -= 180.0f;
+	if (cathook && !g_Settings.bInvalid && stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START) {
+		if (headshake::enable_hs) {
+			headshake::Update();
+		}
+		if (resolver) {
+			PROF_SECTION(FSN_resolver);
+			for (int i = 1; i < 32 && i < HIGHEST_ENTITY; i++) {
+				if (i == g_IEngine->GetLocalPlayer()) continue;
+				ent = g_IEntityList->GetClientEntity(i);
+				if (ent && !ent->IsDormant() && !NET_BYTE(ent, netvar.iLifeState)) {
+					Vector& angles = NET_VECTOR(ent, netvar.m_angEyeAngles);
+					if (angles.x >= 90) angles.x = -89;
+					if (angles.x <= -90) angles.x = 89;
+					angles.y = fmod(angles.y + 180.0f, 360.0f);
+					if (angles.y < 0) angles.y += 360.0f;
+					angles.y -= 180.0f;
+				}
 			}
 		}
 	}

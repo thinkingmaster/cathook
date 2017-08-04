@@ -7,6 +7,8 @@
 
 #include "common.h"
 
+#include <queue>
+
 namespace headshake {
 
 /*
@@ -62,12 +64,20 @@ headshake_data_s data_array[32] {};
 
 struct headshake_user_data_s {
 	bool cathook { false };
+	bool acked { false };
 	int  treason { 0 };
 };
 
 const std::vector<smallpacket_s> packets { ack, chu };
 
 std::unordered_map<unsigned, headshake_user_data_s> userdata {};
+
+struct out_smallpacket_s {
+	ESmallPackets type { 0 };
+	float data { 0 };
+};
+
+std::queue<out_smallpacket_s> queue {};
 
 void UpdateEntity(int id) {
 	headshake_data_s& data = data_array[id - 1];
@@ -77,6 +87,7 @@ void UpdateEntity(int id) {
 		float pitch = angles.x, yaw = angles.y;
 		float dp = pitch - data.origin_x,
 			  dy = yaw - data.origin_y;
+		if (dp == 0 and dy == 0) return;
 		if (data.packet == PK_INV) {
 			ESmallPackets packet = PK_INV;
 			for (int i = 0; i < packets.size(); i++) {
@@ -98,7 +109,10 @@ void UpdateEntity(int id) {
 			}
 		} else {
 			if (fabs(dp - packets[data.packet - 1].pitch) < 0.000001) {
-				logging::Info("Received packet %d from %d: %.8f", data.packet, id, dy);
+				logging::Info("[HS] Received packet %d from %d: %.8f", data.packet, id, dy);
+				if (data.packet == PK_CHU) {
+					queue.push(out_smallpacket_s { PK_ACK, (float)id * 0.000001 });
+				}
 			}
 			data.packet = PK_INV;
 			data.origin_x = pitch;
@@ -112,6 +126,56 @@ void UpdateEntity(int id) {
 void Update() {
 	for (int i = 1; i < 32 && i < HIGHEST_ENTITY; i++) {
 		UpdateEntity(i);
+	}
+}
+
+struct current_state_s {
+	bool sending_packet { false };
+	int ticks { 0 };
+	out_smallpacket_s packet {};
+	float origin_x {};
+	float origin_y {};
+};
+
+current_state_s state;
+
+CatVar enable_hs(CV_SWITCH, "hs_enable", "1", "HeadShake", "Enable HeadShake system to identify other cathook users");
+static CatVar out_ticks(CV_INT, "hs_out_ticks", "3", "Out Ticks");
+
+static CatCommand send_chu("hs_chu", "Debug CHU", []() {
+	queue.push(out_smallpacket_s { PK_CHU, 0.0f });
+});
+
+void CreateMove() {
+	if (state.sending_packet) {
+		if (state.ticks < int(out_ticks)) {
+			const auto& p = packets[state.packet.type - 1];
+			g_pUserCmd->viewangles.x = state.origin_x + p.pitch;
+			g_pUserCmd->viewangles.y = state.origin_y + p.magic;
+		} else {
+			g_pUserCmd->viewangles.x = state.origin_x;
+			g_pUserCmd->viewangles.y = state.origin_y + state.packet.data;
+		}
+		if (++state.ticks > int(out_ticks) * 2) {
+			logging::Info("[HS] Sent packet: %d %.8f", state.packet.type, state.packet.data);
+			state.ticks = 0;
+			state.sending_packet = false;
+		}
+		return;
+	}
+	if (queue.empty()) {
+		state.origin_x = g_pUserCmd->viewangles.x;
+		state.origin_y = g_pUserCmd->viewangles.y;
+		state.sending_packet = false;
+	} else {
+		auto p = queue.front();
+		queue.pop();
+		state.origin_x = g_pUserCmd->viewangles.x;
+		state.origin_y = g_pUserCmd->viewangles.y;
+		state.sending_packet = true;
+		state.ticks = 0;
+		memcpy(&state.packet, &p, sizeof(out_smallpacket_s));
+		logging::Info("[HS] Ready to send packet %d %.8f", p.type, p.data);
 	}
 }
 

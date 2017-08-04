@@ -22,7 +22,7 @@ ifdef BUILD_DEBUG
 COMMON_FLAGS+=-g3 -ggdb
 else
 ifndef CLANG
-COMMON_FLAGS+=-flto
+COMMON_FLAGS+=-flto -g0 -ggdb0
 endif
 endif
 
@@ -166,6 +166,8 @@ src/sdk/KeyValues.o : CFLAGS+=-w
 src/sdk/MaterialSystemUtil.o : CFLAGS+=-w
 src/sdk/tier1.o : CFLAGS+=-w
 src/sdk/utlbuffer.o : CFLAGS+=-w
+
+OBJECTS:=$(shell echo $(OBJECTS) | sed -e 's/ /\n/g' | sort --random-sort | sed -e 's/\n/ /g')
 
 .cpp.o:
 	@echo Compiling $<

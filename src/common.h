@@ -62,6 +62,7 @@ extern "C" {
 #include "profiler.h"
 #include "offsets.hpp"
 #include "entitycache.h"
+#include "headshake.hpp"
 #include "hoovy.hpp"
 #include "enums.h"
 #include "projlogging.hpp"

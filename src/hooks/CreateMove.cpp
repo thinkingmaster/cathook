@@ -427,6 +427,11 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 		//LoadSavedState();
 	}
 	g_pLocalPlayer->bAttackLastTick = (cmd->buttons & IN_ATTACK);
+
+	if (headshake::enable_hs) {
+		headshake::CreateMove();
+	}
+
 	return ret;
 
 	SEGV_END;
