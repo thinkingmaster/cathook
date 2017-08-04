@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
@@ -53,7 +56,7 @@ void CMaterialReference::Init( char const* pMaterialName, const char *pTextureGr
 	{
 		if (IsOSX())
 		{
-			printf("\n ##### CMaterialReference::Init got error material for %s in tex group %s", pMaterialName, pTextureGroupName );
+			printf(XStr("\n ##### CMaterialReference::Init got error material for %s in tex group %s"), pMaterialName, pTextureGroupName );
 		}
 	}
 

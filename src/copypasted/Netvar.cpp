@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 #include "Netvar.h"
 
 #include "../interfaces.h"

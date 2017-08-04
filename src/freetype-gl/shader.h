@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -27,7 +30,7 @@ namespace ftgl {
  *
  * int main( int arrgc, char *argv[] )
  * {
- *     GLuint shader = shader_load("shader.vert", "shader.frag");
+ *     GLuint shader = shader_load(XStr("shader.vert"), XStr("shader.frag"));
  *
  *     return 0;
  * }

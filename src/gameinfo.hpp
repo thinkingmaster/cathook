@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * gameinfo.hpp
  *
@@ -25,11 +28,11 @@ constexpr int c_strcmp( char const* lhs, char const* rhs ) {
 }
 
 #ifdef BUILD_GAME
-constexpr bool IsTF2() { return !c_strcmp(TO_STRING(BUILD_GAME), "tf2"); }
-constexpr bool IsTF2C() { return !c_strcmp(TO_STRING(BUILD_GAME), "tf2c"); }
-constexpr bool IsHL2DM() { return !c_strcmp(TO_STRING(BUILD_GAME), "hl2dm"); }
-constexpr bool IsCSS() { return !c_strcmp(TO_STRING(BUILD_GAME), "css"); }
-constexpr bool IsDynamic() { return !c_strcmp(TO_STRING(BUILD_GAME), "dynamic"); }
+constexpr bool IsTF2() { return !c_strcmp(TO_STRING(BUILD_GAME), XStr("tf2")); }
+constexpr bool IsTF2C() { return !c_strcmp(TO_STRING(BUILD_GAME), XStr("tf2c")); }
+constexpr bool IsHL2DM() { return !c_strcmp(TO_STRING(BUILD_GAME), XStr("hl2dm")); }
+constexpr bool IsCSS() { return !c_strcmp(TO_STRING(BUILD_GAME), XStr("css")); }
+constexpr bool IsDynamic() { return !c_strcmp(TO_STRING(BUILD_GAME), XStr("dynamic")); }
 
 constexpr bool IsTF() { return IsTF2() || IsTF2C(); }
 

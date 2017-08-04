@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 // i386-signal.h - Catch runtime signals and turn them into exceptions
 // on an i386 based Linux system.
 
@@ -6,7 +9,7 @@
    This file is part of libgcj.
 
 This software is copyrighted work licensed under the terms of the
-Libgcj License.  Please consult the file "LIBGCJ_LICENSE" for
+Libgcj License.  Please consult the file XStr("LIBGCJ_LICENSE") for
 details.  */
 
 
@@ -111,18 +114,18 @@ extern "C"
 #define RESTORE2(name, syscall)			\
 asm						\
   (						\
-   ".text\n"					\
-   ".byte 0  # Yes, this really is necessary\n" \
-   "	.align 16\n"				\
-   "__" #name ":\n"				\
-   "	movl $" #syscall ", %eax\n"		\
-   "	int  $0x80"				\
+   XStr(".text\n")					\
+   XStr(".byte 0  # Yes, this really is necessary\n") \
+   XStr("	.align 16\n")				\
+   XStr("__") #name XStr(":\n")				\
+   XStr("	movl $") #syscall XStr(", %eax\n")		\
+   XStr("	int  $0x80")				\
    );
 
 /* The return code for realtime-signals.  */
 RESTORE (restore_rt, __NR_rt_sigreturn)
-void restore_rt (void) asm ("__restore_rt")
-  __attribute__ ((visibility ("hidden")));
+void restore_rt (void) asm (XStr("__restore_rt"))
+  __attribute__ ((visibility (XStr("hidden"))));
 
 #define INIT_SEGV						\
 do								\

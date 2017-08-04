@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AutoSticky.cpp
  *
@@ -13,9 +16,9 @@
 namespace hacks { namespace tf { namespace autosticky {
 
 // Vars for user settings
-CatVar enabled(CV_SWITCH, "sticky_enabled", "0", "AutoSticky", "Master AutoSticky switch");
-CatVar buildings(CV_SWITCH, "sticky_buildings", "1", "Detonate buildings", "Stickies react to buildings");
-CatVar legit(CV_SWITCH, "sticky_legit", "0", "Legit", "Stickys only detonate when you see them\nAlso ignores invis spies");
+CatVar enabled(CV_SWITCH, XStr("sticky_enabled"), XStr("0"), XStr("AutoSticky"), XStr("Master AutoSticky switch"));
+CatVar buildings(CV_SWITCH, XStr("sticky_buildings"), XStr("1"), XStr("Detonate buildings"), XStr("Stickies react to buildings"));
+CatVar legit(CV_SWITCH, XStr("sticky_legit"), XStr("0"), XStr("Legit"), XStr("Stickys only detonate when you see them\nAlso ignores invis spies"));
 
 // A storage array for ents
 std::vector<CachedEntity*> bombs;

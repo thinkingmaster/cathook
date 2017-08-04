@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * EffectChams.cpp
  *
@@ -8,54 +11,54 @@
 #include "common.h"
 #include "EffectChams.hpp"
 
-//static CatVar chams_experimental(CV_SWITCH, "chams_effect", "0", "Experimental Chams");
+//static CatVar chams_experimental(CV_SWITCH, XStr("chams_effect"), XStr("0"), XStr("Experimental Chams"));
 
 namespace effect_chams {
 
-CatVar enable(CV_SWITCH, "chams_enable", "0", "Enable", "Main chams switch");
-static CatVar flat(CV_SWITCH, "chams_flat", "0", "Flat", "Makes chams brighter and more full");
-static CatVar health(CV_SWITCH, "chams_health", "0", "Health", "Change chams color based on their health");
-static CatVar teammates(CV_SWITCH, "chams_teammates", "0", "Teammates", "Render chams on teammates");
-static CatVar players(CV_SWITCH, "chams_players", "1", "Players", "Render chams on player models");
-static CatVar medkits(CV_SWITCH, "chams_medkits", "0", "Medkits", "Render chams on medkits");
-static CatVar ammobox(CV_SWITCH, "chams_ammo", "0", "Ammoboxes", "Render chams on ammoboxes");
-static CatVar buildings(CV_SWITCH, "chams_buildings", "0", "Buildings", "Render chams on buildings");
-static CatVar stickies(CV_SWITCH, "chams_stickies", "0", "Stickies", "Render chams on stickybombs");
-static CatVar teammate_buildings(CV_SWITCH, "chams_teammate_buildings", "0", "Teammate Buildings", "Render chams on teammates buildings");
-static CatVar recursive(CV_SWITCH, "chams_recursive", "1", "Recursive", "Render chams on weapons and cosmetics");
-static CatVar weapons_white(CV_SWITCH, "chams_weapons_white", "1", "White Weapons", "Should chams on weapons be white");
-static CatVar legit(CV_SWITCH, "chams_legit", "0", "Legit chams", "Don't show chams through walls");
-static CatVar singlepass(CV_SWITCH, "chams_singlepass", "0", "Single-pass", "Render chams only once (this disables 'darker' chams on invisible parts of player");
+CatVar enable(CV_SWITCH, XStr("chams_enable"), XStr("0"), XStr("Enable"), XStr("Main chams switch"));
+static CatVar flat(CV_SWITCH, XStr("chams_flat"), XStr("0"), XStr("Flat"), XStr("Makes chams brighter and more full"));
+static CatVar health(CV_SWITCH, XStr("chams_health"), XStr("0"), XStr("Health"), XStr("Change chams color based on their health"));
+static CatVar teammates(CV_SWITCH, XStr("chams_teammates"), XStr("0"), XStr("Teammates"), XStr("Render chams on teammates"));
+static CatVar players(CV_SWITCH, XStr("chams_players"), XStr("1"), XStr("Players"), XStr("Render chams on player models"));
+static CatVar medkits(CV_SWITCH, XStr("chams_medkits"), XStr("0"), XStr("Medkits"), XStr("Render chams on medkits"));
+static CatVar ammobox(CV_SWITCH, XStr("chams_ammo"), XStr("0"), XStr("Ammoboxes"), XStr("Render chams on ammoboxes"));
+static CatVar buildings(CV_SWITCH, XStr("chams_buildings"), XStr("0"), XStr("Buildings"), XStr("Render chams on buildings"));
+static CatVar stickies(CV_SWITCH, XStr("chams_stickies"), XStr("0"), XStr("Stickies"), XStr("Render chams on stickybombs"));
+static CatVar teammate_buildings(CV_SWITCH, XStr("chams_teammate_buildings"), XStr("0"), XStr("Teammate Buildings"), XStr("Render chams on teammates buildings"));
+static CatVar recursive(CV_SWITCH, XStr("chams_recursive"), XStr("1"), XStr("Recursive"), XStr("Render chams on weapons and cosmetics"));
+static CatVar weapons_white(CV_SWITCH, XStr("chams_weapons_white"), XStr("1"), XStr("White Weapons"), XStr("Should chams on weapons be white"));
+static CatVar legit(CV_SWITCH, XStr("chams_legit"), XStr("0"), XStr("Legit chams"), XStr("Don't show chams through walls"));
+static CatVar singlepass(CV_SWITCH, XStr("chams_singlepass"), XStr("0"), XStr("Single-pass"), XStr("Render chams only once (this disables 'darker' chams on invisible parts of player"));
 
 void EffectChams::Init() {
-	logging::Info("Init EffectChams...");
+	logging::Info(XStr("Init EffectChams..."));
 	{
-		KeyValues* kv = new KeyValues("UnlitGeneric");
-		kv->SetString("$basetexture", "vgui/white_additive");
-		kv->SetInt("$ignorez", 0);
-		mat_unlit.Init("__cathook_echams_unlit", kv);
+		KeyValues* kv = new KeyValues(XStr("UnlitGeneric"));
+		kv->SetString(XStr("$basetexture"), XStr("vgui/white_additive"));
+		kv->SetInt(XStr("$ignorez"), 0);
+		mat_unlit.Init(XStr("__cathook_echams_unlit"), kv);
 	}
 	{
-		KeyValues* kv = new KeyValues("UnlitGeneric");
-		kv->SetString("$basetexture", "vgui/white_additive");
-		kv->SetInt("$ignorez", 1);
-		mat_unlit_z.Init("__cathook_echams_unlit_z", kv);
+		KeyValues* kv = new KeyValues(XStr("UnlitGeneric"));
+		kv->SetString(XStr("$basetexture"), XStr("vgui/white_additive"));
+		kv->SetInt(XStr("$ignorez"), 1);
+		mat_unlit_z.Init(XStr("__cathook_echams_unlit_z"), kv);
 	}
 	{
-		KeyValues* kv = new KeyValues("VertexLitGeneric");
-		kv->SetString("$basetexture", "vgui/white_additive");
-		kv->SetInt("$ignorez", 0);
-		kv->SetInt("$halflambert", 1);
-		mat_lit.Init("__cathook_echams_lit", kv);
+		KeyValues* kv = new KeyValues(XStr("VertexLitGeneric"));
+		kv->SetString(XStr("$basetexture"), XStr("vgui/white_additive"));
+		kv->SetInt(XStr("$ignorez"), 0);
+		kv->SetInt(XStr("$halflambert"), 1);
+		mat_lit.Init(XStr("__cathook_echams_lit"), kv);
 	}
 	{
-		KeyValues* kv = new KeyValues("VertexLitGeneric");
-		kv->SetString("$basetexture", "vgui/white_additive");
-		kv->SetInt("$ignorez", 1);
-		kv->SetInt("$halflambert", 1);
-		mat_lit_z.Init("__cathook_echams_lit_z", kv);
+		KeyValues* kv = new KeyValues(XStr("VertexLitGeneric"));
+		kv->SetString(XStr("$basetexture"), XStr("vgui/white_additive"));
+		kv->SetInt(XStr("$ignorez"), 1);
+		kv->SetInt(XStr("$halflambert"), 1);
+		mat_lit_z.Init(XStr("__cathook_echams_lit_z"), kv);
 	}
-	logging::Info("Init done!");
+	logging::Info(XStr("Init done!"));
 	init = true;
 }
 

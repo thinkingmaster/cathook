@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
@@ -25,7 +28,7 @@ class CBasePlayer;
 // Name of the class implementing the game movement.
 //-----------------------------------------------------------------------------
 
-#define INTERFACENAME_GAMEMOVEMENT	"GameMovement001"
+#define INTERFACENAME_GAMEMOVEMENT	XStr("GameMovement001")
 
 //-----------------------------------------------------------------------------
 // Forward declarations.

@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * chatstack.cpp
  *
@@ -23,11 +26,11 @@ void OnCreateMove() {
 		const msg_t& msg = stack.top();
 		stack.pop();
 		if (msg.text.size()) {
-			//logging::Info("Saying %s %i", msg.text.c_str(), msg.text.size());
+			//logging::Info(XStr("Saying %s %i"), msg.text.c_str(), msg.text.size());
 			if (msg.team)
-				g_IEngine->ServerCmd(format("say_team \"", msg.text.c_str(), '"').c_str());
+				g_IEngine->ServerCmd(format(XStr("say_team \""), msg.text.c_str(), '"').c_str());
 			else
-				g_IEngine->ServerCmd(format("say \"", msg.text.c_str(), '"').c_str());
+				g_IEngine->ServerCmd(format(XStr("say \""), msg.text.c_str(), '"').c_str());
 			last_say = g_GlobalVars->curtime;
 		}
 	}

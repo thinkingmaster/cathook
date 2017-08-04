@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AutoReflect.cpp
  *
@@ -13,16 +16,16 @@
 namespace hacks { namespace tf { namespace autoreflect {
 
 // Vars for user settings
-CatVar enabled(CV_SWITCH, "reflect_enabled", "0", "Auto Reflect", "Master AutoReflect switch");
-CatVar idle_only(CV_SWITCH, "reflect_only_idle", "0", "Only when not shooting", "Don't AutoReflect if you're holding M1");
-CatVar legit(CV_SWITCH, "reflect_legit", "0", "Legit Reflect", "Only Auto-airblasts projectiles that you can see, doesnt move your crosshair");
-CatVar dodgeball(CV_SWITCH, "reflect_dodgeball", "0", "Dodgeball Mode", "Allows auto-reflect to work in dodgeball servers");
-CatVar blastkey(CV_KEY, "reflect_key", "0", "Reflect Key", "Hold this key to activate auto-airblast");
-CatVar stickies(CV_SWITCH, "reflect_stickybombs", "0", "Reflect stickies", "Reflect Stickybombs");
+CatVar enabled(CV_SWITCH, XStr("reflect_enabled"), XStr("0"), XStr("Auto Reflect"), XStr("Master AutoReflect switch"));
+CatVar idle_only(CV_SWITCH, XStr("reflect_only_idle"), XStr("0"), XStr("Only when not shooting"), XStr("Don't AutoReflect if you're holding M1"));
+CatVar legit(CV_SWITCH, XStr("reflect_legit"), XStr("0"), XStr("Legit Reflect"), XStr("Only Auto-airblasts projectiles that you can see, doesnt move your crosshair"));
+CatVar dodgeball(CV_SWITCH, XStr("reflect_dodgeball"), XStr("0"), XStr("Dodgeball Mode"), XStr("Allows auto-reflect to work in dodgeball servers"));
+CatVar blastkey(CV_KEY, XStr("reflect_key"), XStr("0"), XStr("Reflect Key"), XStr("Hold this key to activate auto-airblast"));
+CatVar stickies(CV_SWITCH, XStr("reflect_stickybombs"), XStr("0"), XStr("Reflect stickies"), XStr("Reflect Stickybombs"));
 // TODO setup proj sorting
-// TODO CatVar big_proj(CV_SWITCH, "reflect_big_projectile", "0", "Reflect big projectiles", "Reflect Rockets");
-// TODO CatVar small_proj(CV_SWITCH, "reflect_small_projectile", "0", "Reflect small projectiles", "Reflect Huntsman arrows, Crusaders bolts");
-// TODO CatVar misc_proj(CV_SWITCH, "reflect_misc_projectile", "0", "Reflect other", "Reflect jarate, milk");
+// TODO CatVar big_proj(CV_SWITCH, XStr("reflect_big_projectile"), XStr("0"), XStr("Reflect big projectiles"), XStr("Reflect Rockets"));
+// TODO CatVar small_proj(CV_SWITCH, XStr("reflect_small_projectile"), XStr("0"), XStr("Reflect small projectiles"), XStr("Reflect Huntsman arrows, Crusaders bolts"));
+// TODO CatVar misc_proj(CV_SWITCH, XStr("reflect_misc_projectile"), XStr("0"), XStr("Reflect other"), XStr("Reflect jarate, milk"));
 
 	
 // Function called by game for movement

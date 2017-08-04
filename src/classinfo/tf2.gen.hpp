@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
 	AUTO-GENERATED HEADER - DO NOT MODIFY
 	NON-CONSTEXPR HEADER FOR tf2

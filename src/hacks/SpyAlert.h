@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * SpyAlert.h
  *

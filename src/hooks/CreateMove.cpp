@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * CreateMove.cpp
  *
@@ -15,12 +18,12 @@
 
 #include "../profiler.h"
 
-static CatVar minigun_jump(CV_SWITCH, "minigun_jump", "0", "TF2C minigun jump", "Allows jumping while shooting with minigun");
+static CatVar minigun_jump(CV_SWITCH, XStr("minigun_jump"), XStr("0"), XStr("TF2C minigun jump"), XStr("Allows jumping while shooting with minigun"));
 
-CatVar jointeam(CV_SWITCH, "fb_autoteam", "1", "Joins player team automatically (NYI)");
-CatVar joinclass(CV_STRING, "fb_autoclass", "spy", "Class that will be picked after joining a team (NYI)");
+CatVar jointeam(CV_SWITCH, XStr("fb_autoteam"), XStr("1"), XStr("Joins player team automatically (NYI)"));
+CatVar joinclass(CV_STRING, XStr("fb_autoclass"), XStr("spy"), XStr("Class that will be picked after joining a team (NYI)"));
 
-CatVar nolerp(CV_SWITCH, "nolerp", "0", "NoLerp mode (experimental)");
+CatVar nolerp(CV_SWITCH, XStr("nolerp"), XStr("0"), XStr("NoLerp mode (experimental)"));
 
 class CMoveData;
 namespace engine_prediction {
@@ -98,10 +101,10 @@ void End() {
 
 }
 
-static CatVar engine_pred(CV_SWITCH, "engine_prediction", "0", "Engine Prediction");
-static CatVar debug_projectiles(CV_SWITCH, "debug_projectiles", "0", "Debug Projectiles");
+static CatVar engine_pred(CV_SWITCH, XStr("engine_prediction"), XStr("0"), XStr("Engine Prediction"));
+static CatVar debug_projectiles(CV_SWITCH, XStr("debug_projectiles"), XStr("0"), XStr("Debug Projectiles"));
 
-static CatVar fakelag_amount(CV_INT, "fakelag", "0", "Bad Fakelag");
+static CatVar fakelag_amount(CV_INT, XStr("fakelag"), XStr("0"), XStr("Bad Fakelag"));
 
 bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 	static CreateMove_t original_method = (CreateMove_t)hooks::clientmode.GetMethod(offsets::CreateMove());
@@ -156,10 +159,10 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 	/**bSendPackets = true;
 	if (hacks::shared::lagexploit::ExploitActive()) {
 		*bSendPackets = ((g_pUserCmd->command_number % 4) == 0);
-		//logging::Info("%d", *bSendPackets);
+		//logging::Info(XStr("%d"), *bSendPackets);
 	}*/
 
-	//logging::Info("canpacket: %i", ch->CanPacket());
+	//logging::Info(XStr("canpacket: %i"), ch->CanPacket());
 	//if (!cmd) return ret;
 
 
@@ -197,7 +200,7 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 		PROF_SECTION(EntityCache);
 		SAFE_CALL(entity_cache::Update());
 	}
-//	PROF_END("Entity Cache updating");
+//	PROF_END(XStr("Entity Cache updating"));
 	{
 		PROF_SECTION(CM_PlayerResource);
 		SAFE_CALL(g_pPlayerResource->Update());
@@ -223,13 +226,13 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 		}
 
 		if (!g_pLocalPlayer->team || (g_pLocalPlayer->team == TEAM_SPEC)) {
-			//if (!team_joining_state) logging::Info("Bad team, trying to join...");
+			//if (!team_joining_state) logging::Info(XStr("Bad team, trying to join..."));
 			team_joining_state = 1;
 		}
 		else {
 			if (team_joining_state) {
-				logging::Info("Trying to change CLASS");
-				g_IEngine->ExecuteClientCmd(format("join_class ", joinclass.GetString()).c_str());
+				logging::Info(XStr("Trying to change CLASS"));
+				g_IEngine->ExecuteClientCmd(format(XStr("join_class "), joinclass.GetString()).c_str());
 			}
 			team_joining_state = 0;
 		}
@@ -250,11 +253,11 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 					last_jointeam_try = g_GlobalVars->curtime;
 					switch (CE_INT(found_entity, netvar.iTeamNum)) {
 					case TEAM_RED:
-						logging::Info("Trying to join team RED");
-						g_IEngine->ExecuteClientCmd("jointeam red"); break;
+						logging::Info(XStr("Trying to join team RED"));
+						g_IEngine->ExecuteClientCmd(XStr("jointeam red")); break;
 					case TEAM_BLU:
-						logging::Info("Trying to join team BLUE");
-						g_IEngine->ExecuteClientCmd("jointeam blue"); break;
+						logging::Info(XStr("Trying to join team BLUE"));
+						g_IEngine->ExecuteClientCmd(XStr("jointeam blue")); break;
 					}
 				}
 			}
@@ -422,7 +425,7 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 			g_Settings.last_angles = cmd->viewangles;
 	}
 
-//	PROF_END("CreateMove");
+//	PROF_END(XStr("CreateMove"));
 	if (!(cmd->buttons & IN_ATTACK)) {
 		//LoadSavedState();
 	}

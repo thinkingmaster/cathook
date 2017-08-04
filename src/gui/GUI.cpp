@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * GUI.cpp
  *
@@ -22,7 +25,7 @@ void GUIVisibleCallback(IConVar* var, const char* pOldValue, float flOldValue) {
 	}
 }
 
-CatVar gui_visible(CV_SWITCH, "gui_visible", "0", "GUI Active", "GUI switch (bind it to a key!)");
+CatVar gui_visible(CV_SWITCH, XStr("gui_visible"), XStr("0"), XStr("GUI Active"), XStr("GUI switch (bind it to a key!)"));
 
 CatGUI::CatGUI() {}
 
@@ -32,13 +35,13 @@ bool CatGUI::Visible() {
 	return gui_visible;
 }
 
-CatVar gui_color_r(CV_INT, "gui_color_r", "255", "Main GUI color (red)", "Defines red component of main gui color", 0, 255);
-CatVar gui_color_g(CV_INT, "gui_color_g", "105", "Main GUI color (green)", "Defines green component of main gui color", 0, 255);
-CatVar gui_color_b(CV_INT, "gui_color_b", "180", "Main GUI color (blue)", "Defines blue component of main gui color", 0, 255);
+CatVar gui_color_r(CV_INT, XStr("gui_color_r"), XStr("255"), XStr("Main GUI color (red)"), XStr("Defines red component of main gui color"), 0, 255);
+CatVar gui_color_g(CV_INT, XStr("gui_color_g"), XStr("105"), XStr("Main GUI color (green)"), XStr("Defines green component of main gui color"), 0, 255);
+CatVar gui_color_b(CV_INT, XStr("gui_color_b"), XStr("180"), XStr("Main GUI color (blue)"), XStr("Defines blue component of main gui color"), 0, 255);
 
-CatVar gui_debug(CV_SWITCH, "gui_debug", "0", "Debug GUI");
+CatVar gui_debug(CV_SWITCH, XStr("gui_debug"), XStr("0"), XStr("Debug GUI"));
 
-static CatVar gui_rainbow(CV_SWITCH, "gui_rainbow", "0", "Rainbow GUI", "RGB all the things!!!");
+static CatVar gui_rainbow(CV_SWITCH, XStr("gui_rainbow"), XStr("0"), XStr("Rainbow GUI"), XStr("RGB all the things!!!"));
 rgba_t GUIColor() {
 	return gui_rainbow ? colors::RainbowCurrent() : colors::FromRGBA8(int(gui_color_r), int(gui_color_g), int(gui_color_b), 255);
 }
@@ -87,7 +90,7 @@ void CatGUI::Update() {
 			if (m_bKeysInit) {
 				if (changed) {
 					if (gui_debug) {
-						logging::Info("Key %d changed, now %d", i, down);
+						logging::Info(XStr("Key %d changed, now %d"), i, down);
 					}
 					if (i == ButtonCode_t::MOUSE_LEFT) {
 						if (Visible()) {
@@ -96,7 +99,7 @@ void CatGUI::Update() {
 					} else if (down) {
 						if ((i == ButtonCode_t::KEY_INSERT || i == ButtonCode_t::KEY_F11)) {
 							if (gui_debug) {
-								logging::Info("GUI key pressed");
+								logging::Info(XStr("GUI key pressed"));
 							}
 							gui_visible = !gui_visible;
 						}
@@ -107,7 +110,7 @@ void CatGUI::Update() {
 
 		if (!m_bKeysInit) m_bKeysInit = 1;
 	} catch (std::exception& ex) {
-		logging::Info("ERROR: %s", ex.what());
+		logging::Info(XStr("ERROR: %s"), ex.what());
 	}
 
 }

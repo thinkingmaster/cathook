@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * trace.cpp
  *
@@ -24,7 +27,7 @@ trace::FilterDefault::~FilterDefault() {}
 
 void trace::FilterDefault::SetSelf(IClientEntity* self) {
 	if (self == nullptr) {
-		logging::Info("nullptr in FilterDefault::SetSelf");
+		logging::Info(XStr("nullptr in FilterDefault::SetSelf"));
 	}
 	m_pSelf = self;
 }
@@ -63,7 +66,7 @@ trace::FilterNoPlayer::~FilterNoPlayer() {};
 
 void trace::FilterNoPlayer::SetSelf(IClientEntity* self) {
 	if (self == nullptr) {
-		logging::Info("nullptr in FilterNoPlayer::SetSelf");
+		logging::Info(XStr("nullptr in FilterNoPlayer::SetSelf"));
 		return;
 	}
 	m_pSelf = self;
@@ -104,7 +107,7 @@ trace::FilterPenetration::~FilterPenetration() {};
 
 void trace::FilterPenetration::SetSelf(IClientEntity* self) {
 	if (self == nullptr) {
-		logging::Info("nullptr in FilterPenetration::SetSelf");
+		logging::Info(XStr("nullptr in FilterPenetration::SetSelf"));
 	}
 	m_pSelf = self;
 }

@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * drawing.cpp
  *
@@ -66,7 +69,7 @@ float draw::fov = 90.0f;
 namespace fonts {
 
 ftgl::texture_font_t* ftgl_ESP = nullptr;
-CatVar esp_ftgl_font(CV_STRING, "font_ftgl_esp", "opensans-bold", "FTGL Font");
+CatVar esp_ftgl_font(CV_STRING, XStr("font_ftgl_esp"), XStr("opensans-bold"), XStr("FTGL Font"));
 
 }
 

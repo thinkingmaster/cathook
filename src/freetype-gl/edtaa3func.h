@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * Copyright 2009 Stefan Gustavson (stefan.gustavson@gmail.com)
  * All rights reserved.

@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AntiDisguise.cpp
  *
@@ -12,7 +15,7 @@
 
 namespace hacks { namespace tf2 { namespace antidisguise {
 
-CatVar enabled(CV_SWITCH, "antidisguise", "0", "Remove spy disguise", "Removes the disguise from spys\nUsefull for aimbot");
+CatVar enabled(CV_SWITCH, XStr("antidisguise"), XStr("0"), XStr("Remove spy disguise"), XStr("Removes the disguise from spys\nUsefull for aimbot"));
 
 void Draw() {
 	CachedEntity *ent;

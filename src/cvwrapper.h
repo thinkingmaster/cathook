@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * cvwrapper.h
  *
@@ -47,7 +50,7 @@ public:
 	void Register();
 public:
 	const std::string name;
-	const std::string help { "" };
+	const std::string help { XStr("") };
 
 	FnCommandCallback_t callback { nullptr };
 	FnCommandCallbackVoid_t callback_void { nullptr };
@@ -59,7 +62,7 @@ void RegisterCatCommands();
 
 class CatVar {
 public:
-	CatVar(CatVar_t type, std::string name, std::string defaults, std::string desc_short, std::string desc_long = "no description");
+	CatVar(CatVar_t type, std::string name, std::string defaults, std::string desc_short, std::string desc_long = XStr("no description"));
 	CatVar(CatVar_t type, std::string name, std::string defaults, std::string desc_short, std::string desc_long, float max_val);
 	CatVar(CatVar_t type, std::string name, std::string defaults, std::string desc_short, std::string desc_long, float min_val, float max_val);
 	CatVar(CatEnum& cat_enum, std::string name, std::string defaults, std::string desc_short, std::string desc_long);
@@ -101,12 +104,12 @@ public:
 public:
 	const CatVar_t type;
 	const std::string name;
-	const std::string defaults { "0" };
-	const std::string desc_short { "" };
-	const std::string desc_long { "" };
+	const std::string defaults { XStr("0") };
+	const std::string desc_short { XStr("") };
+	const std::string desc_long { XStr("") };
 	const CatEnum* const enum_type { nullptr };
 
-	std::string current_base { "0" };
+	std::string current_base { XStr("0") };
 
 	bool restricted { false };
 	float min { 0.0f };

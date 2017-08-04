@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * backpacktf.cpp
  *
@@ -23,16 +26,16 @@ std::queue<backpack_data_s*> pending_queue {};
 std::mutex queue_mutex {};
 std::mutex cache_mutex {};
 
-std::string api_key_s = "";
+std::string api_key_s = XStr("");
 bool valid_api_key = false;
 
-CatVar enable_bptf(CV_SWITCH, "bptf_enable", "0", "Enable backpack.tf", "Enable backpack.tf integration\nYou have to set your API key in cat_bptf_key");
-CatCommand api_key("bptf_key", "Set API Key", [](const CCommand& args) {
+CatVar enable_bptf(CV_SWITCH, XStr("bptf_enable"), XStr("0"), XStr("Enable backpack.tf"), XStr("Enable backpack.tf integration\nYou have to set your API key in cat_bptf_key"));
+CatCommand api_key(XStr("bptf_key"), XStr("Set API Key"), [](const CCommand& args) {
 	api_key_s = args.ArgS();
-	logging::Info("API key changed!");
+	logging::Info(XStr("API key changed!"));
 	valid_api_key = false;
 	if (api_key_s.length() != 24) {
-		logging::Info("API key must be exactly 24 characters long");
+		logging::Info(XStr("API key must be exactly 24 characters long"));
 		valid_api_key = false;
 	} else {
 		valid_api_key = true;
@@ -43,7 +46,7 @@ CatCommand api_key("bptf_key", "Set API Key", [](const CCommand& args) {
 void store_data(unsigned id, float value, bool no_value, bool outdated_value);
 
 void processing_thread() {
-	logging::Info("[bp.tf] Starting the thread");
+	logging::Info(XStr("[bp.tf] Starting the thread"));
 	while (true) {
 		if (enabled()) {
 			try {
@@ -57,28 +60,28 @@ void processing_thread() {
 					}
 				}
 				if (count) {
-					logging::Info("[bp.tf] Requesting data for %d users", count);
-					std::string id_list = "";
+					logging::Info(XStr("[bp.tf] Requesting data for %d users"), count);
+					std::string id_list = XStr("");
 					for (const auto& x : batch) {
 						x->pending = false;
-						id_list += format("[U:1:", x->id, "],");
+						id_list += format(XStr("[U:1:"), x->id, XStr("],"));
 					}
 					// Remove trailing ','
 					id_list = id_list.substr(0, id_list.length() - 1);
-					std::string query = format("steamids=", id_list, "&key=", api_key_s);
+					std::string query = format(XStr("steamids="), id_list, XStr("&key="), api_key_s);
 					try {
-						auto sock = https::RAII_HTTPS_Socket("backpack.tf");
-						std::string response = sock.get("/api/users/info/v1?" + query);
-						if (response.find("HTTP/1.1 200 OK\r\n") != 0) {
-							size_t status = response.find("\r\n");
-							throw std::runtime_error("Response isn't 200 OK! It's " + response.substr(0, status));
+						auto sock = https::RAII_HTTPS_Socket(XStr("backpack.tf"));
+						std::string response = sock.get(XStr("/api/users/info/v1?") + query);
+						if (response.find(XStr("HTTP/1.1 200 OK\r\n")) != 0) {
+							size_t status = response.find(XStr("\r\n"));
+							throw std::runtime_error(XStr("Response isn't 200 OK! It's ") + response.substr(0, status));
 						}
 
-						std::string body = response.substr(response.find("\r\n\r\n") + 4);
+						std::string body = response.substr(response.find(XStr("\r\n\r\n")) + 4);
 
 						try {
 							nlohmann::json data = nlohmann::json::parse(body);
-							nlohmann::json users = data["users"];
+							nlohmann::json users = data[XStr("users")];
 							std::lock_guard<std::mutex> lock(cache_mutex);
 							for (auto it = users.begin(); it != users.end(); ++it) {
 								unsigned userid = strtoul(it.key().substr(5).c_str(), nullptr, 10);
@@ -86,37 +89,37 @@ void processing_thread() {
 									unsigned userid = strtoul(it.key().substr(5).c_str(), nullptr, 10);
 									const auto& v = it.value();
 									if (not v.is_object()) {
-										logging::Info("Data for %u (%s) is not an object!", userid, it.key());
+										logging::Info(XStr("Data for %u (%s) is not an object!"), userid, it.key());
 										continue;
 									}
-									std::string name = v.at("name");
-									logging::Info("Parsing data for user %u (%s)", userid, name.c_str());
-									if (v.find("inventory") == v.end()) {
+									std::string name = v.at(XStr("name"));
+									logging::Info(XStr("Parsing data for user %u (%s)"), userid, name.c_str());
+									if (v.find(XStr("inventory")) == v.end()) {
 										store_data(userid, 0, true, false);
 										continue;
 									}
-									const auto& inv = v.at("inventory").at("440");
-									if (inv.find("value") == inv.end()) {
+									const auto& inv = v.at(XStr("inventory")).at(XStr("440"));
+									if (inv.find(XStr("value")) == inv.end()) {
 										store_data(userid, 0, true, false);
 									} else {
-										float value = float(inv["value"]);
-										unsigned updated = unsigned(inv["updated"]);
+										float value = float(inv[XStr("value")]);
+										unsigned updated = unsigned(inv[XStr("updated")]);
 										store_data(userid, value * REFINED_METAL_PRICE, false, (unsigned(time(0)) - updated > OUTDATED_AGE));
 									}
 								} catch (std::exception& ex) {
-									logging::Info("Error while parsing user %s: %s", it.key().c_str(), ex.what());
+									logging::Info(XStr("Error while parsing user %s: %s"), it.key().c_str(), ex.what());
 								}
 							}
 						} catch (std::exception& e) {
-							logging::Info("[bp.tf] Exception while parsing response: %s", e.what());
+							logging::Info(XStr("[bp.tf] Exception while parsing response: %s"), e.what());
 						}
 
 					} catch (std::exception& e) {
-						logging::Info("[bp.tf] HTTPS exception: %s", e.what());
+						logging::Info(XStr("[bp.tf] HTTPS exception: %s"), e.what());
 					}
 				}
 			} catch (std::exception& e) {
-				logging::Info("[bp.tf] Thread exception: %s", e.what());
+				logging::Info(XStr("[bp.tf] Thread exception: %s"), e.what());
 			}
 		}
 		sleep(REQUEST_INTERVAL);

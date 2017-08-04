@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * crits.cpp
  *
@@ -12,7 +15,7 @@
 #include <link.h>
 
 
-CatVar experimental_crit_hack(CV_KEY, "crit_hack_experimental", "0", "Unstable Crit Hack", "Experimental crit hack, use this **OR** old crit hack, do not use both!\nNEEDS NEXT CRIT INFO TO BE ACTIVE!");
+CatVar experimental_crit_hack(CV_KEY, XStr("crit_hack_experimental"), XStr("0"), XStr("Unstable Crit Hack"), XStr("Experimental crit hack, use this **OR** old crit hack, do not use both!\nNEEDS NEXT CRIT INFO TO BE ACTIVE!"));
 
 std::unordered_map<int, int> command_number_mod {};
 
@@ -41,7 +44,7 @@ void ModifyCommandNumber() {
 }
 
 bool RandomCrits() {
-	static ConVar* tf_weapon_criticals = g_ICvar->FindVar("tf_weapon_criticals");
+	static ConVar* tf_weapon_criticals = g_ICvar->FindVar(XStr("tf_weapon_criticals"));
 	return tf_weapon_criticals->GetBool();
 }
 
@@ -99,7 +102,7 @@ bool IsAttackACrit(CUserCmd* cmd) {
 		IClientEntity* weapon = RAW_ENT(LOCAL_W);
 		/*if (TF2C) {
 			if (vfunc<bool(*)(IClientEntity*)>(weapon, 1824 / 4, 0)(weapon)) {
-				static uintptr_t CalcIsAttackCritical_s = gSignatures.GetClientSignature("55 89 E5 56 53 83 EC 10 8B 5D 08 89 1C 24 E8 ? ? ? ? 85 C0 89 C6 74 59 8B 00 89 34 24 FF 90 E0 02 00 00 84 C0 74 4A A1 ? ? ? ? 8B 40 04 3B 83 A8 09 00 00 74 3A");
+				static uintptr_t CalcIsAttackCritical_s = gSignatures.GetClientSignature(XStr("55 89 E5 56 53 83 EC 10 8B 5D 08 89 1C 24 E8 ? ? ? ? 85 C0 89 C6 74 59 8B 00 89 34 24 FF 90 E0 02 00 00 84 C0 74 4A A1 ? ? ? ? 8B 40 04 3B 83 A8 09 00 00 74 3A"));
 				typedef void(*CalcIsAttackCritical_t)(IClientEntity*);
 				CalcIsAttackCritical_t CIACFn = (CalcIsAttackCritical_t)(CalcIsAttackCritical_s);
 				*(float*)((uintptr_t)weapon + 2468ul) = 0.0f;
@@ -116,7 +119,7 @@ bool IsAttackACrit(CUserCmd* cmd) {
 		} else if (TF2) */
 		{
 			if (vfunc<bool(*)(IClientEntity*)>(weapon, 1944 / 4, 0)(weapon)) {
-				static uintptr_t CalcIsAttackCritical_s = gSignatures.GetClientSignature("55 89 E5 83 EC 28 89 5D F4 8B 5D 08 89 75 F8 89 7D FC 89 1C 24 E8 ? ? ? ? 85 C0 89 C6 74 60 8B 00 89 34 24 FF 90 E0 02 00 00 84 C0 74 51 A1 ? ? ? ? 8B 40 04");
+				static uintptr_t CalcIsAttackCritical_s = gSignatures.GetClientSignature(XStr("55 89 E5 83 EC 28 89 5D F4 8B 5D 08 89 75 F8 89 7D FC 89 1C 24 E8 ? ? ? ? 85 C0 89 C6 74 60 8B 00 89 34 24 FF 90 E0 02 00 00 84 C0 74 51 A1 ? ? ? ? 8B 40 04"));
 				typedef void(*CalcIsAttackCritical_t)(IClientEntity*);
 				CalcIsAttackCritical_t CIACFn = (CalcIsAttackCritical_t)(CalcIsAttackCritical_s);
 				if (cmd->command_number) {

@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -21,7 +24,7 @@ vector_new( size_t item_size )
     if( !self )
     {
         fprintf( stderr,
-                 "line %d: No more memory for allocating data\n", __LINE__ );
+                 XStr("line %d: No more memory for allocating data\n"), __LINE__ );
         exit( EXIT_FAILURE );
     }
     self->item_size = item_size;

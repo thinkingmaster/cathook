@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * hack.cpp
  *
@@ -61,44 +64,44 @@
 bool hack::shutdown = false;
 
 const std::string& hack::GetVersion() {
-	static std::string version("Unknown Version");
+	static std::string version(XStr("Unknown Version"));
 	static bool version_set = false;
 	if (version_set) return version;
 #if defined(GIT_COMMIT_HASH) && defined(GIT_COMMIT_DATE)
-		version = "Version: #" GIT_COMMIT_HASH " " GIT_COMMIT_DATE;
+		version = XStr("Version: #") GIT_COMMIT_HASH XStr(" ") GIT_COMMIT_DATE;
 #endif
 	version_set = true;
 	return version;
 }
 
 const std::string& hack::GetType() {
-	static std::string version("Unknown Type");
+	static std::string version(XStr("Unknown Type"));
 	static bool version_set = false;
 	if (version_set) return version;
-	version = "";
+	version = XStr("");
 #if not defined(IPC_ENABLED)
-	version += " NOIPC";
+	version += XStr(" NOIPC");
 #endif
 #if not ENABLE_GUI
-		version += " NOGUI";
+		version += XStr(" NOGUI");
 #else
-	version += " IMGUI";
+	version += XStr(" IMGUI");
 #endif
 
 #ifndef DYNAMIC_CLASSES
 
 #ifdef BUILD_GAME
-		version += " GAME " TO_STRING(BUILD_GAME);
+		version += XStr(" GAME ") TO_STRING(BUILD_GAME);
 #else
-		version += " UNIVERSAL";
+		version += XStr(" UNIVERSAL");
 #endif
 
 #else
-		version += " DYNAMIC";
+		version += XStr(" DYNAMIC");
 #endif
 		
 #ifdef TEXTMODE
-		version += " TEXTMODE";
+		version += XStr(" TEXTMODE");
 #endif
 
 	version = version.substr(1);
@@ -119,25 +122,25 @@ public:
 	virtual void FireGameEvent( KeyValues * event) {
 		if (!event_log) return;
 		const char* name = event->GetName();
-		if (!strcmp(name, "player_connect_client")) {
-			PrintChat("\x07%06X%s\x01 \x07%06X%s\x01 joining", 0xa06ba0, event->GetString("name"), 0x914e65, event->GetString("networkid"));
-		} else if (!strcmp(name, "player_activate")) {
-			int uid = event->GetInt("userid");
+		if (!strcmp(name, XStr("player_connect_client"))) {
+			PrintChat(XStr("\x07%06X%s\x01 \x07%06X%s\x01 joining"), 0xa06ba0, event->GetString(XStr("name")), 0x914e65, event->GetString(XStr("networkid")));
+		} else if (!strcmp(name, XStr("player_activate"))) {
+			int uid = event->GetInt(XStr("userid"));
 			int entity = g_IEngine->GetPlayerForUserID(uid);
 			player_info_s info;
 			if (g_IEngine->GetPlayerInfo(entity, &info)) {
-				PrintChat("\x07%06X%s\x01 connected", 0xa06ba0, info.name);
+				PrintChat(XStr("\x07%06X%s\x01 connected"), 0xa06ba0, info.name);
 			}
-		} else if (!strcmp(name, "player_disconnect")) {
-			CachedEntity* player = ENTITY(g_IEngine->GetPlayerForUserID(event->GetInt("userid")));
-			PrintChat("\x07%06X%s\x01 \x07%06X%s\x01 disconnected", colors::chat::team(player->m_iTeam), event->GetString("name"), 0x914e65, event->GetString("networkid"));
-		} else if (!strcmp(name, "player_team")) {
-			if (event->GetBool("disconnect") != 1) {
-				int oteam = event->GetInt("oldteam");
-				int nteam = event->GetInt("team");
+		} else if (!strcmp(name, XStr("player_disconnect"))) {
+			CachedEntity* player = ENTITY(g_IEngine->GetPlayerForUserID(event->GetInt(XStr("userid"))));
+			PrintChat(XStr("\x07%06X%s\x01 \x07%06X%s\x01 disconnected"), colors::chat::team(player->m_iTeam), event->GetString(XStr("name")), 0x914e65, event->GetString(XStr("networkid")));
+		} else if (!strcmp(name, XStr("player_team"))) {
+			if (event->GetBool(XStr("disconnect")) != 1) {
+				int oteam = event->GetInt(XStr("oldteam"));
+				int nteam = event->GetInt(XStr("team"));
 				const char* oteam_s = teamname(oteam);
 				const char* nteam_s = teamname(nteam);
-				PrintChat("\x07%06X%s\x01 changed team (\x07%06X%s\x01 -> \x07%06X%s\x01)", 0xa06ba0, event->GetString("name"), colors::chat::team(oteam), oteam_s, colors::chat::team(nteam), nteam_s);
+				PrintChat(XStr("\x07%06X%s\x01 changed team (\x07%06X%s\x01 -> \x07%06X%s\x01)"), 0xa06ba0, event->GetString(XStr("name")), colors::chat::team(oteam), oteam_s, colors::chat::team(nteam), nteam_s);
 			}
 		}
 	}
@@ -156,9 +159,9 @@ void hack::ExecuteCommand(const std::string command) {
 ConCommand* hack::c_Cat = 0;
 
 void hack::CC_Cat(const CCommand& args) {
-	g_ICvar->ConsoleColorPrintf(Color(255, 255, 255, 255), "cathook");
-	g_ICvar->ConsoleColorPrintf(Color(  0,   0, 255, 255), " by ");
-	g_ICvar->ConsoleColorPrintf(Color(255,   0,   0, 255), "nullifiedcat\n");
+	g_ICvar->ConsoleColorPrintf(Color(255, 255, 255, 255), XStr("cathook"));
+	g_ICvar->ConsoleColorPrintf(Color(  0,   0, 255, 255), XStr(" by "));
+	g_ICvar->ConsoleColorPrintf(Color(255,   0,   0, 255), XStr("nullifiedcat\n"));
 }
 
 void hack::Initialize() {
@@ -167,46 +170,46 @@ void hack::Initialize() {
 
 	{
 		std::vector<std::string> essential = {
-			"shaders/v2f-c4f.frag", "shaders/v2f-c4f.vert",
-			"shaders/v2f-t2f-c4f.frag", "shaders/v2f-t2f-c4f.vert",
-			"shaders/v3f-t2f-c4f.frag", "shaders/v3f-t2f-c4f.vert",
-			"menu.json", "fonts/opensans-bold.ttf"
+			XStr("shaders/v2f-c4f.frag"), XStr("shaders/v2f-c4f.vert"),
+			XStr("shaders/v2f-t2f-c4f.frag"), XStr("shaders/v2f-t2f-c4f.vert"),
+			XStr("shaders/v3f-t2f-c4f.frag"), XStr("shaders/v3f-t2f-c4f.vert"),
+			XStr("menu.json"), XStr("fonts/opensans-bold.ttf")
 		};
 		for (const auto& s : essential) {
-			std::ifstream exists("cathook/" + s, std::ios::in);
+			std::ifstream exists(XStr("cathook/") + s, std::ios::in);
 			if (not exists) {
-				Error("Missing essential file: cathook/%s\nYou MUST run update-data script to finish installation", s.c_str());
+				Error(XStr("Missing essential file: cathook/%s\nYou MUST run update-data script to finish installation"), s.c_str());
 			}
 		}
 	}
 
 #endif /* TEXTMODE */
 
-	logging::Info("Initializing...");
+	logging::Info(XStr("Initializing..."));
 	srand(time(0));
 	prctl(PR_SET_DUMPABLE,0,42,42,42);
 	sharedobj::LoadAllSharedObjects();
 	CreateInterfaces();
 	CDumper dumper;
 	dumper.SaveDump();
-	logging::Info("Is TF2? %d", IsTF2());
-	logging::Info("Is TF2C? %d", IsTF2C());
-	logging::Info("Is HL2DM? %d", IsHL2DM());
-	logging::Info("Is CSS? %d", IsCSS());
-	logging::Info("Is TF? %d", IsTF());
+	logging::Info(XStr("Is TF2? %d"), IsTF2());
+	logging::Info(XStr("Is TF2C? %d"), IsTF2C());
+	logging::Info(XStr("Is HL2DM? %d"), IsHL2DM());
+	logging::Info(XStr("Is CSS? %d"), IsCSS());
+	logging::Info(XStr("Is TF? %d"), IsTF());
 	InitClassTable();
 
 #ifndef TEXTMODE /* We don't need medal to flip 100% when running textmode */
 
 	IF_GAME (IsTF2()) {
-		uintptr_t mmmf = (gSignatures.GetClientSignature("C7 44 24 04 09 00 00 00 BB ? ? ? ? C7 04 24 00 00 00 00 E8 ? ? ? ? BA ? ? ? ? 85 C0 B8 ? ? ? ? 0F 44 DA") + 37);
+		uintptr_t mmmf = (gSignatures.GetClientSignature(XStr("C7 44 24 04 09 00 00 00 BB ? ? ? ? C7 04 24 00 00 00 00 E8 ? ? ? ? BA ? ? ? ? 85 C0 B8 ? ? ? ? 0F 44 DA")) + 37);
 		if (mmmf) {
 			unsigned char patch1[] = { 0x89, 0xD3, 0x90 };
 			unsigned char patch2[] = { 0x89, 0xC2, 0x90 };
 			Patch((void*)mmmf, (void*)patch1, 3);
 			Patch((void*)(mmmf + 8), (void*)patch2, 3);
 		}
-		/*uintptr_t canInspectSig = (gSignatures.GetClientSignature("55 0F 57 C0 89 E5 83 EC 48 8B 45 08 F3 0F 11 04 24 F3 0F 11 45 E8 C7 44 24 10 01 00 00 00 C7 44 24 0C 00 00 00 00 89 44 24 08 C7 44 24 ? ? ? ? ? E8 ? ? ? ? F3 0F 10 45 E8 D9 5D E4 F3 0F 10 4D E4 C9 0F 2F C8 0F 95 C0 C3") + 72);
+		/*uintptr_t canInspectSig = (gSignatures.GetClientSignature(XStr("55 0F 57 C0 89 E5 83 EC 48 8B 45 08 F3 0F 11 04 24 F3 0F 11 45 E8 C7 44 24 10 01 00 00 00 C7 44 24 0C 00 00 00 00 89 44 24 08 C7 44 24 ? ? ? ? ? E8 ? ? ? ? F3 0F 10 45 E8 D9 5D E4 F3 0F 10 4D E4 C9 0F 2F C8 0F 95 C0 C3")) + 72);
 		if (canInspectSig) {
 			unsigned char patch[] = { 0xB0, 0x01, 0x90 };
 			Patch((void*)canInspectSig, (void*)patch, 3);
@@ -216,7 +219,7 @@ void hack::Initialize() {
 #endif /* TEXTMODE */
 
 	BeginConVars();
-	hack::c_Cat = CreateConCommand(CON_NAME, &hack::CC_Cat, "Info");
+	hack::c_Cat = CreateConCommand(CON_NAME, &hack::CC_Cat, XStr("Info"));
 	g_Settings.Init();
 	EndConVars();
 
@@ -263,7 +266,7 @@ void hack::Initialize() {
 #if TEXTMODE
 	//g_IMaterialSystem->SetInStubMode(true);
 	/*IF_GAME(IsTF2()) {
-		logging::Info("Graphics Nullified");
+		logging::Info(XStr("Graphics Nullified"));
 		// TODO offsets::()?
 		hooks::materialsystem.Set((void*)g_IMaterialSystem);
 		uintptr_t base = *(uintptr_t*)(g_IMaterialSystem);
@@ -292,7 +295,7 @@ void hack::Initialize() {
 	hooks::steamfriends.Set(g_ISteamFriends);
 	hooks::steamfriends.HookMethod((void*)GetFriendPersonaName_hook, offsets::GetFriendPersonaName());
 	hooks::steamfriends.Apply();
-	//logging::Info("After hacking: %s", g_ISteamFriends->GetPersonaName());
+	//logging::Info(XStr("After hacking: %s"), g_ISteamFriends->GetPersonaName());
 	// Sadly, it doesn't work as expected :(
 	/*hooks::hkBaseClientState = new hooks::VMTHook();
 	hooks::hkBaseClientState->Init((void*)g_IBaseClientState, 0);
@@ -306,7 +309,7 @@ void hack::Initialize() {
 
 	// FIXME [MP]
 	hacks::shared::killsay::Init();
-	logging::Info("Hooked!");
+	logging::Info(XStr("Hooked!"));
 	velocity::Init();
 	playerlist::Load();
 
@@ -315,18 +318,18 @@ void hack::Initialize() {
 	InitStrings();
 #if ENABLE_GUI
 	// cat_reloadscheme to load imgui
-	hack::command_stack().push("cat_reloadscheme");
+	hack::command_stack().push(XStr("cat_reloadscheme"));
 #endif
 	if (g_ppScreenSpaceRegistrationHead && g_pScreenSpaceEffects) {
-		effect_chams::g_pEffectChams = new CScreenSpaceEffectRegistration("_cathook_chams", &effect_chams::g_EffectChams);
-		g_pScreenSpaceEffects->EnableScreenSpaceEffect("_cathook_chams");
+		effect_chams::g_pEffectChams = new CScreenSpaceEffectRegistration(XStr("_cathook_chams"), &effect_chams::g_EffectChams);
+		g_pScreenSpaceEffects->EnableScreenSpaceEffect(XStr("_cathook_chams"));
 		effect_chams::g_EffectChams.Init();
-		effect_glow::g_pEffectGlow = new CScreenSpaceEffectRegistration("_cathook_glow", &effect_glow::g_EffectGlow);
-		g_pScreenSpaceEffects->EnableScreenSpaceEffect("_cathook_glow");
+		effect_glow::g_pEffectGlow = new CScreenSpaceEffectRegistration(XStr("_cathook_glow"), &effect_glow::g_EffectGlow);
+		g_pScreenSpaceEffects->EnableScreenSpaceEffect(XStr("_cathook_glow"));
 	}
-	logging::Info("SSE enabled..");
+	logging::Info(XStr("SSE enabled.."));
 	DoSDLHooking();
-	logging::Info("SDL hooking done");
+	logging::Info(XStr("SDL hooking done"));
 	g_IGameEventManager->AddListener(&adv_event_listener, false);
 
 #endif /* TEXTMODE */
@@ -336,27 +339,27 @@ void hack::Initialize() {
 
 #ifndef TEXTMODE
 	InitSpinner();
-	logging::Info("Initialized Fidget Spinner");
+	logging::Info(XStr("Initialized Fidget Spinner"));
 	hacks::shared::spam::Init();
 	backpacktf::init();
-	logging::Info("Initialized Backpack.TF integration");
+	logging::Info(XStr("Initialized Backpack.TF integration"));
 #endif
 
 	hacks::shared::walkbot::Initialize();
 
-	logging::Info("Clearing initializer stack");
+	logging::Info(XStr("Clearing initializer stack"));
 	while (!init_stack().empty()) {
 		init_stack().top()();
 		init_stack().pop();
 	}
-	logging::Info("Initializer stack done");
+	logging::Info(XStr("Initializer stack done"));
 
 #ifdef TEXTMODE
-	hack::command_stack().push("exec cat_autoexec_textmode");
+	hack::command_stack().push(XStr("exec cat_autoexec_textmode"));
 #endif
-	hack::command_stack().push("exec cat_autoexec");
-	hack::command_stack().push("cat_killsay_reload");
-	hack::command_stack().push("cat_spam_reload");
+	hack::command_stack().push(XStr("exec cat_autoexec"));
+	hack::command_stack().push(XStr("cat_killsay_reload"));
+	hack::command_stack().push(XStr("cat_spam_reload"));
 }
 
 void hack::Think() {
@@ -368,9 +371,9 @@ void hack::Shutdown() {
 	hack::shutdown = true;
 	playerlist::Save();
 	DoSDLUnhooking();
-	logging::Info("Unregistering convars..");
+	logging::Info(XStr("Unregistering convars.."));
 	ConVar_Unregister();
-	logging::Info("Shutting down killsay...");
+	logging::Info(XStr("Shutting down killsay..."));
 	hacks::shared::killsay::Shutdown();
-	logging::Info("Success..");
+	logging::Info(XStr("Success.."));
 }

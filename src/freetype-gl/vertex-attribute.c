@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -67,7 +70,7 @@ vertex_attribute_parse( char *format )
         name = strndup(format, p-format);
         if( *(++p) == '\0' )
         {
-            fprintf( stderr, "No size specified for '%s' attribute\n", name );
+            fprintf( stderr, XStr("No size specified for '%s' attribute\n"), name );
             free( name );
             return 0;
         }
@@ -75,7 +78,7 @@ vertex_attribute_parse( char *format )
 
         if( *(++p) == '\0' )
         {
-            fprintf( stderr, "No format specified for '%s' attribute\n", name );
+            fprintf( stderr, XStr("No format specified for '%s' attribute\n"), name );
             free( name );
             return 0;
         }
@@ -92,7 +95,7 @@ vertex_attribute_parse( char *format )
     }
     else
     {
-        fprintf(stderr, "Vertex attribute format not understood ('%s')\n", format );
+        fprintf(stderr, XStr("Vertex attribute format not understood ('%s')\n"), format );
         return 0;
     }
 
