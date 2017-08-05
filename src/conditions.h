@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * conditions.h
  *
@@ -189,7 +192,7 @@ constexpr condition_data_s KCritBoostMask = CreateConditionMask(
 		TFCond_HalloweenCritCandy);
 
 // Compiler will optimize this to extremely small functions I guess.
-// These functions are never used with dynamic "cond" value anyways.
+// These functions are never used with dynamic XStr("cond") value anyways.
 
 template<condition cond>
 inline bool CondBitCheck(condition_data_s& data) {

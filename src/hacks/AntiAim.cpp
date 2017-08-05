@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AntiAim.cpp
  *
@@ -12,24 +15,24 @@
 
 namespace hacks { namespace shared { namespace antiaim {
 
-CatVar enabled(CV_SWITCH, "aa_enabled", "0", "Anti-Aim", "Master AntiAim switch");
-CatVar yaw(CV_FLOAT, "aa_yaw", "0.0", "Yaw", "Static yaw (left/right)", 360.0);
-CatVar pitch(CV_FLOAT, "aa_pitch", "-89.0", "Pitch", "Static pitch (up/down)", -89.0, 89.0);
-CatEnum yaw_mode_enum({ "KEEP", "STATIC", "JITTER", "BIGRANDOM", "RANDOM", "SPIN", "OFFSETKEEP", "EDGE", "HECK" });
-CatEnum pitch_mode_enum({ "KEEP", "STATIC", "JITTER", "RANDOM", "FLIP", "FAKEFLIP", "FAKEUP", "FAKEDOWN", "FAKECENTER", "UP", "DOWN", "HECK" });
-CatVar yaw_mode(yaw_mode_enum, "aa_yaw_mode", "0", "Yaw mode", "Yaw mode");
-CatVar pitch_mode(pitch_mode_enum, "aa_pitch_mode", "0", "Pitch mode", "Pitch mode");
-CatVar roll(CV_FLOAT, "aa_roll", "0", "Roll", "Roll angle (viewangles.z)", -180, 180);
-CatVar no_clamping(CV_SWITCH, "aa_no_clamp", "0", "Don't clamp angles", "Use this with STATIC mode for unclamped manual angles");
-CatVar spin(CV_FLOAT, "aa_spin", "10.0", "Spin speed", "Spin speed (degrees/second)");
+CatVar enabled(CV_SWITCH, XStr("aa_enabled"), XStr("0"), XStr("Anti-Aim"), XStr("Master AntiAim switch"));
+CatVar yaw(CV_FLOAT, XStr("aa_yaw"), XStr("0.0"), XStr("Yaw"), XStr("Static yaw (left/right)"), 360.0);
+CatVar pitch(CV_FLOAT, XStr("aa_pitch"), XStr("-89.0"), XStr("Pitch"), XStr("Static pitch (up/down)"), -89.0, 89.0);
+CatEnum yaw_mode_enum({ XStr("KEEP"), XStr("STATIC"), XStr("JITTER"), XStr("BIGRANDOM"), XStr("RANDOM"), XStr("SPIN"), XStr("OFFSETKEEP"), XStr("EDGE"), XStr("HECK") });
+CatEnum pitch_mode_enum({ XStr("KEEP"), XStr("STATIC"), XStr("JITTER"), XStr("RANDOM"), XStr("FLIP"), XStr("FAKEFLIP"), XStr("FAKEUP"), XStr("FAKEDOWN"), XStr("FAKECENTER"), XStr("UP"), XStr("DOWN"), XStr("HECK") });
+CatVar yaw_mode(yaw_mode_enum, XStr("aa_yaw_mode"), XStr("0"), XStr("Yaw mode"), XStr("Yaw mode"));
+CatVar pitch_mode(pitch_mode_enum, XStr("aa_pitch_mode"), XStr("0"), XStr("Pitch mode"), XStr("Pitch mode"));
+CatVar roll(CV_FLOAT, XStr("aa_roll"), XStr("0"), XStr("Roll"), XStr("Roll angle (viewangles.z)"), -180, 180);
+CatVar no_clamping(CV_SWITCH, XStr("aa_no_clamp"), XStr("0"), XStr("Don't clamp angles"), XStr("Use this with STATIC mode for unclamped manual angles"));
+CatVar spin(CV_FLOAT, XStr("aa_spin"), XStr("10.0"), XStr("Spin speed"), XStr("Spin speed (degrees/second)"));
 
-CatVar aaaa_enabled(CV_SWITCH, "aa_aaaa_enabled", "0", "Enable AAAA", "Enable Anti-Anti-Anti-Aim (Overrides AA Pitch)");
-CatVar aaaa_interval(CV_FLOAT, "aa_aaaa_interval", "0", "Interval", "Interval in seconds, 0 = random");
-CatVar aaaa_interval_random_high(CV_FLOAT, "aa_aaaa_interval_high", "15", "Interval Ceiling", "Upper bound for random AAAA interval");
-CatVar aaaa_interval_random_low(CV_FLOAT, "aa_aaaa_interval_low", "3", "Interval Floor", "Lower bound for random AAAA interval");
-CatEnum aaaa_modes_enum({"(FAKE)UP", "(FAKE)DOWN"});
-CatVar aaaa_mode(aaaa_modes_enum, "aa_aaaa_mode", "0", "Mode", "Anti-Anti-Anti-Aim Mode");
-CatVar aaaa_flip_key(CV_KEY, "aa_aaaa_flip_key", "0", "Flip key", "If you press that key, current AA will change");
+CatVar aaaa_enabled(CV_SWITCH, XStr("aa_aaaa_enabled"), XStr("0"), XStr("Enable AAAA"), XStr("Enable Anti-Anti-Anti-Aim (Overrides AA Pitch)"));
+CatVar aaaa_interval(CV_FLOAT, XStr("aa_aaaa_interval"), XStr("0"), XStr("Interval"), XStr("Interval in seconds, 0 = random"));
+CatVar aaaa_interval_random_high(CV_FLOAT, XStr("aa_aaaa_interval_high"), XStr("15"), XStr("Interval Ceiling"), XStr("Upper bound for random AAAA interval"));
+CatVar aaaa_interval_random_low(CV_FLOAT, XStr("aa_aaaa_interval_low"), XStr("3"), XStr("Interval Floor"), XStr("Lower bound for random AAAA interval"));
+CatEnum aaaa_modes_enum({XStr("(FAKE)UP"), XStr("(FAKE)DOWN")});
+CatVar aaaa_mode(aaaa_modes_enum, XStr("aa_aaaa_mode"), XStr("0"), XStr("Mode"), XStr("Anti-Anti-Anti-Aim Mode"));
+CatVar aaaa_flip_key(CV_KEY, XStr("aa_aaaa_flip_key"), XStr("0"), XStr("Flip key"), XStr("If you press that key, current AA will change"));
 
 float cur_yaw = 0.0f;
 int safe_space = 0;

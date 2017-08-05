@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
 	AUTO-GENERATED HEADER - DO NOT MODIFY
 	CONSTEXPR HEADER FOR dab

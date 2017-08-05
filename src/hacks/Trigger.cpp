@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
  
 /*
  * HTrigger.cpp
@@ -18,39 +21,39 @@
 namespace hacks { namespace shared { namespace triggerbot {
 
 // Vars for usersettings
-static CatVar enabled(CV_SWITCH, "trigger_enabled", "0", "Enable", "Master Triggerbot switch");
+static CatVar enabled(CV_SWITCH, XStr("trigger_enabled"), XStr("0"), XStr("Enable"), XStr("Master Triggerbot switch"));
 	
-static CatVar trigger_key(CV_KEY, "trigger_key", "0", "Triggerbot key", "Triggerbot key. Look at Triggerbot key Mode too!");
-static CatEnum trigger_key_modes_enum({ "DISABLED", "TRIGGERKEY", "REVERSE", "TOGGLE" });
-static CatVar trigger_key_mode(trigger_key_modes_enum, "trigger_key_mode", "1", "Triggerbot key mode", "DISABLED: triggerbot is always active\nAIMKEY: triggerbot is active when key is down\nREVERSE: triggerbot is disabled when key is down\nTOGGLE: pressing key toggles triggerbot");
+static CatVar trigger_key(CV_KEY, XStr("trigger_key"), XStr("0"), XStr("Triggerbot key"), XStr("Triggerbot key. Look at Triggerbot key Mode too!"));
+static CatEnum trigger_key_modes_enum({ XStr("DISABLED"), XStr("TRIGGERKEY"), XStr("REVERSE"), XStr("TOGGLE") });
+static CatVar trigger_key_mode(trigger_key_modes_enum, XStr("trigger_key_mode"), XStr("1"), XStr("Triggerbot key mode"), XStr("DISABLED: triggerbot is always active\nAIMKEY: triggerbot is active when key is down\nREVERSE: triggerbot is disabled when key is down\nTOGGLE: pressing key toggles triggerbot"));
 	
-static CatEnum hitbox_mode_enum({ "AUTO-HEAD", "AUTO-CLOSEST", "Head only" });
-static CatVar hitbox_mode(hitbox_mode_enum, "trigger_hitboxmode", "0", "Hitbox Mode", "Defines hitbox selection mode");
+static CatEnum hitbox_mode_enum({ XStr("AUTO-HEAD"), XStr("AUTO-CLOSEST"), XStr("Head only") });
+static CatVar hitbox_mode(hitbox_mode_enum, XStr("trigger_hitboxmode"), XStr("0"), XStr("Hitbox Mode"), XStr("Defines hitbox selection mode"));
 	
-static CatVar accuracy(CV_INT, "trigger_accuracy", "1", "Improve accuracy", "Improves triggerbot accuracy when aiming for specific hitbox. Recommended to use with sniper rifle/ambassador");
+static CatVar accuracy(CV_INT, XStr("trigger_accuracy"), XStr("1"), XStr("Improve accuracy"), XStr("Improves triggerbot accuracy when aiming for specific hitbox. Recommended to use with sniper rifle/ambassador"));
 
-static CatVar ignore_vaccinator(CV_SWITCH, "trigger_ignore_vaccinator", "1", "Ignore Vaccinator", "Hitscan weapons won't fire if enemy is vaccinated against bullets");
-static CatVar ignore_hoovy(CV_SWITCH, "trigger_ignore_hoovy", "1", "Ignore Hoovies", "Triggerbot won't attack hoovies");
-static CatVar ignore_cloak(CV_SWITCH, "trigger_ignore_cloak", "1", "Ignore cloaked", "Don't trigger at invisible enemies");
-static CatVar buildings_sentry(CV_SWITCH, "trigger_buildings_sentry", "1", "Trigger Sentry", "Should trigger at sentryguns?");
-static CatVar buildings_other(CV_SWITCH, "trigger_buildings_other", "1", "Trigger Other building", "Should trigger at other buildings");
-static CatVar stickybot(CV_SWITCH, "trigger_stickys", "0", "Trigger Sticky", "Should trigger at stickys");
-static CatVar teammates(CV_SWITCH, "trigger_teammates", "0", "Trigger teammates", "Trigger at your own team. Useful for HL2DM");
+static CatVar ignore_vaccinator(CV_SWITCH, XStr("trigger_ignore_vaccinator"), XStr("1"), XStr("Ignore Vaccinator"), XStr("Hitscan weapons won't fire if enemy is vaccinated against bullets"));
+static CatVar ignore_hoovy(CV_SWITCH, XStr("trigger_ignore_hoovy"), XStr("1"), XStr("Ignore Hoovies"), XStr("Triggerbot won't attack hoovies"));
+static CatVar ignore_cloak(CV_SWITCH, XStr("trigger_ignore_cloak"), XStr("1"), XStr("Ignore cloaked"), XStr("Don't trigger at invisible enemies"));
+static CatVar buildings_sentry(CV_SWITCH, XStr("trigger_buildings_sentry"), XStr("1"), XStr("Trigger Sentry"), XStr("Should trigger at sentryguns?"));
+static CatVar buildings_other(CV_SWITCH, XStr("trigger_buildings_other"), XStr("1"), XStr("Trigger Other building"), XStr("Should trigger at other buildings"));
+static CatVar stickybot(CV_SWITCH, XStr("trigger_stickys"), XStr("0"), XStr("Trigger Sticky"), XStr("Should trigger at stickys"));
+static CatVar teammates(CV_SWITCH, XStr("trigger_teammates"), XStr("0"), XStr("Trigger teammates"), XStr("Trigger at your own team. Useful for HL2DM"));
 	
-static CatVar wait_for_charge(CV_SWITCH, "trigger_charge", "0", "Wait for sniper rifle charge", "Triggerbot waits until it has enough charge to kill");
-static CatVar zoomed_only(CV_SWITCH, "trigger_zoomed", "1", "Zoomed only", "Don't trigger with unzoomed rifles");
-static CatVar max_range(CV_INT, "trigger_maxrange", "0", "Max distance",
-		"Max range for triggerbot\n"
-		"900-1100 range is efficient for scout/widowmaker engineer", 4096.0f);
+static CatVar wait_for_charge(CV_SWITCH, XStr("trigger_charge"), XStr("0"), XStr("Wait for sniper rifle charge"), XStr("Triggerbot waits until it has enough charge to kill"));
+static CatVar zoomed_only(CV_SWITCH, XStr("trigger_zoomed"), XStr("1"), XStr("Zoomed only"), XStr("Don't trigger with unzoomed rifles"));
+static CatVar max_range(CV_INT, XStr("trigger_maxrange"), XStr("0"), XStr("Max distance"),
+		XStr("Max range for triggerbot\n")
+		XStr("900-1100 range is efficient for scout/widowmaker engineer"), 4096.0f);
 
-static CatVar delay(CV_FLOAT, "trigger_delay", "0", "Delay", "Triggerbot delay in seconds", 0.0f, 1.0f);
+static CatVar delay(CV_FLOAT, XStr("trigger_delay"), XStr("0"), XStr("Delay"), XStr("Triggerbot delay in seconds"), 0.0f, 1.0f);
 
 float target_time = 0.0f;
 
 int last_hb_traced = 0;
 Vector forward;
 
-// The main "loop" of the triggerbot
+// The main XStr("loop") of the triggerbot
 void CreateMove() {	
 	
 	float backup_time = target_time;

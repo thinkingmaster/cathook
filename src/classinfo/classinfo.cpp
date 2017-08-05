@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * classinfo.cpp
  *
@@ -34,7 +37,7 @@ void InitClassTable() {
 		client_class_list = (client_classes::dummy*)&client_classes::dynamic_list;
 	}
 	if (!client_class_list) {
-		logging::Info("FATAL: Cannot initialize class list! Game will crash if cathook is enabled.");
+		logging::Info(XStr("FATAL: Cannot initialize class list! Game will crash if cathook is enabled."));
 		//cathook = false;
 	}
 }

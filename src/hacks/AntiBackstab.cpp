@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AntiBackstab.cpp
  *
@@ -10,17 +13,17 @@
 
 namespace hacks { namespace tf2 { namespace antibackstab {
 
-static CatVar enabled(CV_SWITCH, "antibackstab", "0", "Enable", "Main anti-backstab switch");
-static CatVar distance(CV_FLOAT, "antibackstab_distance", "200", "Distance", "Distance Until anti-backstab reacts");
-static CatVar silent(CV_SWITCH, "antibackstab_silent", "1", "Silent", "Works silently without moving your view");
-static CatVar angle(CV_FLOAT, "antibackstab_angle", "150", "Detection Angle");
-static CatVar sayno(CV_SWITCH, "antibackstab_nope", "0", "Nope!", "Memes");
+static CatVar enabled(CV_SWITCH, XStr("antibackstab"), XStr("0"), XStr("Enable"), XStr("Main anti-backstab switch"));
+static CatVar distance(CV_FLOAT, XStr("antibackstab_distance"), XStr("200"), XStr("Distance"), XStr("Distance Until anti-backstab reacts"));
+static CatVar silent(CV_SWITCH, XStr("antibackstab_silent"), XStr("1"), XStr("Silent"), XStr("Works silently without moving your view"));
+static CatVar angle(CV_FLOAT, XStr("antibackstab_angle"), XStr("150"), XStr("Detection Angle"));
+static CatVar sayno(CV_SWITCH, XStr("antibackstab_nope"), XStr("0"), XStr("Nope!"), XStr("Memes"));
 
 void SayNope() {
 	static float last_say = 0.0f;
 	if (g_GlobalVars->curtime < last_say) last_say = 0.0f;
 	if (g_GlobalVars->curtime - last_say < 1.5f) return;
-	hack::ExecuteCommand("voicemenu 0 7");
+	hack::ExecuteCommand(XStr("voicemenu 0 7"));
 	last_say = g_GlobalVars->curtime;
 }
 
@@ -36,7 +39,7 @@ float GetAngle(CachedEntity* spy) {
 	anglediff = yaw - yaw2;
 	if (anglediff > 180) anglediff -= 360;
 	if (anglediff < -180) anglediff += 360;
-	//logging::Info("Angle: %.2f | %.2f | %.2f | %.2f", yaw, yaw2, anglediff, yaw - yaw2);
+	//logging::Info(XStr("Angle: %.2f | %.2f | %.2f | %.2f"), yaw, yaw2, anglediff, yaw - yaw2);
 	return anglediff;
 }
 
@@ -57,7 +60,7 @@ CachedEntity* ClosestSpy() {
 		dist = ent->m_flDistance;
 		if (fabs(GetAngle(ent)) > (float)angle) {
 			break;
-			//logging::Info("Backstab???");
+			//logging::Info(XStr("Backstab???"));
 		}
 		if (dist < (float)distance && (dist < closest_dist || !closest_dist)) {
 			closest_dist = dist;
@@ -107,11 +110,11 @@ void PaintTraverse() {
 	float anglediff = yaw - yaw2;
 	if (anglediff > 180) anglediff -= 360;
 	if (anglediff < -180) anglediff += 360;
-	AddSideString(format("closest: ", B.x, ' ', B.y, ' ', B.z));
-	AddSideString(format("yaw: ", yaw));
-	AddSideString(format("diff: ", diff.x, ' ', diff.y, ' ', diff.z));
-	AddSideString(format("yaw2: ", yaw2));
-	AddSideString(format("anglediff: ", anglediff));*/
+	AddSideString(format(XStr("closest: "), B.x, ' ', B.y, ' ', B.z));
+	AddSideString(format(XStr("yaw: "), yaw));
+	AddSideString(format(XStr("diff: "), diff.x, ' ', diff.y, ' ', diff.z));
+	AddSideString(format(XStr("yaw2: "), yaw2));
+	AddSideString(format(XStr("anglediff: "), anglediff));*/
 }
 
 }}}

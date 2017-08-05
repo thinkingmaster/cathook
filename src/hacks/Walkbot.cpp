@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * Walkbot.cpp
  *
@@ -95,7 +98,7 @@ struct walkbot_node_s {
 	void link(index_t node) {
 		connection free = free_connection();
 		if (free == BAD_CONNECTION) {
-			logging::Info("[wb] Too many connections! Node at (%.2f %.2f %.2f)", x, y, z);
+			logging::Info(XStr("[wb] Too many connections! Node at (%.2f %.2f %.2f)"), x, y, z);
 			return;
 		}
 		connections[free].link(node);
@@ -206,7 +209,7 @@ bool HasLowHealth() {
 void DeleteNode(index_t node) {
 	if (not node_good(node))
 		return;
-	logging::Info("[wb] Deleting node %u", node);
+	logging::Info(XStr("[wb] Deleting node %u"), node);
 	auto& n = nodes[node];
 	for (size_t i = 0; i < MAX_CONNECTIONS; i++) {
 		if (n.connections[i].good() and node_good(n.connections[i].node)) {
@@ -221,29 +224,29 @@ void DeleteNode(index_t node) {
 
 void Save(std::string filename) {
 	if (g_Settings.bInvalid) {
-		logging::Info("Not in-game, cannot save!");
+		logging::Info(XStr("Not in-game, cannot save!"));
 		return;
 	}
 	{
-		DIR* walkbot_dir = opendir("cathook/walkbot");
+		DIR* walkbot_dir = opendir(XStr("cathook/walkbot"));
 		if (!walkbot_dir) {
-			logging::Info("Walkbot directory doesn't exist, creating one!");
-			mkdir("cathook/walkbot", S_IRWXU | S_IRWXG);
+			logging::Info(XStr("Walkbot directory doesn't exist, creating one!"));
+			mkdir(XStr("cathook/walkbot"), S_IRWXU | S_IRWXG);
 		} else closedir(walkbot_dir);
 	}
-	std::string path = format("cathook/walkbot/", GetLevelName());
+	std::string path = format(XStr("cathook/walkbot/"), GetLevelName());
 	{
 		DIR* level_dir = opendir(path.c_str());
 		if (!level_dir) {
-			logging::Info("Walkbot directory for %s doesn't exist, creating one!", GetLevelName().c_str());
+			logging::Info(XStr("Walkbot directory for %s doesn't exist, creating one!"), GetLevelName().c_str());
 			mkdir(path.c_str(), S_IRWXU | S_IRWXG);
 		} else closedir(level_dir);
 	}
-	logging::Info("Saving in %s", format(path, "/", filename).c_str());
+	logging::Info(XStr("Saving in %s"), format(path, XStr("/"), filename).c_str());
 	try {
-		std::ofstream file(format(path, "/", filename), std::ios::out | std::ios::binary);
+		std::ofstream file(format(path, XStr("/"), filename), std::ios::out | std::ios::binary);
 		if (not file) {
-			logging::Info("Could not open file!");
+			logging::Info(XStr("Could not open file!"));
 			return;
 		}
 		walkbot_header_s header;
@@ -259,30 +262,30 @@ void Save(std::string filename) {
 		file.write(name, name_s);
 		file.write(reinterpret_cast<const char*>(state::nodes.data()), sizeof(walkbot_node_s) * header.node_count);
 		file.close();
-		logging::Info("Writing successful");
+		logging::Info(XStr("Writing successful"));
 	} catch (std::exception& e) {
-		logging::Info("Writing unsuccessful: %s", e.what());
+		logging::Info(XStr("Writing unsuccessful: %s"), e.what());
 	}
 }
 
 bool Load(std::string filename) {
 	{
-		DIR* walkbot_dir = opendir("cathook/walkbot");
+		DIR* walkbot_dir = opendir(XStr("cathook/walkbot"));
 		if (!walkbot_dir) {
-			logging::Info("Walkbot directory doesn't exist, creating one!");
-			mkdir("cathook/walkbot", S_IRWXU | S_IRWXG);
+			logging::Info(XStr("Walkbot directory doesn't exist, creating one!"));
+			mkdir(XStr("cathook/walkbot"), S_IRWXU | S_IRWXG);
 		} else closedir(walkbot_dir);
 	}
-	std::string path = format("cathook/walkbot/", GetLevelName());
+	std::string path = format(XStr("cathook/walkbot/"), GetLevelName());
 	{
 		DIR* level_dir = opendir(path.c_str());
 		if (!level_dir) {
-			logging::Info("Walkbot directory for %s doesn't exist, creating one!", GetLevelName().c_str());
+			logging::Info(XStr("Walkbot directory for %s doesn't exist, creating one!"), GetLevelName().c_str());
 			mkdir(path.c_str(), S_IRWXU | S_IRWXG);
 		} else closedir(level_dir);
 	}
 	try {
-		std::ifstream file(format(path, "/", filename), std::ios::in | std::ios::binary);
+		std::ifstream file(format(path, XStr("/"), filename), std::ios::in | std::ios::binary);
 		if (!file) {
 			return false;
 		}
@@ -290,12 +293,12 @@ bool Load(std::string filename) {
 		BINARY_FILE_READ(file, header);
 		// FIXME magic number: 1
 		if (header.version != VERSION) {
-			logging::Info("Outdated/corrupted walkbot file! Cannot load this.");
+			logging::Info(XStr("Outdated/corrupted walkbot file! Cannot load this."));
 			file.close();
 			return false;
 		}
 		if (header.author_length > 64 or header.map_length > 512 or (not header.author_length or not header.map_length)) {
-			logging::Info("Corrupted author/level data");
+			logging::Info(XStr("Corrupted author/level data"));
 		} else {
 			char name_buffer[header.author_length + 1];
 			char map_buffer[header.map_length + 1];
@@ -303,36 +306,36 @@ bool Load(std::string filename) {
 			file.read(name_buffer, header.author_length);
 			name_buffer[header.author_length] = 0;
 			map_buffer[header.map_length] = 0;
-			logging::Info("Walkbot navigation map for %s\nAuthor: %s", map_buffer, name_buffer);
+			logging::Info(XStr("Walkbot navigation map for %s\nAuthor: %s"), map_buffer, name_buffer);
 		}
 		state::nodes.clear();
-		logging::Info("Reading %i entries...", header.node_count);
+		logging::Info(XStr("Reading %i entries..."), header.node_count);
 		if (header.node_count > 32768) {
-			logging::Info("Read %d nodes, max is %d. Aborting.", header.node_count, 32768);
+			logging::Info(XStr("Read %d nodes, max is %d. Aborting."), header.node_count, 32768);
 			return false;
 		}
 		state::nodes.resize(header.node_count);
 		file.read(reinterpret_cast<char*>(state::nodes.data()), sizeof(walkbot_node_s) * header.node_count);
 		file.close();
-		logging::Info("Reading successful! Result: %i entries.", state::nodes.size());
+		logging::Info(XStr("Reading successful! Result: %i entries."), state::nodes.size());
 		return true;
 	} catch (std::exception& e) {
-		logging::Info("Reading unsuccessful: %s", e.what());
+		logging::Info(XStr("Reading unsuccessful: %s"), e.what());
 	}
 	return false;
 }
 
-static CatCommand save("wb_save", "Save", [](const CCommand& args) {
-	logging::Info("Saving");
-	std::string filename = "default";
+static CatCommand save(XStr("wb_save"), XStr("Save"), [](const CCommand& args) {
+	logging::Info(XStr("Saving"));
+	std::string filename = XStr("default");
 	if (args.ArgC() > 1) {
 		filename = args.Arg(1);
 	}
 	Save(filename);
 });
-static CatCommand load("wb_load", "Load", [](const CCommand& args) {
-	logging::Info("Loading");
-	std::string filename = "default";
+static CatCommand load(XStr("wb_load"), XStr("Load"), [](const CCommand& args) {
+	logging::Info(XStr("Loading"));
+	std::string filename = XStr("default");
 	if (args.ArgC() > 1) {
 		filename = args.Arg(1);
 	}
@@ -341,7 +344,7 @@ static CatCommand load("wb_load", "Load", [](const CCommand& args) {
 
 index_t CreateNode(const Vector& xyz) {
 	index_t node = state::free_node();
-	logging::Info("[wb] Creating node %u at (%.2f %.2f %.2f)", node, xyz.x, xyz.y, xyz.z);
+	logging::Info(XStr("[wb] Creating node %u at (%.2f %.2f %.2f)"), node, xyz.x, xyz.y, xyz.z);
 	auto& n = state::nodes[node];
 	memset(&n, 0, sizeof(n));
 	n.xyz() = xyz;
@@ -349,30 +352,30 @@ index_t CreateNode(const Vector& xyz) {
 	return node;
 }
 
-CatVar active_recording(CV_SWITCH, "wb_recording", "0", "Do recording", "Use BindToggle with this");
-CatVar draw_info(CV_SWITCH, "wb_info", "1", "Walkbot info");
-CatVar draw_path(CV_SWITCH, "wb_path", "1", "Walkbot path");
-CatVar draw_nodes(CV_SWITCH, "wb_nodes", "1", "Walkbot nodes");
-CatVar draw_indices(CV_SWITCH, "wb_indices", "0", "Node indices");
-CatVar free_move(CV_SWITCH, "wb_freemove", "1", "Allow free movement", "Allow free movement while pressing movement keys");
-CatVar spawn_distance(CV_FLOAT, "wb_node_spawn_distance", "54", "Node spawn distance");
-CatVar max_distance(CV_FLOAT, "wb_replay_max_distance", "100", "Max distance to node when replaying");
-CatVar reach_distance(CV_FLOAT, "wb_replay_reach_distance", "32", "Distance where bot can be considered 'stepping' on the node");
-CatVar draw_connection_flags(CV_SWITCH, "wb_connection_flags", "1", "Connection flags");
-CatVar force_slot(CV_INT, "wb_force_slot", "1", "Force slot", "Walkbot will always select weapon in this slot");
-CatVar leave_if_empty(CV_SWITCH, "wb_leave_if_empty", "0", "Leave if no walkbot", "Leave game if there is no walkbot map");
+CatVar active_recording(CV_SWITCH, XStr("wb_recording"), XStr("0"), XStr("Do recording"), XStr("Use BindToggle with this"));
+CatVar draw_info(CV_SWITCH, XStr("wb_info"), XStr("1"), XStr("Walkbot info"));
+CatVar draw_path(CV_SWITCH, XStr("wb_path"), XStr("1"), XStr("Walkbot path"));
+CatVar draw_nodes(CV_SWITCH, XStr("wb_nodes"), XStr("1"), XStr("Walkbot nodes"));
+CatVar draw_indices(CV_SWITCH, XStr("wb_indices"), XStr("0"), XStr("Node indices"));
+CatVar free_move(CV_SWITCH, XStr("wb_freemove"), XStr("1"), XStr("Allow free movement"), XStr("Allow free movement while pressing movement keys"));
+CatVar spawn_distance(CV_FLOAT, XStr("wb_node_spawn_distance"), XStr("54"), XStr("Node spawn distance"));
+CatVar max_distance(CV_FLOAT, XStr("wb_replay_max_distance"), XStr("100"), XStr("Max distance to node when replaying"));
+CatVar reach_distance(CV_FLOAT, XStr("wb_replay_reach_distance"), XStr("32"), XStr("Distance where bot can be considered 'stepping' on the node"));
+CatVar draw_connection_flags(CV_SWITCH, XStr("wb_connection_flags"), XStr("1"), XStr("Connection flags"));
+CatVar force_slot(CV_INT, XStr("wb_force_slot"), XStr("1"), XStr("Force slot"), XStr("Walkbot will always select weapon in this slot"));
+CatVar leave_if_empty(CV_SWITCH, XStr("wb_leave_if_empty"), XStr("0"), XStr("Leave if no walkbot"), XStr("Leave game if there is no walkbot map"));
 
-CatCommand c_start_recording("wb_record", "Start recording", []() { state::state = WB_RECORDING; });
-CatCommand c_start_editing("wb_edit", "Start editing", []() { state::state = WB_EDITING; });
-CatCommand c_start_replaying("wb_replay", "Start replaying", []() {
+CatCommand c_start_recording(XStr("wb_record"), XStr("Start recording"), []() { state::state = WB_RECORDING; });
+CatCommand c_start_editing(XStr("wb_edit"), XStr("Start editing"), []() { state::state = WB_EDITING; });
+CatCommand c_start_replaying(XStr("wb_replay"), XStr("Start replaying"), []() {
 	state::last_node = state::active_node;
 	state::active_node = state::closest_node;
 	state::state = WB_REPLAYING;
 });
-CatCommand c_exit("wb_exit", "Exit", []() { state::state = WB_DISABLED; });
+CatCommand c_exit(XStr("wb_exit"), XStr("Exit"), []() { state::state = WB_DISABLED; });
 
 // Selects closest node, clears selection if node is selected
-CatCommand c_select_node("wb_select", "Select node", []() {
+CatCommand c_select_node(XStr("wb_select"), XStr("Select node"), []() {
 	if (state::active_node == state::closest_node) {
 		state::active_node = BAD_NODE;
 	} else {
@@ -380,7 +383,7 @@ CatCommand c_select_node("wb_select", "Select node", []() {
 	}
 });
 // Makes a new node in the middle of connection between 2 nodes
-CatCommand c_split_connection("wb_split", "Split connection", []() {
+CatCommand c_split_connection(XStr("wb_split"), XStr("Split connection"), []() {
 	if (not (state::node_good(state::active_node) and state::node_good(state::closest_node)))
 		return;
 
@@ -402,11 +405,11 @@ CatCommand c_split_connection("wb_split", "Split connection", []() {
 
 });
 // Deletes closest node and its connections
-CatCommand c_delete_node("wb_delete", "Delete node", []() {
+CatCommand c_delete_node(XStr("wb_delete"), XStr("Delete node"), []() {
 	DeleteNode(state::closest_node);
 });
 // Creates a new node under your feet and connects it to closest node to your crosshair
-CatCommand c_create_node("wb_create", "Create node", []() {
+CatCommand c_create_node(XStr("wb_create"), XStr("Create node"), []() {
 	index_t node = CreateNode(g_pLocalPlayer->v_Origin);
 	auto& n = state::nodes[node];
 	if (g_pUserCmd->buttons & IN_DUCK)
@@ -415,11 +418,11 @@ CatCommand c_create_node("wb_create", "Create node", []() {
 		auto& c = state::nodes[state::closest_node];
 		n.link(state::closest_node);
 		c.link(node);
-		logging::Info("[wb] Node %u linked to node %u at (%.2f %.2f %.2f)", node, state::closest_node, c.x, c.y, c.z);
+		logging::Info(XStr("[wb] Node %u linked to node %u at (%.2f %.2f %.2f)"), node, state::closest_node, c.x, c.y, c.z);
 	}
 });
 // Connects selected node to closest one
-CatCommand c_connect_node("wb_connect", "Connect nodes", []() {
+CatCommand c_connect_node(XStr("wb_connect"), XStr("Connect nodes"), []() {
 	if (not (state::node_good(state::active_node) and state::node_good(state::closest_node)))
 		return;
 	// Don't link a node to itself, idiot
@@ -433,7 +436,7 @@ CatCommand c_connect_node("wb_connect", "Connect nodes", []() {
 	b.link(state::active_node);
 });
 // Makes a one-way connection
-CatCommand c_connect_single_node("wb_connect_single", "Connect nodes (one-way)", []() {
+CatCommand c_connect_single_node(XStr("wb_connect_single"), XStr("Connect nodes (one-way)"), []() {
 	if (not (state::node_good(state::active_node) and state::node_good(state::closest_node)))
 		return;
 	// Don't link a node to itself, idiot
@@ -445,7 +448,7 @@ CatCommand c_connect_single_node("wb_connect_single", "Connect nodes (one-way)",
 	a.link(state::closest_node);
 });
 // Connects selected node to closest one
-CatCommand c_disconnect_node("wb_disconnect", "Disconnect nodes", []() {
+CatCommand c_disconnect_node(XStr("wb_disconnect"), XStr("Disconnect nodes"), []() {
 	if (not (state::node_good(state::active_node) and state::node_good(state::closest_node)))
 		return;
 	// Don't link a node to itself, idiot
@@ -459,7 +462,7 @@ CatCommand c_disconnect_node("wb_disconnect", "Disconnect nodes", []() {
 	b.unlink(state::active_node);
 });
 // Makes a one-way connection
-CatCommand c_disconnect_single_node("wb_disconnect_single", "Connect nodes (one-way)", []() {
+CatCommand c_disconnect_single_node(XStr("wb_disconnect_single"), XStr("Connect nodes (one-way)"), []() {
 	if (not (state::node_good(state::active_node) and state::node_good(state::closest_node)))
 		return;
 	// Don't link a node to itself, idiot
@@ -471,7 +474,7 @@ CatCommand c_disconnect_single_node("wb_disconnect_single", "Connect nodes (one-
 	a.unlink(state::closest_node);
 });
 // Toggles jump flag on closest node
-CatCommand c_update_duck("wb_duck", "Toggle duck flag", []() {
+CatCommand c_update_duck(XStr("wb_duck"), XStr("Toggle duck flag"), []() {
 	if (not state::node_good(state::closest_node))
 		return;
 
@@ -483,7 +486,7 @@ CatCommand c_update_duck("wb_duck", "Toggle duck flag", []() {
 		n.flags |= NF_DUCK;
 });
 // Toggles jump flag on closest node
-CatCommand c_update_jump("wb_jump", "Toggle jump flag", []() {
+CatCommand c_update_jump(XStr("wb_jump"), XStr("Toggle jump flag"), []() {
 	if (not state::node_good(state::closest_node))
 		return;
 
@@ -509,16 +512,16 @@ std::string DescribeConnection(index_t node, connection conn) {
 			}
 		}
 		if (c.flags & CF_LOW_AMMO) {
-			extra += "A";
+			extra += XStr("A");
 		}
 		if (c.flags & CF_LOW_HEALTH) {
-			extra += "H";
+			extra += XStr("H");
 		}
 	}
-	std::string result = format(node, ' ', (broken ? "-x>" : (oneway ? "-->" : "<->")), ' ', c.node, ' ', extra);
+	std::string result = format(node, ' ', (broken ? XStr("-x>") : (oneway ? XStr("-->") : XStr("<->"))), ' ', c.node, ' ', extra);
 	return result;
 }
-CatCommand c_toggle_cf_ammo("wb_conn_ammo", "Toggle 'ammo' flag on connection from ACTIVE to CLOSEST node", []() {
+CatCommand c_toggle_cf_ammo(XStr("wb_conn_ammo"), XStr("Toggle 'ammo' flag on connection from ACTIVE to CLOSEST node"), []() {
 	auto a = state::active();
 	auto b = state::closest();
 	if (not (a and b)) return;
@@ -535,7 +538,7 @@ CatCommand c_toggle_cf_ammo("wb_conn_ammo", "Toggle 'ammo' flag on connection fr
 			c.flags |= CF_LOW_AMMO;
 	}
 });
-CatCommand c_toggle_cf_health("wb_conn_health", "Toggle 'health' flag on connection from ACTIVE to CLOSEST node", []() {
+CatCommand c_toggle_cf_health(XStr("wb_conn_health"), XStr("Toggle 'health' flag on connection from ACTIVE to CLOSEST node"), []() {
 	auto a = state::active();
 	auto b = state::closest();
 	if (not (a and b)) return;
@@ -553,27 +556,27 @@ CatCommand c_toggle_cf_health("wb_conn_health", "Toggle 'health' flag on connect
 	}
 });
 // Displays all info about closest node and its connections
-CatCommand c_info("wb_dump", "Show info", []() {
+CatCommand c_info(XStr("wb_dump"), XStr("Show info"), []() {
 	index_t node = state::closest_node;
 	if (not node_good(node))
 		return;
 
 	auto& n = nodes[node];
 
-	logging::Info("[wb] Info about node %u", node);
-	logging::Info("[wb] Flags: Duck=%d, Jump=%d, Raw=%u", n.flags & NF_DUCK, n.flags & NF_JUMP, n.flags);
-	logging::Info("[wb] X: %.2f | Y: %.2f | Z: %.2f", n.x, n.y, n.z);
-	logging::Info("[wb] Connections:");
+	logging::Info(XStr("[wb] Info about node %u"), node);
+	logging::Info(XStr("[wb] Flags: Duck=%d, Jump=%d, Raw=%u"), n.flags & NF_DUCK, n.flags & NF_JUMP, n.flags);
+	logging::Info(XStr("[wb] X: %.2f | Y: %.2f | Z: %.2f"), n.x, n.y, n.z);
+	logging::Info(XStr("[wb] Connections:"));
 	for (size_t i = 0; i < MAX_CONNECTIONS; i++) {
 		if (n.connections[i].free())
 			continue;
-		logging::Info("[wb] %s", DescribeConnection(node, i).c_str());
+		logging::Info(XStr("[wb] %s"), DescribeConnection(node, i).c_str());
 	}
 });
 // Deletes a whole region of nodes
 // Deletes a single closest node if no node is selected
-CatCommand c_delete_region("wb_delete_region", "Delete region of nodes", []() {
-	logging::Info("< DISABLED >");
+CatCommand c_delete_region(XStr("wb_delete_region"), XStr("Delete region of nodes"), []() {
+	logging::Info(XStr("< DISABLED >"));
 	/*index_t a = state::active_node;
 	index_t b = state::closest_node;
 
@@ -587,7 +590,7 @@ CatCommand c_delete_region("wb_delete_region", "Delete region of nodes", []() {
 		auto& n = state::nodes[current];
 
 		if (n.connection_count > 2) {
-			logging::Info("[wb] More than 2 connections on a node! Quitting.");
+			logging::Info(XStr("[wb] More than 2 connections on a node! Quitting."));
 			return;
 		}
 		bool found_next = false;
@@ -600,13 +603,13 @@ CatCommand c_delete_region("wb_delete_region", "Delete region of nodes", []() {
 		DeleteNode(current);
 		current = next;
 		if (not found_next) {
-			logging::Info("[wb] Dead end? Can't find next node after %u", current);
+			logging::Info(XStr("[wb] Dead end? Can't find next node after %u"), current);
 			break;
 		}
 	} while (state::node_good(current) and (current != a));*/
 });
 // Clears the state
-CatCommand c_clear("wb_clear", "Removes all nodes", []() {
+CatCommand c_clear(XStr("wb_clear"), XStr("Removes all nodes"), []() {
 	state::nodes.clear();
 });
 
@@ -698,7 +701,7 @@ void UpdateSlot() {
 		if (vfunc<bool(*)(IClientEntity*)>(weapon, 190, 0)(weapon)) {
 			int slot = vfunc<int(*)(IClientEntity*)>(weapon, 395, 0)(weapon);
 			if (slot != int(force_slot) - 1) {
-				hack::ExecuteCommand(format("slot", int(force_slot)));
+				hack::ExecuteCommand(format(XStr("slot"), int(force_slot)));
 			}
 		}
 	}
@@ -790,7 +793,7 @@ void RecordNode() {
 		auto& c = state::nodes[state::active_node];
 		n.link(state::active_node);
 		c.link(node);
-		logging::Info("[wb] Node %u auto-linked to node %u at (%.2f %.2f %.2f)", node, state::active_node, c.x, c.y, c.z);
+		logging::Info(XStr("[wb] Node %u auto-linked to node %u at (%.2f %.2f %.2f)"), node, state::active_node, c.x, c.y, c.z);
 	}
 	state::last_node_buttons = g_pUserCmd->buttons;
 	state::active_node = node;
@@ -823,8 +826,8 @@ void DrawConnection(index_t a, connection_s& b) {
 
 	if (draw_connection_flags && b.flags != CF_GOOD) {
 		std::string flags;
-		if (b.flags & CF_LOW_AMMO) flags += "A";
-		if (b.flags & CF_LOW_HEALTH) flags += "H";
+		if (b.flags & CF_LOW_AMMO) flags += XStr("A");
+		if (b.flags & CF_LOW_HEALTH) flags += XStr("H");
 		int size_x = 0, size_y = 0;
 		FTGL_StringLength(flags, fonts::ftgl_ESP, &size_x, &size_y);
 		FTGL_Draw(flags, wts_cc.x - size_x / 2, wts_cc.y - size_y - 4, fonts::ftgl_ESP);
@@ -885,31 +888,31 @@ void Draw() {
 	if (state::state == WB_DISABLED) return;
 	switch (state::state) {
 	case WB_RECORDING: {
-		AddSideString("Walkbot: Recording");
+		AddSideString(XStr("Walkbot: Recording"));
 	} break;
 	case WB_EDITING: {
-		AddSideString("Walkbot: Editing");
+		AddSideString(XStr("Walkbot: Editing"));
 	} break;
 	case WB_REPLAYING: {
-		AddSideString("Walkbot: Replaying");
+		AddSideString(XStr("Walkbot: Replaying"));
 		if (free_move and free_move_used) {
-			AddSideString("Walkbot: FREE MOVEMENT (User override)", colors::green);
+			AddSideString(XStr("Walkbot: FREE MOVEMENT (User override)"), colors::green);
 		}
 		if (HasLowAmmo()) {
-			AddSideString("Walkbot: LOW AMMO", colors::yellow);
+			AddSideString(XStr("Walkbot: LOW AMMO"), colors::yellow);
 		}
 		if (HasLowHealth()) {
-			AddSideString("Walkbot: LOW HEALTH", colors::red);
+			AddSideString(XStr("Walkbot: LOW HEALTH"), colors::red);
 		}
 	} break;
 	}
 	if (draw_info) {
-		AddSideString(format("Active node: ", state::active_node));
-		AddSideString(format("Highlighted node: ", state::closest_node));
-		AddSideString(format("Last node: ", state::last_node));
-		AddSideString(format("Node count: ", state::nodes.size()));
+		AddSideString(format(XStr("Active node: "), state::active_node));
+		AddSideString(format(XStr("Highlighted node: "), state::closest_node));
+		AddSideString(format(XStr("Last node: "), state::last_node));
+		AddSideString(format(XStr("Node count: "), state::nodes.size()));
 		if (state::recovery) {
-			AddSideString(format("(Recovery mode)"));
+			AddSideString(format(XStr("(Recovery mode)")));
 		}
 	}
 	if (draw_path)
@@ -924,7 +927,7 @@ void OnLevelInit() {
 	}
 }
 
-static CatVar wb_abandon_too_many_bots(CV_INT, "wb_population_control", "0", "Abandon if bots >");
+static CatVar wb_abandon_too_many_bots(CV_INT, XStr("wb_population_control"), XStr("0"), XStr("Abandon if bots >"));
 void CheckLivingSpace() {
 #if IPC_ENABLED
 	if (ipc::peer && wb_abandon_too_many_bots) {
@@ -953,9 +956,9 @@ void CheckLivingSpace() {
 		if (ipc::peer->client_id == highest && count > int(wb_abandon_too_many_bots)) {
 			static Timer timer {};
 			if (timer.test_and_set(1000 * 5)) {
-				logging::Info("Found %d other bots in-game, abandoning (%u)", count, ipc::peer->client_id);
+				logging::Info(XStr("Found %d other bots in-game, abandoning (%u)"), count, ipc::peer->client_id);
 				for (auto i : botlist) {
-					logging::Info("-> Bot %d with ID %u", i, ipc::peer->memory->peer_user_data[i].friendid);
+					logging::Info(XStr("-> Bot %d with ID %u"), i, ipc::peer->memory->peer_user_data[i].friendid);
 				}
 				g_TFGCClientSystem->SendExitMatchmaking(true);
 			}
@@ -979,7 +982,7 @@ void Move() {
 	case WB_REPLAYING: {
 		if (leave_if_empty) {
 			if (nodes.size() == 0) {
-				Load("default");
+				Load(XStr("default"));
 				if (nodes.size() == 0) {
 					static auto last_abandon = std::chrono::system_clock::from_time_t(0);
 					auto s = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - last_abandon).count();
@@ -987,7 +990,7 @@ void Move() {
 					if (s < 3) {
 						return;
 					}
-					logging::Info("No map file, shutting down");
+					logging::Info(XStr("No map file, shutting down"));
 					g_TFGCClientSystem->SendExitMatchmaking(true);
 					last_abandon = std::chrono::system_clock::now();
 				}

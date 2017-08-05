@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * angles.hpp
  *
@@ -27,7 +30,7 @@ struct angle_data_s {
 			float dx = std::abs(angles[ai].x - angle.x);
 			float dy = std::abs(angles[ai].y - angle.y);
 			if (sqrt(dx * dx + dy * dy) > 45.0f) {
-				//logging::Info("%.2f %.2f %.2f", dx, dy, sqrt(dx * dx + dy * dy));
+				//logging::Info(XStr("%.2f %.2f %.2f"), dx, dy, sqrt(dx * dx + dy * dy));
 			}
 		}*/
 		if (angle_count < count) {
@@ -47,7 +50,7 @@ struct angle_data_s {
 			if (dev_x > hx) hx = dev_x;
 			if (dev_y > hy) hy = dev_y;
 
-			//logging::Info("1: %.2f %.2f | 2: %.2f %.2f | dev: %.2f", angles[k].x, angles[k].y, angles[j].x, angles[j].y, sqrt(dev_x * dev_x + dev_y * dev_y));
+			//logging::Info(XStr("1: %.2f %.2f | 2: %.2f %.2f | dev: %.2f"), angles[k].x, angles[k].y, angles[j].x, angles[j].y, sqrt(dev_x * dev_x + dev_y * dev_y));
 
 			--j;
 			--k;
@@ -68,7 +71,7 @@ void Update();
 
 inline angle_data_s& data_idx(int index) {
 	if (index < 1 || index > 32) {
-		throw std::out_of_range("Angle table entity index out of range");
+		throw std::out_of_range(XStr("Angle table entity index out of range"));
 	}
 	return data_[index - 1];
 }

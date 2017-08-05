@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * logging.cpp
  *
@@ -18,7 +21,7 @@ FILE* logging::handle = 0;
 void logging::Initialize() {
 	// FIXME other method of naming the file?
 	passwd* pwd = getpwuid(getuid());
-	logging::handle = fopen(strfmt("/tmp/cathook-%s.log", pwd->pw_name), "w");
+	logging::handle = fopen(strfmt(XStr("/tmp/cathook-%s.log"), pwd->pw_name), XStr("w"));
 }
 
 void logging::Info(const char* fmt, ...) {
@@ -35,17 +38,17 @@ void logging::Info(const char* fmt, ...) {
 	char timeString[10];
 	time(&current_time);
 	time_info = localtime(&current_time);
-	strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
-	sprintf(result, "%% [%s] %s\n", timeString, buffer);
-	fprintf(logging::handle, "%s", result);
+	strftime(timeString, sizeof(timeString), XStr("%H:%M:%S"), time_info);
+	sprintf(result, XStr("%% [%s] %s\n"), timeString, buffer);
+	fprintf(logging::handle, XStr("%s"), result);
 	fflush(logging::handle);
 #ifndef TEXTMODE
 	if (g_ICvar) {
 		if (console_logging.convar_parent && console_logging)
-			g_ICvar->ConsolePrintf("%s", result);
+			g_ICvar->ConsolePrintf(XStr("%s"), result);
 	}
 #else
-	printf("%s", result);
+	printf(XStr("%s"), result);
 #endif
 	delete [] buffer;
 	delete [] result;

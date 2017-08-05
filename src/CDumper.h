@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * CDumper.h
  *
@@ -21,7 +24,7 @@
 class CDumper {
 public:
 	CDumper() {
-		m_file.open("/tmp/netdump.txt", std::ios::out | std::ios::trunc);
+		m_file.open(XStr("/tmp/netdump.txt"), std::ios::out | std::ios::trunc);
 	}
 
 	~CDumper() {
@@ -31,21 +34,21 @@ public:
 	const std::string TypeToString(SendPropType type) const {
 		switch (type) {
 		case DPT_Int:
-			return "INT";
+			return XStr("INT");
 		case DPT_Float:
-			return "FLOAT";
+			return XStr("FLOAT");
 		case DPT_Vector:
-			return "VECTOR3";
+			return XStr("VECTOR3");
 		case DPT_VectorXY:
-			return "VECTOR2";
+			return XStr("VECTOR2");
 		case DPT_Array:
-			return "ARRAY";
+			return XStr("ARRAY");
 		case DPT_String:
-			return "STRING";
+			return XStr("STRING");
 		case DPT_DataTable:
-			return "TABLE";
+			return XStr("TABLE");
 		default:
-			return "UNKNOWN";
+			return XStr("UNKNOWN");
 		}
 	}
 
@@ -64,10 +67,10 @@ public:
 		}
 
 		for (int j = 0; j < iLevel; j++) {
-			m_file << "\t";
+			m_file << XStr("\t");
 		}
 
-		m_file << pTable->GetName() << "\n";
+		m_file << pTable->GetName() << XStr("\n");
 
 		++iLevel;
 
@@ -86,12 +89,12 @@ public:
 			}
 
 			for(int j = 0; j < iLevel; j++)
-				m_file << "\t";
+				m_file << XStr("\t");
 
 			int offset = pProp->GetOffset();
 			SendPropType type = pProp->GetType();
 
-			m_file << pProp->GetName() << " : 0x" << std::hex << offset << " (0x" << (parent_offset + offset) << ") [" << TypeToString(type) << "]" << "\n";
+			m_file << pProp->GetName() << XStr(" : 0x") << std::hex << offset << XStr(" (0x") << (parent_offset + offset) << XStr(") [") << TypeToString(type) << XStr("]") << XStr("\n");
 		}
 
 		if (iLevel == 2)

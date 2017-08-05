@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -28,10 +31,10 @@ namespace ftgl {
  * the number of components and the data type.
  *
  * Each of the attributes is described in the table below with the set of valid
- * format strings written as a regular expression (for example, "v[234][if]"
- * means "v2f", "v3i", "v4f", etc. are all valid formats).
+ * format strings written as a regular expression (for example, XStr("v[234][if]")
+ * means XStr("v2f"), XStr("v3i"), XStr("v4f"), etc. are all valid formats).
  *
- * Some attributes have a "recommended" format string, which is the most
+ * Some attributes have a XStr("recommended") format string, which is the most
  * efficient form for the video driver as it requires less conversion.
  *
  * <table>
@@ -42,42 +45,42 @@ namespace ftgl {
  *   </tr>
  *   <tr>
  *     <td>Vertex position</td>
- *     <td>"v[234][sifd]"</td>
- *     <td>"v[234]f"</td>
+ *     <td>XStr("v[234][sifd]")</td>
+ *     <td>XStr("v[234]f")</td>
  *   </tr>
  *   <tr>
  *     <td> Color             </td>
- *     <td> "c[34][bBsSiIfd]" </td>
- *     <td> "c[34]B"          </td>
+ *     <td> XStr("c[34][bBsSiIfd]") </td>
+ *     <td> XStr("c[34]B")          </td>
  *   </tr>
  *   <tr>
  *     <td> Edge flag </td>
- *     <td> "e1[bB]"  </td>
+ *     <td> XStr("e1[bB]")  </td>
  *     <td>           </td>
  *   </tr>
  *   <tr>
  *    <td> Fog coordinate     </td>
- *    <td> "f[1234][bBsSiIfd]"</td>
+ *    <td> XStr("f[1234][bBsSiIfd]")</td>
  *    <td>                    </td>
  *   </tr>
  *   <tr>
  *     <td> Normal      </td>
- *     <td> "n3[bsifd]" </td>
- *     <td> "n3f"       </td>
+ *     <td> XStr("n3[bsifd]") </td>
+ *     <td> XStr("n3f")       </td>
  *   </tr>
  *   <tr>
  *     <td> Secondary color   </td>
- *     <td> "s[34][bBsSiIfd]" </td>
- *     <td> "s[34]B"          </td>
+ *     <td> XStr("s[34][bBsSiIfd]") </td>
+ *     <td> XStr("s[34]B")          </td>
  *   </tr>
  *   <tr>
  *     <td> Texture coordinate </td>
- *     <td> "t[234][sifd]"     </td>
- *     <td> "t[234]f"          </td>
+ *     <td> XStr("t[234][sifd]")     </td>
+ *     <td> XStr("t[234]f")          </td>
  *   </tr>
  *   <tr>
  *     <td> Generic attribute             </td>
- *     <td> "[0-15]g(n)?[1234][bBsSiIfd]" </td>
+ *     <td> XStr("[0-15]g(n)?[1234][bBsSiIfd]") </td>
  *     <td>                               </td>
  *   </tr>
  * </table>
@@ -91,42 +94,42 @@ namespace ftgl {
  *     <th> GL Type  </th>
  *   </tr>
  *   <tr>
- *     <td> "b"               </td>
+ *     <td> XStr("b")               </td>
  *     <td> Signed byte       </td>
  *     <td> GL_BYTE           </td>
  *   </tr>
  *   <tr>
- *     <td> "B"               </td>
+ *     <td> XStr("B")               </td>
  *     <td> Unsigned byte     </td>
  *     <td> GL_UNSIGNED_BYTE  </td>
  *   </tr>
  *   <tr>
- *     <td> "s"               </td>
+ *     <td> XStr("s")               </td>
  *     <td> Signed short      </td>
  *     <td> GL_SHORT          </td>
  *   </tr>
  *   <tr>
- *     <td> "S"               </td>
+ *     <td> XStr("S")               </td>
  *     <td> Unsigned short    </td>
  *     <td> GL_UNSIGNED_SHORT </td>
  *   </tr>
  *   <tr>
- *     <td> "i"               </td>
+ *     <td> XStr("i")               </td>
  *     <td> Signed int        </td>
  *     <td> GL_INT            </td>
  *   </tr>
  *   <tr>
- *     <td> "I"               </td>
+ *     <td> XStr("I")               </td>
  *     <td> Unsigned int      </td>
  *     <td> GL_UNSIGNED_INT   </td>
  *   </tr>
  *   <tr>
- *     <td> "f"               </td>
+ *     <td> XStr("f")               </td>
  *     <td> Float             </td>
  *     <td> GL_FLOAT          </td>
  *   </tr>
  *   <tr>
- *     <td> "d"               </td>
+ *     <td> XStr("d")               </td>
  *     <td> Double            </td>
  *     <td> GL_DOUBLE     T   </td>
  *   </tr>
@@ -140,7 +143,7 @@ namespace ftgl {
  *
  *  - Color
  *  - Secondary color
- *  - Generic attributes with the "n" format given.
+ *  - Generic attributes with the XStr("n") format given.
  *
  * Up to 16 generic attributes can be specified per vertex, and can be used by
  * shader programs for any purpose (they are ignored in the fixed-function

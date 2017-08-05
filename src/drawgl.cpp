@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * drawgl.cpp
  *
@@ -33,9 +36,9 @@ mat4 model, view, projection;
 bool ready_state = false;
 
 void Initialize() {
-	buffer_lines = vertex_buffer_new("vertex:2f,color:4f");
-	buffer_triangles_plain = vertex_buffer_new("vertex:2f,color:4f");
-	buffer_triangles_textured = vertex_buffer_new("vertex:2f,tex_coord:2f,color:4f");
+	buffer_lines = vertex_buffer_new(XStr("vertex:2f,color:4f"));
+	buffer_triangles_plain = vertex_buffer_new(XStr("vertex:2f,color:4f"));
+	buffer_triangles_textured = vertex_buffer_new(XStr("vertex:2f,tex_coord:2f,color:4f"));
 
 	mat4_set_identity(&projection);
 	mat4_set_identity(&view);
@@ -43,21 +46,21 @@ void Initialize() {
 	mat4_set_orthographic(&projection, 0, draw::width, draw::height, 0, -1, 1);
 	//view.m11 = -1;
 
-	shader_v2fc4f = shader_load("cathook/shaders/v2f-c4f.vert", "cathook/shaders/v2f-c4f.frag");
+	shader_v2fc4f = shader_load(XStr("cathook/shaders/v2f-c4f.vert"), XStr("cathook/shaders/v2f-c4f.frag"));
 	glUseProgram(shader_v2fc4f);
 	{
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, "model"), 1, 0, model.data);
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, "view"), 1, 0, view.data);
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, "projection"), 1, 0, projection.data);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, XStr("model")), 1, 0, model.data);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, XStr("view")), 1, 0, view.data);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2fc4f, XStr("projection")), 1, 0, projection.data);
 	}
 
-	shader_v2ft2fc4f = shader_load("cathook/shaders/v2f-t2f-c4f.vert", "cathook/shaders/v2f-t2f-c4f.frag");
+	shader_v2ft2fc4f = shader_load(XStr("cathook/shaders/v2f-t2f-c4f.vert"), XStr("cathook/shaders/v2f-t2f-c4f.frag"));
 	glUseProgram(shader_v2ft2fc4f);
 	{
-		glUniform1i(glGetUniformLocation(shader_v2ft2fc4f, "texture"), 0);
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, "model"), 1, 0, model.data);
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, "view"), 1, 0, view.data);
-		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, "projection"), 1, 0, projection.data);
+		glUniform1i(glGetUniformLocation(shader_v2ft2fc4f, XStr("texture")), 0);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, XStr("model")), 1, 0, model.data);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, XStr("view")), 1, 0, view.data);
+		glUniformMatrix4fv(glGetUniformLocation(shader_v2ft2fc4f, XStr("projection")), 1, 0, projection.data);
 	}
 
 	glUseProgram(0);

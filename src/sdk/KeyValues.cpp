@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
@@ -34,7 +37,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
-static const char * s_LastFileLoadingFrom = "unknown"; // just needed for error messages
+static const char * s_LastFileLoadingFrom = XStr("unknown"); // just needed for error messages
 
 // Statics for the growable string table
 int (*KeyValues::s_pfGetSymbolForString)( const char *name, bool bCreate ) = &KeyValues::GetSymbolForStringClassic;
@@ -53,7 +56,7 @@ const int MAX_ERROR_STACK = 64;
 class CKeyValuesErrorStack
 {
 public:
-	CKeyValuesErrorStack() : m_pFilename("NULL"), m_errorIndex(0), m_maxErrorIndex(0) {}
+	CKeyValuesErrorStack() : m_pFilename(XStr("NULL")), m_errorIndex(0), m_maxErrorIndex(0) {}
 
 	void SetFilename( const char *pFilename )
 	{
@@ -95,18 +98,18 @@ public:
 	{
 		bool bSpewCR = false;
 
-		Warning( "KeyValues Error: %s in file %s\n", pError, m_pFilename );
+		Warning( XStr("KeyValues Error: %s in file %s\n"), pError, m_pFilename );
 		for ( int i = 0; i < m_maxErrorIndex; i++ )
 		{
 			if ( i < MAX_ERROR_STACK && m_errorStack[i] != INVALID_KEY_SYMBOL )
 			{
 				if ( i < m_errorIndex )
 				{
-					Warning( "%s, ", KeyValues::CallGetStringForSymbol(m_errorStack[i]) );
+					Warning( XStr("%s, "), KeyValues::CallGetStringForSymbol(m_errorStack[i]) );
 				}
 				else
 				{
-					Warning( "(*%s*), ", KeyValues::CallGetStringForSymbol(m_errorStack[i]) );
+					Warning( XStr("(*%s*), "), KeyValues::CallGetStringForSymbol(m_errorStack[i]) );
 				}
 
 				bSpewCR = true;
@@ -114,7 +117,7 @@ public:
 		}
 
 		if ( bSpewCR )
-			Warning( "\n" );
+			Warning( XStr("\n") );
 	}
 
 private:
@@ -187,7 +190,7 @@ public:
 	void AddKv( KeyValues *kv, char const *name )
 	{
 		kve k;
-		Q_strncpy( k.name, name ? name : "NULL", sizeof( k.name ) );
+		Q_strncpy( k.name, name ? name : XStr("NULL"), sizeof( k.name ) );
 		k.kv = kv;
 
 		keys.AddToTail( k );
@@ -609,7 +612,7 @@ const char *KeyValues::ReadToken( CUtlBuffer &buf, bool &wasQuoted, bool &wasCon
 		else if ( !bReportedError )
 		{
 			bReportedError = true;
-			g_KeyValuesErrorStack.ReportError(" ReadToken overflow" );
+			g_KeyValuesErrorStack.ReportError(XStr(" ReadToken overflow") );
 		}
 
 		buf.SeekGet( CUtlBuffer::SEEK_CURRENT, 1 );
@@ -650,14 +653,14 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 #endif
 
 #ifdef STAGING_ONLY
-	static bool s_bCacheEnabled = !!CommandLine()->FindParm( "-enable_keyvalues_cache" );
+	static bool s_bCacheEnabled = !!CommandLine()->FindParm( XStr("-enable_keyvalues_cache") );
 	const bool bUseCache = s_bCacheEnabled && ( s_pfGetSymbolForString == KeyValues::GetSymbolForStringClassic );
 #else
 	/*
 	People are cheating with the keyvalue cache enabled by doing the below, so disable it.
 
 	For example if one is to allow a blue demoman texture on sv_pure they
-	change it to this, "$basetexture" "temp/demoman_blue". Remember to move the
+	change it to this, XStr("$basetexture") XStr("temp/demoman_blue"). Remember to move the
 	demoman texture to the temp folder in the materials folder. It will likely
 	not be there so make a new folder for it. Once the directory in the
 	demoman_blue vmt is changed to the temp folder and the vtf texture is in
@@ -684,18 +687,18 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 	const bool bUseCacheForRead = bUseCache && !refreshCache && pathID != NULL; 
 	const bool bUseCacheForWrite = bUseCache && pathID != NULL;
 
-	COM_TimestampedLog( "KeyValues::LoadFromFile(%s%s%s): Begin", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "" );
+	COM_TimestampedLog( XStr("KeyValues::LoadFromFile(%s%s%s): Begin"), pathID ? pathID : XStr(""), pathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr("") );
 
 	// Keep a cache of keyvalues, try to load it here.
 	if ( bUseCacheForRead && KeyValuesSystem()->LoadFileKeyValuesFromCache( this, resourceName, pathID, filesystem ) ) {
-		COM_TimestampedLog( "KeyValues::LoadFromFile(%s%s%s): End / CacheHit", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "" );
+		COM_TimestampedLog( XStr("KeyValues::LoadFromFile(%s%s%s): End / CacheHit"), pathID ? pathID : XStr(""), pathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr("") );
 		return true;
 	}
 
-	FileHandle_t f = filesystem->Open(resourceName, "rb", pathID);
+	FileHandle_t f = filesystem->Open(resourceName, XStr("rb"), pathID);
 	if ( !f )
 	{
-		COM_TimestampedLog("KeyValues::LoadFromFile(%s%s%s): End / FileNotFound", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "");
+		COM_TimestampedLog(XStr("KeyValues::LoadFromFile(%s%s%s): End / FileNotFound"), pathID ? pathID : XStr(""), pathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr(""));
 		return false;
 	}
 
@@ -729,7 +732,7 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 
 	( (IFileSystem *)filesystem )->FreeOptimalReadBuffer( buffer );
 
-	COM_TimestampedLog("KeyValues::LoadFromFile(%s%s%s): End / Success", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "");
+	COM_TimestampedLog(XStr("KeyValues::LoadFromFile(%s%s%s): End / Success"), pathID ? pathID : XStr(""), pathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr(""));
 
 	return bRetOK;
 }
@@ -741,12 +744,12 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 bool KeyValues::SaveToFile( IBaseFileSystem *filesystem, const char *resourceName, const char *pathID, bool sortKeys /*= false*/, bool bAllowEmptyString /*= false*/, bool bCacheResult /*= false*/ )
 {
 	// create a write file
-	FileHandle_t f = filesystem->Open(resourceName, "wb", pathID);
+	FileHandle_t f = filesystem->Open(resourceName, XStr("wb"), pathID);
 
 	if ( f == FILESYSTEM_INVALID_HANDLE )
 	{
-		DevMsg(1, "KeyValues::SaveToFile: couldn't open file \"%s\" in path \"%s\".\n",
-			resourceName?resourceName:"NULL", pathID?pathID:"NULL" );
+		DevMsg(1, XStr("KeyValues::SaveToFile: couldn't open file \"%s\" in path \"%s\".\n"),
+			resourceName?resourceName:XStr("NULL"), pathID?pathID:XStr("NULL") );
 		return false;
 	}
 
@@ -767,7 +770,7 @@ void KeyValues::WriteIndents( IBaseFileSystem *filesystem, FileHandle_t f, CUtlB
 {
 	for ( int i = 0; i < indentLevel; i++ )
 	{
-		INTERNALWRITE( "\t", 1 );
+		INTERNALWRITE( XStr("\t"), 1 );
 	}
 }
 
@@ -822,11 +825,11 @@ void KeyValues::RecursiveSaveToFile( IBaseFileSystem *filesystem, FileHandle_t f
 {
 	// write header
 	WriteIndents( filesystem, f, pBuf, indentLevel );
-	INTERNALWRITE("\"", 1);
+	INTERNALWRITE(XStr("\""), 1);
 	WriteConvertedString(filesystem, f, pBuf, GetName());	
-	INTERNALWRITE("\"\n", 2);
+	INTERNALWRITE(XStr("\"\n"), 2);
 	WriteIndents( filesystem, f, pBuf, indentLevel );
-	INTERNALWRITE("{\n", 2);
+	INTERNALWRITE(XStr("{\n"), 2);
 
 	// loop through all our keys writing them to disk
 	if ( sortKeys )
@@ -852,7 +855,7 @@ void KeyValues::RecursiveSaveToFile( IBaseFileSystem *filesystem, FileHandle_t f
 
 	// write tail
 	WriteIndents(filesystem, f, pBuf, indentLevel);
-	INTERNALWRITE("}\n", 2);
+	INTERNALWRITE(XStr("}\n"), 2);
 }
 
 void KeyValues::SaveKeyToFile( KeyValues *dat, IBaseFileSystem *filesystem, FileHandle_t f, CUtlBuffer *pBuf, int indentLevel, bool sortKeys, bool bAllowEmptyString )
@@ -872,13 +875,13 @@ void KeyValues::SaveKeyToFile( KeyValues *dat, IBaseFileSystem *filesystem, File
 				if ( dat->m_sValue && ( bAllowEmptyString || *(dat->m_sValue) ) )
 				{
 					WriteIndents(filesystem, f, pBuf, indentLevel + 1);
-					INTERNALWRITE("\"", 1);
+					INTERNALWRITE(XStr("\""), 1);
 					WriteConvertedString(filesystem, f, pBuf, dat->GetName());	
-					INTERNALWRITE("\"\t\t\"", 4);
+					INTERNALWRITE(XStr("\"\t\t\""), 4);
 
 					WriteConvertedString(filesystem, f, pBuf, dat->m_sValue);	
 
-					INTERNALWRITE("\"\n", 2);
+					INTERNALWRITE(XStr("\"\n"), 2);
 				}
 				break;
 			}
@@ -892,13 +895,13 @@ void KeyValues::SaveKeyToFile( KeyValues *dat, IBaseFileSystem *filesystem, File
 					if (result)
 					{
 						WriteIndents(filesystem, f, pBuf, indentLevel + 1);
-						INTERNALWRITE("\"", 1);
+						INTERNALWRITE(XStr("\""), 1);
 						INTERNALWRITE(dat->GetName(), Q_strlen(dat->GetName()));
-						INTERNALWRITE("\"\t\t\"", 4);
+						INTERNALWRITE(XStr("\"\t\t\""), 4);
 
 						WriteConvertedString(filesystem, f, pBuf, buf);
 
-						INTERNALWRITE("\"\n", 2);
+						INTERNALWRITE(XStr("\"\n"), 2);
 					}
 				}
 				break;
@@ -907,54 +910,54 @@ void KeyValues::SaveKeyToFile( KeyValues *dat, IBaseFileSystem *filesystem, File
 		case TYPE_INT:
 			{
 				WriteIndents(filesystem, f, pBuf, indentLevel + 1);
-				INTERNALWRITE("\"", 1);
+				INTERNALWRITE(XStr("\""), 1);
 				INTERNALWRITE(dat->GetName(), Q_strlen(dat->GetName()));
-				INTERNALWRITE("\"\t\t\"", 4);
+				INTERNALWRITE(XStr("\"\t\t\""), 4);
 
 				char buf[32];
-				Q_snprintf(buf, sizeof( buf ), "%d", dat->m_iValue);
+				Q_snprintf(buf, sizeof( buf ), XStr("%d"), dat->m_iValue);
 
 				INTERNALWRITE(buf, Q_strlen(buf));
-				INTERNALWRITE("\"\n", 2);
+				INTERNALWRITE(XStr("\"\n"), 2);
 				break;
 			}
 
 		case TYPE_UINT64:
 			{
 				WriteIndents(filesystem, f, pBuf, indentLevel + 1);
-				INTERNALWRITE("\"", 1);
+				INTERNALWRITE(XStr("\""), 1);
 				INTERNALWRITE(dat->GetName(), Q_strlen(dat->GetName()));
-				INTERNALWRITE("\"\t\t\"", 4);
+				INTERNALWRITE(XStr("\"\t\t\""), 4);
 
 				char buf[32];
-				// write "0x" + 16 char 0-padded hex encoded 64 bit value
+				// write XStr("0x") + 16 char 0-padded hex encoded 64 bit value
 #ifdef WIN32
-				Q_snprintf( buf, sizeof( buf ), "0x%016I64X", *( (uint64 *)dat->m_sValue ) );
+				Q_snprintf( buf, sizeof( buf ), XStr("0x%016I64X"), *( (uint64 *)dat->m_sValue ) );
 #else
-				Q_snprintf( buf, sizeof( buf ), "0x%016llX", *( (uint64 *)dat->m_sValue ) );
+				Q_snprintf( buf, sizeof( buf ), XStr("0x%016llX"), *( (uint64 *)dat->m_sValue ) );
 #endif
 
 				INTERNALWRITE(buf, Q_strlen(buf));
-				INTERNALWRITE("\"\n", 2);
+				INTERNALWRITE(XStr("\"\n"), 2);
 				break;
 			}
 
 		case TYPE_FLOAT:
 			{
 				WriteIndents(filesystem, f, pBuf, indentLevel + 1);
-				INTERNALWRITE("\"", 1);
+				INTERNALWRITE(XStr("\""), 1);
 				INTERNALWRITE(dat->GetName(), Q_strlen(dat->GetName()));
-				INTERNALWRITE("\"\t\t\"", 4);
+				INTERNALWRITE(XStr("\"\t\t\""), 4);
 
 				char buf[48];
-				Q_snprintf(buf, sizeof( buf ), "%f", dat->m_flValue);
+				Q_snprintf(buf, sizeof( buf ), XStr("%f"), dat->m_flValue);
 
 				INTERNALWRITE(buf, Q_strlen(buf));
-				INTERNALWRITE("\"\n", 2);
+				INTERNALWRITE(XStr("\"\n"), 2);
 				break;
 			}
 		case TYPE_COLOR:
-			DevMsg(1, "KeyValues::RecursiveSaveToFile: TODO, missing code for TYPE_COLOR.\n");
+			DevMsg(1, XStr("KeyValues::RecursiveSaveToFile: TODO, missing code for TYPE_COLOR.\n"));
 			break;
 
 		default:
@@ -1097,7 +1100,7 @@ KeyValues *KeyValues::CreateNewKey()
 	}
 
 	char buf[12];
-	Q_snprintf( buf, sizeof(buf), "%d", newID );
+	Q_snprintf( buf, sizeof(buf), XStr("%d"), newID );
 
 	return CreateKeyUsingKnownLastChild( buf, pLastChild );
 }
@@ -1386,7 +1389,7 @@ float KeyValues::GetFloat( const char *keyName, float defaultValue )
 #ifdef WIN32
 			return (float) _wtof(dat->m_wsValue);		// no wtof
 #else
-			Assert( !"impl me" );
+			Assert( !XStr("impl me") );
 			return 0.0;
 #endif
 			case TYPE_FLOAT:
@@ -1417,19 +1420,19 @@ const char *KeyValues::GetString( const char *keyName, const char *defaultValue 
 		switch ( dat->m_iDataType )
 		{
 		case TYPE_FLOAT:
-			Q_snprintf( buf, sizeof( buf ), "%f", dat->m_flValue );
+			Q_snprintf( buf, sizeof( buf ), XStr("%f"), dat->m_flValue );
 			SetString( keyName, buf );
 			break;
 		case TYPE_PTR:
-			Q_snprintf( buf, sizeof( buf ), "%lld", (int64)(size_t)dat->m_pValue );
+			Q_snprintf( buf, sizeof( buf ), XStr("%lld"), (int64)(size_t)dat->m_pValue );
 			SetString( keyName, buf );
 			break;
 		case TYPE_INT:
-			Q_snprintf( buf, sizeof( buf ), "%d", dat->m_iValue );
+			Q_snprintf( buf, sizeof( buf ), XStr("%d"), dat->m_iValue );
 			SetString( keyName, buf );
 			break;
 		case TYPE_UINT64:
-			Q_snprintf( buf, sizeof( buf ), "%lld", *((uint64 *)(dat->m_sValue)) );
+			Q_snprintf( buf, sizeof( buf ), XStr("%lld"), *((uint64 *)(dat->m_sValue)) );
 			SetString( keyName, buf );
 			break;
 
@@ -1470,20 +1473,20 @@ const wchar_t *KeyValues::GetWString( const char *keyName, const wchar_t *defaul
 		switch ( dat->m_iDataType )
 		{
 		case TYPE_FLOAT:
-			swprintf(wbuf, Q_ARRAYSIZE(wbuf), L"%f", dat->m_flValue);
+			swprintf(wbuf, Q_ARRAYSIZE(wbuf), LXStr("%f"), dat->m_flValue);
 			SetWString( keyName, wbuf);
 			break;
 		case TYPE_PTR:
-			swprintf( wbuf, Q_ARRAYSIZE(wbuf), L"%lld", (int64)(size_t)dat->m_pValue );
+			swprintf( wbuf, Q_ARRAYSIZE(wbuf), LXStr("%lld"), (int64)(size_t)dat->m_pValue );
 			SetWString( keyName, wbuf );
 			break;
 		case TYPE_INT:
-			swprintf( wbuf, Q_ARRAYSIZE(wbuf), L"%d", dat->m_iValue );
+			swprintf( wbuf, Q_ARRAYSIZE(wbuf), LXStr("%d"), dat->m_iValue );
 			SetWString( keyName, wbuf );
 			break;
 		case TYPE_UINT64:
 			{
-				swprintf( wbuf, Q_ARRAYSIZE(wbuf), L"%lld", *((uint64 *)(dat->m_sValue)) );
+				swprintf( wbuf, Q_ARRAYSIZE(wbuf), LXStr("%lld"), *((uint64 *)(dat->m_sValue)) );
 				SetWString( keyName, wbuf );
 			}
 			break;
@@ -1562,7 +1565,7 @@ Color KeyValues::GetColor( const char *keyName )
 		{
 			// parse the colors out of the string
 			float a = 0.0f, b = 0.0f, c = 0.0f, d = 0.0f;
-			sscanf(dat->m_sValue, "%f %f %f %f", &a, &b, &c, &d);
+			sscanf(dat->m_sValue, XStr("%f %f %f %f"), &a, &b, &c, &d);
 			color[0] = (unsigned char)a;
 			color[1] = (unsigned char)b;
 			color[2] = (unsigned char)c;
@@ -1600,7 +1603,7 @@ void KeyValues::SetStringValue( char const *strValue )
 	if (!strValue)
 	{
 		// ensure a valid value
-		strValue = "";
+		strValue = XStr("");
 	}
 
 	// allocate memory for the new value and copy it in
@@ -1634,7 +1637,7 @@ void KeyValues::SetString( const char *keyName, const char *value )
 		if (!value)
 		{
 			// ensure a valid value
-			value = "";
+			value = XStr("");
 		}
 
 		// allocate memory for the new value and copy it in
@@ -1663,7 +1666,7 @@ void KeyValues::SetWString( const char *keyName, const wchar_t *value )
 		if (!value)
 		{
 			// ensure a valid value
-			value = L"";
+			value = LXStr("");
 		}
 
 		// allocate memory for the new value and copy it in
@@ -1826,7 +1829,7 @@ void KeyValues::CopyKeyValue( const KeyValues& src, size_t tmpBufferSizeB, char*
 	case TYPE_INT:
 		{
 			m_iValue = src.m_iValue;
-			Q_snprintf( tmpBuffer, tmpBufferSizeB, "%d", m_iValue );
+			Q_snprintf( tmpBuffer, tmpBufferSizeB, XStr("%d"), m_iValue );
 			int len = Q_strlen(tmpBuffer) + 1;
 			m_sValue = new char[len];
 			Q_strncpy( m_sValue, tmpBuffer, len  );
@@ -1835,7 +1838,7 @@ void KeyValues::CopyKeyValue( const KeyValues& src, size_t tmpBufferSizeB, char*
 	case TYPE_FLOAT:
 		{
 			m_flValue = src.m_flValue;
-			Q_snprintf( tmpBuffer, tmpBufferSizeB, "%f", m_flValue );
+			Q_snprintf( tmpBuffer, tmpBufferSizeB, XStr("%f"), m_flValue );
 			int len = Q_strlen(tmpBuffer) + 1;
 			m_sValue = new char[len];
 			Q_strncpy( m_sValue, tmpBuffer, len );
@@ -2114,7 +2117,7 @@ void KeyValues::ParseIncludedKeys( char const *resourceName, const char *filetoi
 	}
 	else
 	{
-		DevMsg( "KeyValues::ParseIncludedKeys: Couldn't load included keyvalue file %s\n", fullpath );
+		DevMsg( XStr("KeyValues::ParseIncludedKeys: Couldn't load included keyvalue file %s\n"), fullpath );
 		newKV->deleteThis();
 	}
 
@@ -2191,22 +2194,22 @@ bool EvaluateConditional( const char *str )
 	if ( *str == '!' )
 		bNot = true;
 
-	if ( Q_stristr( str, "$X360" ) )
+	if ( Q_stristr( str, XStr("$X360") ) )
 		return IsX360() ^ bNot;
 	
-	if ( Q_stristr( str, "$WIN32" ) )
+	if ( Q_stristr( str, XStr("$WIN32") ) )
 		return IsPC() ^ bNot; // hack hack - for now WIN32 really means IsPC
 
-	if ( Q_stristr( str, "$WINDOWS" ) )
+	if ( Q_stristr( str, XStr("$WINDOWS") ) )
 		return IsWindows() ^ bNot;
 	
-	if ( Q_stristr( str, "$OSX" ) )
+	if ( Q_stristr( str, XStr("$OSX") ) )
 		return IsOSX() ^ bNot;
 	
-	if ( Q_stristr( str, "$LINUX" ) )
+	if ( Q_stristr( str, XStr("$LINUX") ) )
 		return IsLinux() ^ bNot;
 
-	if ( Q_stristr( str, "$POSIX" ) )
+	if ( Q_stristr( str, XStr("$POSIX") ) )
 		return IsPosix() ^ bNot;
 	
 	return false;
@@ -2250,14 +2253,14 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, CUtlBuffer &buf, IBase
 
 			continue;
 		}
-		else if ( !Q_stricmp( s, "#base" ) )
+		else if ( !Q_stricmp( s, XStr("#base") ) )
 		{
 			s = ReadToken( buf, wasQuoted, wasConditional );
 			// Name of subfile to load is now in s
 
 			if ( !s || *s == 0 )
 			{
-				g_KeyValuesErrorStack.ReportError("#base is NULL " );
+				g_KeyValuesErrorStack.ReportError(XStr("#base is NULL ") );
 			}
 			else
 			{
@@ -2303,7 +2306,7 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, CUtlBuffer &buf, IBase
 		}
 		else
 		{
-			g_KeyValuesErrorStack.ReportError("LoadFromBuffer: missing {" );
+			g_KeyValuesErrorStack.ReportError(XStr("LoadFromBuffer: missing {") );
 		}
 
 		if ( !bAccepted )
@@ -2343,7 +2346,7 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, CUtlBuffer &buf, IBase
 		}
 	}
 
-	g_KeyValuesErrorStack.SetFilename( "" );	
+	g_KeyValuesErrorStack.SetFilename( XStr("") );	
 
 	return true;
 }
@@ -2357,7 +2360,7 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, const char *pBuffer, I
 	if ( !pBuffer )
 		return true;
 
-	COM_TimestampedLog("KeyValues::LoadFromBuffer(%s%s%s): Begin", pPathID ? pPathID : "", pPathID && resourceName ? "/" : "", resourceName ? resourceName : "");
+	COM_TimestampedLog(XStr("KeyValues::LoadFromBuffer(%s%s%s): Begin"), pPathID ? pPathID : XStr(""), pPathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr(""));
 
 	int nLen = Q_strlen( pBuffer );
 	CUtlBuffer buf( pBuffer, nLen, CUtlBuffer::READ_ONLY | CUtlBuffer::TEXT_BUFFER );
@@ -2373,7 +2376,7 @@ bool KeyValues::LoadFromBuffer( char const *resourceName, const char *pBuffer, I
 
 	bool retVal = LoadFromBuffer( resourceName, buf, pFileSystem, pPathID );
 
-	COM_TimestampedLog("KeyValues::LoadFromBuffer(%s%s%s): End", pPathID ? pPathID : "", pPathID && resourceName ? "/" : "", resourceName ? resourceName : "");
+	COM_TimestampedLog(XStr("KeyValues::LoadFromBuffer(%s%s%s): End"), pPathID ? pPathID : XStr(""), pPathID && resourceName ? XStr("/") : XStr(""), resourceName ? resourceName : XStr(""));
 
 	return retVal;
 }
@@ -2388,7 +2391,7 @@ void KeyValues::RecursiveLoadFromBuffer( char const *resourceName, CUtlBuffer &b
 	bool wasConditional;
 	if ( errorReport.GetStackLevel() > 100 )
 	{
-		g_KeyValuesErrorStack.ReportError( "RecursiveLoadFromBuffer:  recursion overflow" );
+		g_KeyValuesErrorStack.ReportError( XStr("RecursiveLoadFromBuffer:  recursion overflow") );
 		return;
 	}
 
@@ -2410,13 +2413,13 @@ void KeyValues::RecursiveLoadFromBuffer( char const *resourceName, CUtlBuffer &b
 
 		if ( !name )	// EOF stop reading
 		{
-			g_KeyValuesErrorStack.ReportError("RecursiveLoadFromBuffer:  got EOF instead of keyname" );
+			g_KeyValuesErrorStack.ReportError(XStr("RecursiveLoadFromBuffer:  got EOF instead of keyname") );
 			break;
 		}
 
-		if ( !*name ) // empty token, maybe "" or EOF
+		if ( !*name ) // empty token, maybe XStr("") or EOF
 		{
-			g_KeyValuesErrorStack.ReportError("RecursiveLoadFromBuffer:  got empty keyname" );
+			g_KeyValuesErrorStack.ReportError(XStr("RecursiveLoadFromBuffer:  got empty keyname") );
 			break;
 		}
 
@@ -2442,13 +2445,13 @@ void KeyValues::RecursiveLoadFromBuffer( char const *resourceName, CUtlBuffer &b
 
 		if ( !value )
 		{
-			g_KeyValuesErrorStack.ReportError("RecursiveLoadFromBuffer:  got NULL key" );
+			g_KeyValuesErrorStack.ReportError(XStr("RecursiveLoadFromBuffer:  got NULL key") );
 			break;
 		}
 		
 		if ( *value == '}' && !wasQuoted )
 		{
-			g_KeyValuesErrorStack.ReportError("RecursiveLoadFromBuffer:  got } in key" );
+			g_KeyValuesErrorStack.ReportError(XStr("RecursiveLoadFromBuffer:  got } in key") );
 			break;
 		}
 
@@ -2463,7 +2466,7 @@ void KeyValues::RecursiveLoadFromBuffer( char const *resourceName, CUtlBuffer &b
 		{
 			if ( wasConditional )
 			{
-				g_KeyValuesErrorStack.ReportError("RecursiveLoadFromBuffer:  got conditional between key and value" );
+				g_KeyValuesErrorStack.ReportError(XStr("RecursiveLoadFromBuffer:  got conditional between key and value") );
 				break;
 			}
 			
@@ -2499,7 +2502,7 @@ void KeyValues::RecursiveLoadFromBuffer( char const *resourceName, CUtlBuffer &b
 			}
 			else if ( ( 18 == len ) && ( value[0] == '0' ) && ( value[1] == 'x' ) )
 			{
-				// an 18-byte value prefixed with "0x" (followed by 16 hex digits) is an int64 value
+				// an 18-byte value prefixed with XStr("0x") (followed by 16 hex digits) is an int64 value
 				int64 retVal = 0;
 				for( int i=2; i < 2 + 16; i++ )
 				{
@@ -2614,13 +2617,13 @@ bool KeyValues::WriteAsBinary( CUtlBuffer &buffer )
 				}
 				else
 				{
-					buffer.PutString( "" );
+					buffer.PutString( XStr("") );
 				}
 				break;
 			}
 		case TYPE_WSTRING:
 			{
-				Assert( !"TYPE_WSTRING" );
+				Assert( !XStr("TYPE_WSTRING") );
 				break;
 			}
 
@@ -2679,7 +2682,7 @@ bool KeyValues::ReadAsBinary( CUtlBuffer &buffer, int nStackDepth )
 	
 	if ( nStackDepth > 100 )
 	{
-		AssertMsgOnce( false, "KeyValues::ReadAsBinary() stack depth > 100\n" );
+		AssertMsgOnce( false, XStr("KeyValues::ReadAsBinary() stack depth > 100\n") );
 		return false;
 	}
 
@@ -2705,7 +2708,7 @@ bool KeyValues::ReadAsBinary( CUtlBuffer &buffer, int nStackDepth )
 		{
 		case TYPE_NONE:
 			{
-				dat->m_pSub = new KeyValues("");
+				dat->m_pSub = new KeyValues(XStr(""));
 				dat->m_pSub->ReadAsBinary( buffer, nStackDepth + 1 );
 				break;
 			}
@@ -2723,7 +2726,7 @@ bool KeyValues::ReadAsBinary( CUtlBuffer &buffer, int nStackDepth )
 			}
 		case TYPE_WSTRING:
 			{
-				Assert( !"TYPE_WSTRING" );
+				Assert( !XStr("TYPE_WSTRING") );
 				break;
 			}
 
@@ -2771,7 +2774,7 @@ bool KeyValues::ReadAsBinary( CUtlBuffer &buffer, int nStackDepth )
 			break;
 
 		// new peer follows
-		dat->m_pPeer = new KeyValues("");
+		dat->m_pPeer = new KeyValues(XStr(""));
 		dat = dat->m_pPeer;
 	}
 
@@ -2842,7 +2845,7 @@ void KeyValues::UnpackIntoStructure( KeyValuesUnpackStructure const *pUnpackTabl
 				char const *src_string=
 					GetString( pUnpackTable->m_pKeyName, pUnpackTable->m_pKeyDefault );
 				if ( (!src_string) ||
-					 ( sscanf(src_string,"%f %f %f",
+					 ( sscanf(src_string,XStr("%f %f %f"),
 							  &(dest_v->x), &(dest_v->y), &(dest_v->z)) != 3))
 					dest_v->Init( 0, 0, 0 );
 			}
@@ -2856,7 +2859,7 @@ void KeyValues::UnpackIntoStructure( KeyValuesUnpackStructure const *pUnpackTabl
 				char const *src_string=
 					GetString( pUnpackTable->m_pKeyName, pUnpackTable->m_pKeyDefault );
 				if ( (!src_string) ||
-					 ( sscanf(src_string,"%f %f %f %f",
+					 ( sscanf(src_string,XStr("%f %f %f %f"),
 							  dest_f,dest_f+1,dest_f+2,dest_f+3)) != 4)
 					memset( dest_f, 0, 4*sizeof(float) );
 			}
@@ -2870,7 +2873,7 @@ void KeyValues::UnpackIntoStructure( KeyValuesUnpackStructure const *pUnpackTabl
 				char const *src_string=
 					GetString( pUnpackTable->m_pKeyName, pUnpackTable->m_pKeyDefault );
 				if ( (!src_string) ||
-					 ( sscanf(src_string,"%f %f",
+					 ( sscanf(src_string,XStr("%f %f"),
 							  dest_f,dest_f+1)) != 2)
 					memset( dest_f, 0, 2*sizeof(float) );
 			}
@@ -2915,7 +2918,7 @@ void KeyValues::UnpackIntoStructure( KeyValuesUnpackStructure const *pUnpackTabl
 				else
 				{
 					if ( pUnpackTable->m_pKeyDefault )
-						sscanf(pUnpackTable->m_pKeyDefault,"%f %f %f",
+						sscanf(pUnpackTable->m_pKeyDefault,XStr("%f %f %f"),
 							   &(dest_v->x), &(dest_v->y), &(dest_v->z));
 					else
 						dest_v->Init( 0, 0, 0 );
@@ -2930,8 +2933,8 @@ void KeyValues::UnpackIntoStructure( KeyValuesUnpackStructure const *pUnpackTabl
 //-----------------------------------------------------------------------------
 // Helper function for processing a keyvalue tree for console resolution support.
 // Alters key/values for easier console video resolution support. 
-// If running SD (640x480), the presence of "???_lodef" creates or slams "???".
-// If running HD (1280x720), the presence of "???_hidef" creates or slams "???".
+// If running SD (640x480), the presence of XStr("???_lodef") creates or slams XStr("???").
+// If running HD (1280x720), the presence of XStr("???_hidef") creates or slams XStr("???").
 //-----------------------------------------------------------------------------
 bool KeyValues::ProcessResolutionKeys( const char *pResString )
 {	
@@ -2959,7 +2962,7 @@ bool KeyValues::ProcessResolutionKeys( const char *pResString )
 			char normalKeyName[128];
 			V_strncpy( normalKeyName, pSubKey->GetName(), sizeof( normalKeyName ) );
 
-			// substring must match exactly, otherwise keys like "_lodef" and "_lodef_wide" would clash.
+			// substring must match exactly, otherwise keys like XStr("_lodef") and XStr("_lodef_wide") would clash.
 			char *pString = Q_stristr( normalKeyName, pResString );
 			if ( pString && !Q_stricmp( pString, pResString ) )
 			{
@@ -3016,13 +3019,13 @@ bool IKeyValuesDumpContextAsText::KvBeginKey( KeyValues *pKey, int nIndentLevel 
 		return
 			KvWriteIndent( nIndentLevel ) &&
 			KvWriteText( pKey->GetName() ) &&
-			KvWriteText( " {\n" );
+			KvWriteText( XStr(" {\n") );
 	}
 	else
 	{
 		return
 			KvWriteIndent( nIndentLevel ) &&
-			KvWriteText( "<< NULL >>\n" );
+			KvWriteText( XStr("<< NULL >>\n") );
 	}
 }
 
@@ -3032,7 +3035,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 	{
 		return
 			KvWriteIndent( nIndentLevel ) &&
-			KvWriteText( "<< NULL >>\n" );
+			KvWriteText( XStr("<< NULL >>\n") );
 	}
 
 	if ( !KvWriteIndent( nIndentLevel ) )
@@ -3041,7 +3044,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 	if ( !KvWriteText( val->GetName() ) )
 		return false;
 
-	if ( !KvWriteText( " " ) )
+	if ( !KvWriteText( XStr(" ") ) )
 		return false;
 
 	switch ( val->GetDataType() )
@@ -3057,7 +3060,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 		{
 			int n = val->GetInt();
 			char *chBuffer = ( char * ) stackalloc( 128 );
-			V_snprintf( chBuffer, 128, "int( %d = 0x%X )", n, n );
+			V_snprintf( chBuffer, 128, XStr("int( %d = 0x%X )"), n, n );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
@@ -3067,7 +3070,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 		{
 			float fl = val->GetFloat();
 			char *chBuffer = ( char * ) stackalloc( 128 );
-			V_snprintf( chBuffer, 128, "float( %f )", fl );
+			V_snprintf( chBuffer, 128, XStr("float( %f )"), fl );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
@@ -3077,7 +3080,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 		{
 			void *ptr = val->GetPtr();
 			char *chBuffer = ( char * ) stackalloc( 128 );
-			V_snprintf( chBuffer, 128, "ptr( 0x%p )", ptr );
+			V_snprintf( chBuffer, 128, XStr("ptr( 0x%p )"), ptr );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
@@ -3089,7 +3092,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 			int nLen = V_wcslen( wsz );
 			int numBytes = nLen*2 + 64;
 			char *chBuffer = ( char * ) stackalloc( numBytes );
-			V_snprintf( chBuffer, numBytes, "%ls [wstring, len = %d]", wsz, nLen );
+			V_snprintf( chBuffer, numBytes, XStr("%ls [wstring, len = %d]"), wsz, nLen );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
@@ -3099,7 +3102,7 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 		{
 			uint64 n = val->GetUint64();
 			char *chBuffer = ( char * ) stackalloc( 128 );
-			V_snprintf( chBuffer, 128, "u64( %lld = 0x%llX )", n, n );
+			V_snprintf( chBuffer, 128, XStr("u64( %lld = 0x%llX )"), n, n );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
@@ -3110,14 +3113,14 @@ bool IKeyValuesDumpContextAsText::KvWriteValue( KeyValues *val, int nIndentLevel
 		{
 			int n = val->GetDataType();
 			char *chBuffer = ( char * ) stackalloc( 128 );
-			V_snprintf( chBuffer, 128, "??kvtype[%d]", n );
+			V_snprintf( chBuffer, 128, XStr("??kvtype[%d]"), n );
 			if ( !KvWriteText( chBuffer ) )
 				return false;
 		}
 		break;
 	}
 
-	return KvWriteText( "\n" );
+	return KvWriteText( XStr("\n") );
 }
 
 bool IKeyValuesDumpContextAsText::KvEndKey( KeyValues *pKey, int nIndentLevel )
@@ -3126,7 +3129,7 @@ bool IKeyValuesDumpContextAsText::KvEndKey( KeyValues *pKey, int nIndentLevel )
 	{
 		return
 			KvWriteIndent( nIndentLevel ) &&
-			KvWriteText( "}\n" );
+			KvWriteText( XStr("}\n") );
 	}
 	else
 	{
@@ -3146,9 +3149,9 @@ bool IKeyValuesDumpContextAsText::KvWriteIndent( int nIndentLevel )
 
 bool CKeyValuesDumpContextAsDevMsg::KvBeginKey( KeyValues *pKey, int nIndentLevel )
 {
-	static ConVarRef r_developer( "developer" );
+	static ConVarRef r_developer( XStr("developer") );
 	if ( r_developer.IsValid() && r_developer.GetInt() < m_nDeveloperLevel )
-		// If "developer" is not the correct level, then avoid evaluating KeyValues tree early
+		// If XStr("developer") is not the correct level, then avoid evaluating KeyValues tree early
 		return false;
 	else
 		return IKeyValuesDumpContextAsText::KvBeginKey( pKey, nIndentLevel );
@@ -3158,11 +3161,11 @@ bool CKeyValuesDumpContextAsDevMsg::KvWriteText( char const *szText )
 {
 	if ( m_nDeveloperLevel > 0 )
 	{
-		DevMsg( m_nDeveloperLevel, "%s", szText );
+		DevMsg( m_nDeveloperLevel, XStr("%s"), szText );
 	}
 	else
 	{
-		Msg( "%s", szText );
+		Msg( XStr("%s"), szText );
 	}
 	return true;
 }

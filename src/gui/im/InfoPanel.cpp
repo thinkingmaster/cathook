@@ -1,3 +1,6 @@
+
+#include "../../xorstring.hpp"
+
 /*
  * InfoPanel.cpp
  *
@@ -14,9 +17,9 @@
 namespace menu { namespace im {
 
 // User settings
-CatVar enabled(CV_SWITCH, "info_panel_enabled", "0", "Enable Info Panel");
-CatVar aimbot_enabled(CV_SWITCH, "info_panel_aimbot", "0", "Show Aimbot");
-CatVar aimkey_enabled(CV_SWITCH, "info_panel_aimkey_toggle", "0", "Show Aimkey Toggle");
+CatVar enabled(CV_SWITCH, XStr("info_panel_enabled"), XStr("0"), XStr("Enable Info Panel"));
+CatVar aimbot_enabled(CV_SWITCH, XStr("info_panel_aimbot"), XStr("0"), XStr("Show Aimbot"));
+CatVar aimkey_enabled(CV_SWITCH, XStr("info_panel_aimkey_toggle"), XStr("0"), XStr("Show Aimkey Toggle"));
 	
 // Main ImGui menu creator
 void RenderInfoPanel() {
@@ -28,7 +31,7 @@ void RenderInfoPanel() {
 	if (!g_IEngine->IsInGame()) return;
 	
 	// Menu creation stuff pasted from playerlist
-	if (ImGui::Begin("Info Panel")) {
+	if (ImGui::Begin(XStr("Info Panel"))) {
 		ImGui::SetWindowSize(ImVec2(0, 0));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 1));
 		
@@ -51,10 +54,10 @@ void AddInfoItem(EInfo info_type, int id) {
 	// Switch based on into_type
 	switch (info_type) {
 	case EInfo::AIMBOT:
-		ImGui::Text(format("Aimbot: ", GetCatVar("aimbot_enabled") ? "enabled" : "disabled").c_str());
+		ImGui::Text(format(XStr("Aimbot: "), GetCatVar(XStr("aimbot_enabled")) ? XStr("enabled") : XStr("disabled")).c_str());
 		break;
 	case EInfo::AIMKEY:
-		ImGui::Text(format("Todo, get toggle mode from aimkey").c_str());	
+		ImGui::Text(format(XStr("Todo, get toggle mode from aimkey")).c_str());	
 		break;
 	};
 	

@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * AutoJoin.cpp
  *
@@ -15,29 +18,29 @@ namespace hacks { namespace shared { namespace autojoin {
  * Credits to Blackfire for helping me with auto-requeue!
  */
 
-CatEnum classes_enum({ "DISABLED", "SCOUT", "SNIPER", "SOLDIER", "DEMOMAN", "MEDIC", "HEAVY", "PYRO", "SPY", "ENGINEER" });
-CatVar autojoin_team(CV_SWITCH, "autojoin_team", "0", "AutoJoin", "Automatically joins a team");
-CatVar preferred_class(classes_enum, "autojoin_class", "0", "AutoJoin class", "You will pick a class automatically");
+CatEnum classes_enum({ XStr("DISABLED"), XStr("SCOUT"), XStr("SNIPER"), XStr("SOLDIER"), XStr("DEMOMAN"), XStr("MEDIC"), XStr("HEAVY"), XStr("PYRO"), XStr("SPY"), XStr("ENGINEER") });
+CatVar autojoin_team(CV_SWITCH, XStr("autojoin_team"), XStr("0"), XStr("AutoJoin"), XStr("Automatically joins a team"));
+CatVar preferred_class(classes_enum, XStr("autojoin_class"), XStr("0"), XStr("AutoJoin class"), XStr("You will pick a class automatically"));
 
-CatVar auto_queue(CV_SWITCH, "autoqueue", "0", "AutoQueue", "Automatically queue in casual matches");
+CatVar auto_queue(CV_SWITCH, XStr("autoqueue"), XStr("0"), XStr("AutoQueue"), XStr("Automatically queue in casual matches"));
 
 const std::string classnames[] = {
-	"scout", "sniper", "soldier", "demoman", "medic", "heavyweapons", "pyro", "spy", "engineer"
+	XStr("scout"), XStr("sniper"), XStr("soldier"), XStr("demoman"), XStr("medic"), XStr("heavyweapons"), XStr("pyro"), XStr("spy"), XStr("engineer")
 };
 
-CatCommand debug_startsearch("debug_startsearch", "DEBUG StartSearch", []() {
-	logging::Info("%d", g_TFGCClientSystem->RequestSelectWizardStep(4));
+CatCommand debug_startsearch(XStr("debug_startsearch"), XStr("DEBUG StartSearch"), []() {
+	logging::Info(XStr("%d"), g_TFGCClientSystem->RequestSelectWizardStep(4));
 });
-CatCommand debug_casual("debug_casual", "DEBUG Casual", []() {
-	g_IEngine->ExecuteClientCmd("OpenMatchmakingLobby casual");
+CatCommand debug_casual(XStr("debug_casual"), XStr("DEBUG Casual"), []() {
+	g_IEngine->ExecuteClientCmd(XStr("OpenMatchmakingLobby casual"));
 	g_TFGCClientSystem->LoadSearchCriteria();
-	//logging::Info("%d", g_TFGCClientSystem->RequestSelectWizardStep(6));
+	//logging::Info(XStr("%d"), g_TFGCClientSystem->RequestSelectWizardStep(6));
 });
 
-CatCommand debug_readytosearch("debug_gcstate", "DEBUG GCState", []() {
-	logging::Info("%d", g_TFGCClientSystem->GetState());
+CatCommand debug_readytosearch(XStr("debug_gcstate"), XStr("DEBUG GCState"), []() {
+	logging::Info(XStr("%d"), g_TFGCClientSystem->GetState());
 });
-CatCommand debug_abandon("debug_abandon", "DEBUG Abandon", []() {
+CatCommand debug_abandon(XStr("debug_abandon"), XStr("DEBUG Abandon"), []() {
 	g_TFGCClientSystem->SendExitMatchmaking(true);
 });
 bool UnassignedTeam() {
@@ -56,12 +59,12 @@ void UpdateSearch() {
 	if (s < 4) return;
 
 	if (g_TFGCClientSystem->GetState() == 6) {
-		logging::Info("Sending MM request");
+		logging::Info(XStr("Sending MM request"));
 		g_TFGCClientSystem->RequestSelectWizardStep(4);
 	} else if (g_TFGCClientSystem->GetState() == 5) {
-		g_IEngine->ExecuteClientCmd("OpenMatchmakingLobby casual");
+		g_IEngine->ExecuteClientCmd(XStr("OpenMatchmakingLobby casual"));
 		g_TFGCClientSystem->LoadSearchCriteria();
-		//logging::Info("%d", g_TFGCClientSystem->RequestSelectWizardStep(6));
+		//logging::Info(XStr("%d"), g_TFGCClientSystem->RequestSelectWizardStep(6));
 	}
 
 	last_check = std::chrono::system_clock::now();
@@ -76,10 +79,10 @@ void Update() {
 	}
 
 	if (autojoin_team and UnassignedTeam()) {
-		hack::ExecuteCommand("jointeam auto");
+		hack::ExecuteCommand(XStr("jointeam auto"));
 	} else if (preferred_class and UnassignedClass()) {
 		if (int(preferred_class) < 10)
-		g_IEngine->ExecuteClientCmd(format("join_class ", classnames[int(preferred_class) - 1]).c_str());
+		g_IEngine->ExecuteClientCmd(format(XStr("join_class "), classnames[int(preferred_class) - 1]).c_str());
 	}
 
 	last_check = std::chrono::system_clock::now();

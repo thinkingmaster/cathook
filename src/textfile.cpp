@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * textfile.cpp
  *
@@ -20,7 +23,7 @@ TextFile::TextFile()
 
 bool TextFile::TryLoad(std::string name) {
 	if (name.length() == 0) return false;
-	std::string filename = format("cathook/", name);
+	std::string filename = format(XStr("cathook/"), name);
 	std::ifstream file(filename, std::ios::in);
 	if (!file) {
 		return false;
@@ -34,10 +37,10 @@ bool TextFile::TryLoad(std::string name) {
 }
 
 void TextFile::Load(std::string name) {
-	std::string filename = format("cathook/", name);
+	std::string filename = format(XStr("cathook/"), name);
 	std::ifstream file(filename, std::ios::in);
 	if (file.bad()) {
-		logging::Info("Could not open the file: %s", filename.c_str());
+		logging::Info(XStr("Could not open the file: %s"), filename.c_str());
 		return;
 	}
 	lines.clear();

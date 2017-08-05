@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * HBunnyhop.cpp
  *
@@ -13,7 +16,7 @@
 namespace hacks { namespace shared { namespace bunnyhop {
 
 // Var for user settings
-CatVar enabled(CV_SWITCH, "bhop_enabled", "0", "Bunnyhop", "Enable Bunnyhop. All extra features like autojump and perfect jump limit were temporary removed.");
+CatVar enabled(CV_SWITCH, XStr("bhop_enabled"), XStr("0"), XStr("Bunnyhop"), XStr("Enable Bunnyhop. All extra features like autojump and perfect jump limit were temporary removed."));
 
 int iTicksLastJump = 0;
 	
@@ -32,7 +35,7 @@ void CreateMove() {
 	// Grab netvar for flags from the local player
 	int flags = CE_INT(g_pLocalPlayer->entity, netvar.iFlags);
 
-	// var for "if on ground" from the flags netvar
+	// var for XStr("if on ground") from the flags netvar
 	bool ground = (flags & (1 << 0));
 	// Var for if the player is pressing jump
 	bool jump = (g_pUserCmd->buttons & IN_JUMP);

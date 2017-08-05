@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * Spam.cpp
  *
@@ -10,17 +13,17 @@
 #include "../sdk.h"
 
 namespace hacks { namespace shared { namespace spam {
-static CatEnum spam_enum({"DISABLED", "CUSTOM", "DEFAULT", "LENNYFACES", "BLANKS", "NULLCORE", "LMAOBOX", "LITHIUM"});
-CatVar spam_source(spam_enum, "spam", "0", "Chat Spam", "Defines source of spam lines. CUSTOM spam file must be set in cat_spam_file and loaded with cat_spam_reload (Use console!)");
-CatVar random_order(CV_SWITCH, "spam_random", "0", "Random Order");
-CatVar filename(CV_STRING, "spam_file", "spam.txt", "Spam file", "Spam file name. Each line should be no longer than 100 characters, file must be located in cathook data folder");
-CatCommand reload("spam_reload", "Reload spam file", Reload);
-CatVar spam_delay(CV_INT, "spam_delay", "800", "Spam delay", "Delay between spam messages (in ms)", 0.0f, 8000.0f);
+static CatEnum spam_enum({XStr("DISABLED"), XStr("CUSTOM"), XStr("DEFAULT"), XStr("LENNYFACES"), XStr("BLANKS"), XStr("NULLCORE"), XStr("LMAOBOX"), XStr("LITHIUM")});
+CatVar spam_source(spam_enum, XStr("spam"), XStr("0"), XStr("Chat Spam"), XStr("Defines source of spam lines. CUSTOM spam file must be set in cat_spam_file and loaded with cat_spam_reload (Use console!)"));
+CatVar random_order(CV_SWITCH, XStr("spam_random"), XStr("0"), XStr("Random Order"));
+CatVar filename(CV_STRING, XStr("spam_file"), XStr("spam.txt"), XStr("Spam file"), XStr("Spam file name. Each line should be no longer than 100 characters, file must be located in cathook data folder"));
+CatCommand reload(XStr("spam_reload"), XStr("Reload spam file"), Reload);
+CatVar spam_delay(CV_INT, XStr("spam_delay"), XStr("800"), XStr("Spam delay"), XStr("Delay between spam messages (in ms)"), 0.0f, 8000.0f);
 
-static CatEnum voicecommand_enum({"DISABLED", "RANDOM", "MEDIC", "THANKS", "NICE SHOT", "CHEERS", "JEERS"});
-CatVar voicecommand_spam(voicecommand_enum, "spam_voicecommand", "0", "Voice Command Spam", "Spams tf voice commands");
+static CatEnum voicecommand_enum({XStr("DISABLED"), XStr("RANDOM"), XStr("MEDIC"), XStr("THANKS"), XStr("NICE SHOT"), XStr("CHEERS"), XStr("JEERS")});
+CatVar voicecommand_spam(voicecommand_enum, XStr("spam_voicecommand"), XStr("0"), XStr("Voice Command Spam"), XStr("Spams tf voice commands"));
 	
-CatVar teamname_spam(CV_SWITCH, "spam_teamname", "0", "Teamname Spam", "Spam changes the tournament name");
+CatVar teamname_spam(CV_SWITCH, XStr("spam_teamname"), XStr("0"), XStr("Teamname Spam"), XStr("Spam changes the tournament name"));
 
 
 std::chrono::time_point<std::chrono::system_clock> last_spam_point {};
@@ -28,7 +31,7 @@ std::chrono::time_point<std::chrono::system_clock> last_spam_point {};
 int current_index { 0 };
 TextFile file {};
 
-const std::string teams[] = { "RED", "BLU" };
+const std::string teams[] = { XStr("RED"), XStr("BLU") };
 
 
 	
@@ -152,10 +155,10 @@ void Init() {
 }
 
 bool SubstituteQueries(std::string& input) {
-	size_t index = input.find("%query:");
+	size_t index = input.find(XStr("%query:"));
 	while (index != std::string::npos) {
 		std::string sub = input.substr(index + 7);
-		size_t closing = sub.find("%");
+		size_t closing = sub.find(XStr("%"));
 		Query q = QueryFromSubstring(sub);
 		int p = QueryPlayer(q);
 		if (!p) return false;
@@ -163,18 +166,18 @@ bool SubstituteQueries(std::string& input) {
 		if (!g_IEngine->GetPlayerInfo(p, &pinfo)) return false;
 		std::string name = std::string(pinfo.name);
 		input.replace(index, 8 + closing, name);
-		index = input.find("%query:", index + name.size());
+		index = input.find(XStr("%query:"), index + name.size());
 	}
 	return true;
 }
 
 bool FormatSpamMessage(std::string& message) {
-	ReplaceString(message, "\\n", "\n");
+	ReplaceString(message, XStr("\\n"), XStr("\n"));
 	bool team = g_pLocalPlayer->team - 2;
 	bool enemy_team = !team;
 	IF_GAME (IsTF2()) {
-		ReplaceString(message, "%myteam%", teams[team]);
-		ReplaceString(message, "%enemyteam%", teams[enemy_team]);
+		ReplaceString(message, XStr("%myteam%"), teams[team]);
+		ReplaceString(message, XStr("%enemyteam%"), teams[enemy_team]);
 	}
 	return SubstituteQueries(message);
 }
@@ -187,10 +190,10 @@ void CreateMove() {
 			static bool teamname_swap = false;
 			if (teamname_swap) {
 				teamname_swap = false;
-				g_IEngine->ServerCmd("tournament_teamname Cat");	
+				g_IEngine->ServerCmd(XStr("tournament_teamname Cat"));	
 			} else {
 				teamname_swap = true;
-				g_IEngine->ServerCmd("tournament_teamname Hook");	
+				g_IEngine->ServerCmd(XStr("tournament_teamname Hook"));	
 			}		
 		}
 		
@@ -199,22 +202,22 @@ void CreateMove() {
 			if (g_GlobalVars->curtime - 4.0F > last_voice_spam) { 
 				switch ((int)voicecommand_spam) {
 				case 1: // RANDOM
-					g_IEngine->ServerCmd(format("voicemenu ", floor(RandFloatRange(0, 2.9)), " ", floor(RandFloatRange(0, 8.9))).c_str());	
+					g_IEngine->ServerCmd(format(XStr("voicemenu "), floor(RandFloatRange(0, 2.9)), XStr(" "), floor(RandFloatRange(0, 8.9))).c_str());	
 					break;
 				case 2: // MEDIC
-					g_IEngine->ServerCmd("voicemenu 0 0");	
+					g_IEngine->ServerCmd(XStr("voicemenu 0 0"));	
 					break;
 				case 3: // THANKS
-					g_IEngine->ServerCmd("voicemenu 0 1");	
+					g_IEngine->ServerCmd(XStr("voicemenu 0 1"));	
 					break;
 				case 4: // NICE SHOT
-					g_IEngine->ServerCmd("voicemenu 2 6");	
+					g_IEngine->ServerCmd(XStr("voicemenu 2 6"));	
 					break;
 				case 5: // CHEERS
-					g_IEngine->ServerCmd("voicemenu 2 2");		
+					g_IEngine->ServerCmd(XStr("voicemenu 2 2"));		
 					break;
 				case 6: // JEERS
-					g_IEngine->ServerCmd("voicemenu 2 3");	
+					g_IEngine->ServerCmd(XStr("voicemenu 2 3"));	
 				}
 				last_voice_spam = g_GlobalVars->curtime;
 			}
@@ -274,43 +277,43 @@ void Reload() {
 }
 
 const std::vector<std::string> builtin_default = {
-		"cathook - more fun than a ball of yarn!",
-		"GNU/Linux is the best OS!",
-		"visit youtube.com/c/nullifiedcat for more information!",
-		"cathook - free tf2 cheat!",
-		"cathook - ca(n)t stop me meow!"
+		XStr("cathook - more fun than a ball of yarn!"),
+		XStr("GNU/Linux is the best OS!"),
+		XStr("visit youtube.com/c/nullifiedcat for more information!"),
+		XStr("cathook - free tf2 cheat!"),
+		XStr("cathook - ca(n)t stop me meow!")
 };
 const std::vector<std::string> builtin_lennyfaces = {
-		"( ͡° ͜ʖ ͡°)", "( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)", "ʕ•ᴥ•ʔ",
-		"(▀̿Ĺ̯▀̿ ̿)", "( ͡°╭͜ʖ╮͡° )", "(ง'̀-'́)ง", "(◕‿◕✿)",
-		"༼ つ  ͡° ͜ʖ ͡° ༽つ" };
+		XStr("( ͡° ͜ʖ ͡°)"), XStr("( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)"), XStr("ʕ•ᴥ•ʔ"),
+		XStr("(▀̿Ĺ̯▀̿ ̿)"), XStr("( ͡°╭͜ʖ╮͡° )"), XStr("(ง'̀-'́)ง"), XStr("(◕‿◕✿)"),
+		XStr("༼ つ  ͡° ͜ʖ ͡° ༽つ") };
 const std::vector<std::string> builtin_blanks = {
-		". \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n "
+		XStr(". \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n ")
 };
 
 const std::vector<std::string> builtin_nonecore = {
-		"NULL CORE - REDUCE YOUR RISK OF BEING OWNED!",
-		"NULL CORE - WAY TO THE TOP!",
-		"NULL CORE - BEST TF2 CHEAT!",
-		"NULL CORE - NOW WITH BLACKJACK AND HOOKERS!",
-		"NULL CORE - BUTTHURT IN 10 SECONDS FLAT!",
-		"NULL CORE - WHOLE SERVER OBSERVING!",
-		"NULL CORE - GET BACK TO PWNING!",
-		"NULL CORE - WHEN PVP IS TOO HARDCORE!",
-		"NULL CORE - CAN CAUSE KIDS TO RAGE!",
-		"NULL CORE - F2P NOOBS WILL BE 100% NERFED!"
+		XStr("NULL CORE - REDUCE YOUR RISK OF BEING OWNED!"),
+		XStr("NULL CORE - WAY TO THE TOP!"),
+		XStr("NULL CORE - BEST TF2 CHEAT!"),
+		XStr("NULL CORE - NOW WITH BLACKJACK AND HOOKERS!"),
+		XStr("NULL CORE - BUTTHURT IN 10 SECONDS FLAT!"),
+		XStr("NULL CORE - WHOLE SERVER OBSERVING!"),
+		XStr("NULL CORE - GET BACK TO PWNING!"),
+		XStr("NULL CORE - WHEN PVP IS TOO HARDCORE!"),
+		XStr("NULL CORE - CAN CAUSE KIDS TO RAGE!"),
+		XStr("NULL CORE - F2P NOOBS WILL BE 100% NERFED!")
 };
 const std::vector<std::string> builtin_lmaobox = {
-		"GET GOOD, GET LMAOBOX!",
-		"LMAOBOX - WAY TO THE TOP",
-		"WWW.LMAOBOX.NET - BEST FREE TF2 HACK!"
+		XStr("GET GOOD, GET LMAOBOX!"),
+		XStr("LMAOBOX - WAY TO THE TOP"),
+		XStr("WWW.LMAOBOX.NET - BEST FREE TF2 HACK!")
 };
 const std::vector<std::string> builtin_lithium = {
-		"CHECK OUT www.YouTube.com/c/DurRud FOR MORE INFORMATION!",
-		"PWNING AIMBOTS WITH OP ANTI-AIMS SINCE 2015 - LITHIUMCHEAT",
-		"STOP GETTING MAD AND STABILIZE YOUR MOOD WITH LITHIUMCHEAT!",
-		"SAVE YOUR MONEY AND GET LITHIUMCHEAT! IT IS FREE!",
-		"GOT ROLLED BY LITHIUM? HEY, THAT MEANS IT'S TIME TO GET LITHIUMCHEAT!!"
+		XStr("CHECK OUT www.YouTube.com/c/DurRud FOR MORE INFORMATION!"),
+		XStr("PWNING AIMBOTS WITH OP ANTI-AIMS SINCE 2015 - LITHIUMCHEAT"),
+		XStr("STOP GETTING MAD AND STABILIZE YOUR MOOD WITH LITHIUMCHEAT!"),
+		XStr("SAVE YOUR MONEY AND GET LITHIUMCHEAT! IT IS FREE!"),
+		XStr("GOT ROLLED BY LITHIUM? HEY, THAT MEANS IT'S TIME TO GET LITHIUMCHEAT!!")
 };
 
 }}}

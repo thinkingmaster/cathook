@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 // dear imgui, v1.51 WIP
 // (headers)
 
@@ -16,7 +19,7 @@
 #include <stddef.h>         // ptrdiff_t, NULL
 #include <string.h>         // memset, memmove, memcpy, strlen, strchr, strcpy, strcmp
 
-#define IMGUI_VERSION       "1.51 WIP"
+#define IMGUI_VERSION       XStr("1.51 WIP")
 
 // Define attributes of all API symbols declarations, e.g. for DLL under Windows.
 #ifndef IMGUI_API
@@ -38,7 +41,7 @@
 
 #if defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wold-style-cast"
+#pragma clang diagnostic ignored XStr("-Wold-style-cast")
 #endif
 
 // Forward declarations
@@ -55,7 +58,7 @@ struct ImGuiIO;                     // Main configuration and I/O between your a
 struct ImGuiOnceUponAFrame;         // Simple helper for running a block of code not more than once a frame, used by IMGUI_ONCE_UPON_A_FRAME macro
 struct ImGuiStorage;                // Simple custom key value storage
 struct ImGuiStyle;                  // Runtime data for styling/colors
-struct ImGuiTextFilter;             // Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]"
+struct ImGuiTextFilter;             // Parse and apply text filters. In format XStr("aaaaa[,bbbb][,ccccc]")
 struct ImGuiTextBuffer;             // Text buffer for logging/accumulating text
 struct ImGuiTextEditCallbackData;   // Shared state of ImGui::InputText() when using custom ImGuiTextEditCallback (rare/advanced use)
 struct ImGuiSizeConstraintCallbackData;// Structure used to constraint window size in custom ways when using custom ImGuiSizeConstraintCallback (rare/advanced use)
@@ -210,7 +213,7 @@ namespace ImGui
     IMGUI_API void          Dummy(const ImVec2& size);                                          // add a dummy item of given size
     IMGUI_API void          Indent(float indent_w = 0.0f);                                      // move content position toward the right, by style.IndentSpacing or indent_w if >0
     IMGUI_API void          Unindent(float indent_w = 0.0f);                                    // move content position back to the left, by style.IndentSpacing or indent_w if >0
-    IMGUI_API void          BeginGroup();                                                       // lock horizontal starting position + capture group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
+    IMGUI_API void          BeginGroup();                                                       // lock horizontal starting position + capture group bounding box into one XStr("item") (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
     IMGUI_API void          EndGroup();
     IMGUI_API ImVec2        GetCursorPos();                                                     // cursor position is relative to window position
     IMGUI_API float         GetCursorPosX();                                                    // "
@@ -238,7 +241,7 @@ namespace ImGui
 
     // ID scopes
     // If you are creating widgets in a loop you most likely want to push a unique identifier so ImGui can differentiate them.
-    // You can also use the "##foobar" syntax within widget label to distinguish them from each others. Read "A primer on the use of labels/IDs" in the FAQ for more details.
+    // You can also use the XStr("##foobar") syntax within widget label to distinguish them from each others. Read XStr("A primer on the use of labels/IDs") in the FAQ for more details.
     IMGUI_API void          PushID(const char* str_id);                                         // push identifier into the ID stack. IDs are hash of the *entire* stack!
     IMGUI_API void          PushID(const char* str_id_begin, const char* str_id_end);
     IMGUI_API void          PushID(const void* ptr_id);
@@ -287,16 +290,16 @@ namespace ImGui
 
     // Widgets: Drags (tip: ctrl+click on a drag box to input with keyboard. manually input values aren't clamped, can go off-bounds)
     // For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every functions, remember than a 'float v[3]' function argument is the same as 'float* v'. You can pass address of your first element out of a contiguous set, e.g. &myvector.x
-    IMGUI_API bool          DragFloat(const char* label, float* v, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = "%.3f", float power = 1.0f);     // If v_min >= v_max we have no bound
-    IMGUI_API bool          DragFloat2(const char* label, float v[2], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          DragFloat3(const char* label, float v[3], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          DragFloat4(const char* label, float v[4], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = "%.3f", const char* display_format_max = NULL, float power = 1.0f);
-    IMGUI_API bool          DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = "%.0f");                                       // If v_min >= v_max we have no bound
-    IMGUI_API bool          DragInt2(const char* label, int v[2], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = "%.0f");
-    IMGUI_API bool          DragInt3(const char* label, int v[3], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = "%.0f");
-    IMGUI_API bool          DragInt4(const char* label, int v[4], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = "%.0f");
-    IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = "%.0f", const char* display_format_max = NULL);
+    IMGUI_API bool          DragFloat(const char* label, float* v, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = XStr("%.3f"), float power = 1.0f);     // If v_min >= v_max we have no bound
+    IMGUI_API bool          DragFloat2(const char* label, float v[2], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          DragFloat3(const char* label, float v[3], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          DragFloat4(const char* label, float v[4], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* display_format = XStr("%.3f"), const char* display_format_max = NULL, float power = 1.0f);
+    IMGUI_API bool          DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = XStr("%.0f"));                                       // If v_min >= v_max we have no bound
+    IMGUI_API bool          DragInt2(const char* label, int v[2], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          DragInt3(const char* label, int v[3], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          DragInt4(const char* label, int v[4], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* display_format = XStr("%.0f"), const char* display_format_max = NULL);
 
     // Widgets: Input with Keyboard
     IMGUI_API bool          InputText(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiTextEditCallback callback = NULL, void* user_data = NULL);
@@ -311,17 +314,17 @@ namespace ImGui
     IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags extra_flags = 0);
 
     // Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard. manually input values aren't clamped, can go off-bounds)
-    IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);     // adjust display_format to decorate the value with a prefix or a suffix. Use power!=1.0 for logarithmic sliders
-    IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
+    IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* display_format = XStr("%.3f"), float power = 1.0f);     // adjust display_format to decorate the value with a prefix or a suffix. Use power!=1.0 for logarithmic sliders
+    IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* display_format = XStr("%.3f"), float power = 1.0f);
     IMGUI_API bool          SliderAngle(const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f);
-    IMGUI_API bool          SliderInt(const char* label, int* v, int v_min, int v_max, const char* display_format = "%.0f");
-    IMGUI_API bool          SliderInt2(const char* label, int v[2], int v_min, int v_max, const char* display_format = "%.0f");
-    IMGUI_API bool          SliderInt3(const char* label, int v[3], int v_min, int v_max, const char* display_format = "%.0f");
-    IMGUI_API bool          SliderInt4(const char* label, int v[4], int v_min, int v_max, const char* display_format = "%.0f");
-    IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
-    IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* display_format = "%.0f");
+    IMGUI_API bool          SliderInt(const char* label, int* v, int v_min, int v_max, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          SliderInt2(const char* label, int v[2], int v_min, int v_max, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          SliderInt3(const char* label, int v[3], int v_min, int v_max, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          SliderInt4(const char* label, int v[4], int v_min, int v_max, const char* display_format = XStr("%.0f"));
+    IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* display_format = XStr("%.3f"), float power = 1.0f);
+    IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* display_format = XStr("%.0f"));
 
     // Widgets: Trees
     IMGUI_API bool          TreeNode(const char* label);                                            // if returning 'true' the node is open and the tree id is pushed into the id stack. user is responsible for calling TreePop().
@@ -352,7 +355,7 @@ namespace ImGui
     IMGUI_API bool          ListBoxHeader(const char* label, int items_count, int height_in_items = -1); // "
     IMGUI_API void          ListBoxFooter();                                                    // terminate the scrolling region
 
-    // Widgets: Value() Helpers. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
+    // Widgets: Value() Helpers. Output single value in XStr("name: value") format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
     IMGUI_API void          Value(const char* prefix, bool b);
     IMGUI_API void          Value(const char* prefix, int v);
     IMGUI_API void          Value(const char* prefix, unsigned int v);
@@ -441,7 +444,7 @@ namespace ImGui
     IMGUI_API bool          IsMouseClicked(int button, bool repeat = false);                    // did mouse button clicked (went from !Down to Down)
     IMGUI_API bool          IsMouseDoubleClicked(int button);                                   // did mouse button double-clicked. a double-click returns false in IsMouseClicked(). uses io.MouseDoubleClickTime.
     IMGUI_API bool          IsMouseReleased(int button);                                        // did mouse button released (went from Down to !Down)
-    IMGUI_API bool          IsMouseHoveringWindow();                                            // is mouse hovering current window ("window" in API names always refer to current window). disregarding of any consideration of being blocked by a popup. (unlike IsWindowHovered() this will return true even if the window is blocked because of a popup)
+    IMGUI_API bool          IsMouseHoveringWindow();                                            // is mouse hovering current window (XStr("window") in API names always refer to current window). disregarding of any consideration of being blocked by a popup. (unlike IsWindowHovered() this will return true even if the window is blocked because of a popup)
     IMGUI_API bool          IsMouseHoveringAnyWindow();                                         // is mouse hovering any visible window
     IMGUI_API bool          IsMouseHoveringRect(const ImVec2& r_min, const ImVec2& r_max, bool clip = true);  // is mouse hovering given bounding rect (in screen space). clipped by current clipping settings. disregarding of consideration of focus/window ordering/blocked by a popup.
     IMGUI_API bool          IsMouseDragging(int button = 0, float lock_threshold = -1.0f);      // is mouse dragging. if lock_threshold < -1.0f uses io.MouseDraggingThreshold
@@ -496,7 +499,7 @@ enum ImGuiWindowFlags_
     ImGuiWindowFlags_NoSavedSettings        = 1 << 8,   // Never load/save settings in .ini file
     ImGuiWindowFlags_NoInputs               = 1 << 9,   // Disable catching mouse or keyboard inputs
     ImGuiWindowFlags_MenuBar                = 1 << 10,  // Has a menu-bar
-    ImGuiWindowFlags_HorizontalScrollbar    = 1 << 11,  // Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+    ImGuiWindowFlags_HorizontalScrollbar    = 1 << 11,  // Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the XStr("Horizontal Scrolling") section.
     ImGuiWindowFlags_NoFocusOnAppearing     = 1 << 12,  // Disable taking focus when transitioning from hidden to visible state
     ImGuiWindowFlags_NoBringToFrontOnFocus  = 1 << 13,  // Disable bringing window to front when taking focus (e.g. clicking on it or programatically giving it focus)
     ImGuiWindowFlags_AlwaysVerticalScrollbar= 1 << 14,  // Always show vertical scrollbar (even if ContentSize.y < Size.y)
@@ -735,8 +738,8 @@ struct ImGuiIO
     ImVec2        DisplaySize;              // <unset>              // Display size, in pixels. For clamping windows positions.
     float         DeltaTime;                // = 1.0f/60.0f         // Time elapsed since last frame, in seconds.
     float         IniSavingRate;            // = 5.0f               // Maximum time between saving positions/sizes to .ini file, in seconds.
-    const char*   IniFilename;              // = "imgui.ini"        // Path to .ini file. NULL to disable .ini saving.
-    const char*   LogFilename;              // = "imgui_log.txt"    // Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
+    const char*   IniFilename;              // = XStr("imgui.ini")        // Path to .ini file. NULL to disable .ini saving.
+    const char*   LogFilename;              // = XStr("imgui_log.txt")    // Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
     float         MouseDoubleClickTime;     // = 0.30f              // Time for a double-click, in seconds.
     float         MouseDoubleClickMaxDist;  // = 6.0f               // Distance threshold to stay in to validate a double-click, in pixels.
     float         MouseDragThreshold;       // = 6.0f               // Distance threshold before considering we are dragging
@@ -911,7 +914,7 @@ struct ImGuiOnceUponAFrame
     operator bool() const { int current_frame = ImGui::GetFrameCount(); if (RefFrame == current_frame) return false; RefFrame = current_frame; return true; }
 };
 
-// Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]"
+// Helper: Parse and apply text filters. In format XStr("aaaaa[,bbbb][,ccccc]")
 struct ImGuiTextFilter
 {
     struct TextRange
@@ -934,10 +937,10 @@ struct ImGuiTextFilter
     ImVector<TextRange> Filters;
     int                 CountGrep;
 
-    ImGuiTextFilter(const char* default_filter = "");
+    ImGuiTextFilter(const char* default_filter = XStr(""));
     ~ImGuiTextFilter() {}
     void                Clear() { InputBuf[0] = 0; Build(); }
-    bool                Draw(const char* label = "Filter (inc,-exc)", float width = 0.0f);    // Helper calling InputText+Build
+    bool                Draw(const char* label = XStr("Filter (inc,-exc)"), float width = 0.0f);    // Helper calling InputText+Build
     bool                PassFilter(const char* text, const char* text_end = NULL) const;
     bool                IsActive() const { return !Filters.empty(); }
     IMGUI_API void      Build();
@@ -996,7 +999,7 @@ struct ImGuiStorage
     // - Get***Ref() functions finds pair, insert on demand if missing, return pointer. Useful if you intend to do Get+Set.
     // - References are only valid until a new value is added to the storage. Calling a Set***() function or a Get***Ref() function invalidates the pointer.
     // - A typical use case where this is convenient for quick hacking (e.g. add storage during a live Edit&Continue session if you can't modify existing struct)
-    //      float* pvar = ImGui::GetFloatRef(key); ImGui::SliderFloat("var", pvar, 0, 100.0f); some_var += *pvar;
+    //      float* pvar = ImGui::GetFloatRef(key); ImGui::SliderFloat(XStr("var"), pvar, 0, 100.0f); some_var += *pvar;
     IMGUI_API int*      GetIntRef(ImGuiID key, int default_val = 0);
     IMGUI_API bool*     GetBoolRef(ImGuiID key, bool default_val = false);
     IMGUI_API float*    GetFloatRef(ImGuiID key, float default_val = 0.0f);
@@ -1092,7 +1095,7 @@ struct ImColor
 //     ImGuiListClipper clipper(1000);  // we have 1000 elements, evenly spaced.
 //     while (clipper.Step())
 //         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-//             ImGui::Text("line number %d", i);
+//             ImGui::Text(XStr("line number %d"), i);
 // - Step 0: the clipper let you process the first element, regardless of it being visible or not, so we can measure the element height (step skipped if we passed a known height as second arg to constructor).
 // - Step 1: the clipper infer height from first element, calculate the actual range of elements to display, and position the cursor before the first element.
 // - (Step 2: dummy step only required if an explicit items_height was passed to constructor or Begin() and user call Step(). Does nothing and switch to Step 3.)
@@ -1158,7 +1161,7 @@ struct ImDrawVert
 IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT;
 #endif
 
-// Draw channels are used by the Columns API to "split" the render list into different channels while building, so items of each column can be batched together.
+// Draw channels are used by the Columns API to XStr("split") the render list into different channels while building, so items of each column can be batched together.
 // You can also use them to simulate drawing layers and submit primitives in a different order than how they will be rendered.
 struct ImDrawChannel
 {
@@ -1325,7 +1328,7 @@ struct ImFontAtlas
     void                        SetTexID(ImTextureID id)  { TexID = id; }
 
     // Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)
-    // NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create a UTF-8 string literally using the u8"Hello world" syntax. See FAQ for details.
+    // NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create a UTF-8 string literally using the u8XStr("Hello world") syntax. See FAQ for details.
     IMGUI_API const ImWchar*    GetGlyphRangesDefault();    // Basic Latin, Extended Latin
     IMGUI_API const ImWchar*    GetGlyphRangesKorean();     // Default + Korean characters
     IMGUI_API const ImWchar*    GetGlyphRangesJapanese();   // Default + Hiragana, Katakana, Half-Width, Selection of 1946 Ideographs

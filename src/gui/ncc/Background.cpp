@@ -1,3 +1,6 @@
+
+#include "../../xorstring.hpp"
+
 /*
  * Background.cpp
  *
@@ -9,7 +12,7 @@
 
 namespace menu { namespace ncc {
 
-Background::Background() : CBaseWidget("nc_background"),
+Background::Background() : CBaseWidget(XStr("nc_background")),
 	tx_snowflake(&_binary_snowflake_start, 16, 16),
 	tx_raindrop(&_binary_raindrop_start, 16, 16),
 	tx_flame(&_binary_flame_start, 16, 16),
@@ -18,18 +21,18 @@ Background::Background() : CBaseWidget("nc_background"),
 	SetSize(draw::width, draw::height);
 }
 
-static CatVar particles(CV_SWITCH, "gui_bg_particles", "0", "Particles");
-static CatEnum particle_type_enum({"Snowflake", "Raindrop", "Flame", "Heart", "Raindrop 2", "Random"});
-static CatVar particle_type(particle_type_enum, "gui_bg_particles_type", "0", "Particles Type", "Defines particle type");
-static CatVar particle_chance(CV_INT, "gui_bg_particles_chance", "10", "Particles Spawn Rate", "Defines snowflake spawn rate (HAS TO BE NONZERO!)", 1.0f, 100.0f);
-static CatVar particle_pack_size(CV_INT, "gui_bg_particles_pack_size", "10", "Particles Max Pack", "Defines max snowflake spawn pack size (HAS TO BE NONZERO!)", 1.0f, 100.0f);
-static CatVar particle_safe(CV_INT, "gui_bg_particles_safe_zone", "100", "Particles Safe Zone", "Defines snowflake safe zone (they will decay after reaching that point)", 0.0f, 400.0f);
-static CatVar particle_gravity(CV_FLOAT, "gui_bg_particles_gravity", "700", "Particles Gravity", "Defines snowflake gravity (HAS TO BE NONZERO!)", 0.01f, 2400.0f);
-static CatVar particle_jittering(CV_INT, "gui_bg_particles_jittering", "2", "Particles Jittering", "Defines snowflake jittering amount", 0.0f, 10.0f);
-static CatVar particle_wind(CV_INT, "gui_bg_particles_wind", "0", "Particles Wind", "Wind strength and direction", -500.0f, 500.0f);
-static CatVar particle_jittering_chance(CV_INT, "gui_bg_particles_jittering_chance", "60", "Snowflake Jittering Rate", "Defines snowflake jittering rate (HAS TO BE NONZERO!)", 1.0f, 20.0f);
-static CatEnum background_visible_enum({"NEVER", "MENU", "ALWAYS"});
-static CatVar background_visible(background_visible_enum, "gui_bg_visible", "1", "Render background", "Render background when");
+static CatVar particles(CV_SWITCH, XStr("gui_bg_particles"), XStr("0"), XStr("Particles"));
+static CatEnum particle_type_enum({XStr("Snowflake"), XStr("Raindrop"), XStr("Flame"), XStr("Heart"), XStr("Raindrop 2"), XStr("Random")});
+static CatVar particle_type(particle_type_enum, XStr("gui_bg_particles_type"), XStr("0"), XStr("Particles Type"), XStr("Defines particle type"));
+static CatVar particle_chance(CV_INT, XStr("gui_bg_particles_chance"), XStr("10"), XStr("Particles Spawn Rate"), XStr("Defines snowflake spawn rate (HAS TO BE NONZERO!)"), 1.0f, 100.0f);
+static CatVar particle_pack_size(CV_INT, XStr("gui_bg_particles_pack_size"), XStr("10"), XStr("Particles Max Pack"), XStr("Defines max snowflake spawn pack size (HAS TO BE NONZERO!)"), 1.0f, 100.0f);
+static CatVar particle_safe(CV_INT, XStr("gui_bg_particles_safe_zone"), XStr("100"), XStr("Particles Safe Zone"), XStr("Defines snowflake safe zone (they will decay after reaching that point)"), 0.0f, 400.0f);
+static CatVar particle_gravity(CV_FLOAT, XStr("gui_bg_particles_gravity"), XStr("700"), XStr("Particles Gravity"), XStr("Defines snowflake gravity (HAS TO BE NONZERO!)"), 0.01f, 2400.0f);
+static CatVar particle_jittering(CV_INT, XStr("gui_bg_particles_jittering"), XStr("2"), XStr("Particles Jittering"), XStr("Defines snowflake jittering amount"), 0.0f, 10.0f);
+static CatVar particle_wind(CV_INT, XStr("gui_bg_particles_wind"), XStr("0"), XStr("Particles Wind"), XStr("Wind strength and direction"), -500.0f, 500.0f);
+static CatVar particle_jittering_chance(CV_INT, XStr("gui_bg_particles_jittering_chance"), XStr("60"), XStr("Snowflake Jittering Rate"), XStr("Defines snowflake jittering rate (HAS TO BE NONZERO!)"), 1.0f, 20.0f);
+static CatEnum background_visible_enum({XStr("NEVER"), XStr("MENU"), XStr("ALWAYS")});
+static CatVar background_visible(background_visible_enum, XStr("gui_bg_visible"), XStr("1"), XStr("Render background"), XStr("Render background when"));
 
 bool Background::AlwaysVisible() {
 	return (int)background_visible == 2;

@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /***************************************************************************
  *   Copyright (C) 2009 by VisualData                                      *
  *                                                                         *
@@ -30,12 +33,12 @@ segvcatch::handler handler_fpe = 0;
 
 void default_segv()
 {
-    throw "Segmentation fault";
+    throw XStr("Segmentation fault");
 }
 
 void default_fpe()
 {
-    throw "Floating-point exception";
+    throw XStr("Floating-point exception");
 }
 
 void handle_segv()

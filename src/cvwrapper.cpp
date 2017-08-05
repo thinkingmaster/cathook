@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * cvwrapper.cpp
  *
@@ -18,7 +21,7 @@ int GetRebasedCatVarCount() {
 	return rebased_count;
 }
 
-static CatCommand cfg_rebase("cfg_setbase", "Rebase config", []() {
+static CatCommand cfg_rebase(XStr("cfg_setbase"), XStr("Rebase config"), []() {
 	for (auto& cv : CatVarList()) {
 		std::string value(cv->GetString());
 		if (value != cv->defaults) {
@@ -26,56 +29,56 @@ static CatCommand cfg_rebase("cfg_setbase", "Rebase config", []() {
 			rebased_count++;
 		}
 	}
-	logging::Info("Successfully rebased %d variables", rebased_count);
+	logging::Info(XStr("Successfully rebased %d variables"), rebased_count);
 });
 
-static CatCommand cfg_resetbase("cfg_resetbase", "Reset config base", []() {
+static CatCommand cfg_resetbase(XStr("cfg_resetbase"), XStr("Reset config base"), []() {
 	for (auto& cv : CatVarList()) {
 		cv->current_base = cv->defaults;
 	}
 	rebased_count = 0;
 });
 
-static CatCommand save_settings("save", "Save settings (optional filename)", [](const CCommand& args) {
-	std::string filename("lastcfg");
+static CatCommand save_settings(XStr("save"), XStr("Save settings (optional filename)"), [](const CCommand& args) {
+	std::string filename(XStr("lastcfg"));
 	if (args.ArgC() > 1) {
 		filename = std::string(args.Arg(1));
 	}
-	std::string path = format("tf/cfg/cat_", filename, ".cfg");
-	logging::Info("Saving settings to %s", path.c_str());
+	std::string path = format(XStr("tf/cfg/cat_"), filename, XStr(".cfg"));
+	logging::Info(XStr("Saving settings to %s"), path.c_str());
 	if (GetRebasedCatVarCount()) {
-		logging::Info("[Warning] %d CatVars are rebased!", GetRebasedCatVarCount());
+		logging::Info(XStr("[Warning] %d CatVars are rebased!"), GetRebasedCatVarCount());
 	}
 	std::ofstream file(path, std::ios::out);
 	if (file.bad()) {
-		logging::Info("Couldn't open the file!");
+		logging::Info(XStr("Couldn't open the file!"));
 		return;
 	}
 	for (const auto& i : CatVarList()) {
 		if (i->GetBase() != std::string(i->GetString())) {
-			file << CON_PREFIX << i->name << " \"" << i->GetString() << "\"\n";
+			file << CON_PREFIX << i->name << XStr(" \"") << i->GetString() << XStr("\"\n");
 		}
 	}
 	file.close();
 });
 
-static CatCommand save_settings_complete("save_complete", "Save all settings (optional filename)", [](const CCommand& args) {
-	std::string filename("lastcfg");
+static CatCommand save_settings_complete(XStr("save_complete"), XStr("Save all settings (optional filename)"), [](const CCommand& args) {
+	std::string filename(XStr("lastcfg"));
 	if (args.ArgC() > 1) {
 		filename = std::string(args.Arg(1));
 	}
-	std::string path = format("tf/cfg/cat_", filename, ".cfg");
-	logging::Info("Saving settings to %s", path.c_str());
+	std::string path = format(XStr("tf/cfg/cat_"), filename, XStr(".cfg"));
+	logging::Info(XStr("Saving settings to %s"), path.c_str());
 	if (GetRebasedCatVarCount()) {
-		logging::Info("[Warning] %d CatVars are rebased!", GetRebasedCatVarCount());
+		logging::Info(XStr("[Warning] %d CatVars are rebased!"), GetRebasedCatVarCount());
 	}
 	std::ofstream file(path, std::ios::out);
 	if (file.bad()) {
-		logging::Info("Couldn't open the file!");
+		logging::Info(XStr("Couldn't open the file!"));
 		return;
 	}
 	for (const auto& i : CatVarList()) {
-		file << CON_PREFIX << i->name << " \"" << i->GetString() << "\"\n";
+		file << CON_PREFIX << i->name << XStr(" \"") << i->GetString() << XStr("\"\n");
 	}
 	file.close();
 });
@@ -113,7 +116,7 @@ void CatCommand::Register() {
 	strncpy(help_c, help.c_str(), 255);
 	if (callback) cmd = new ConCommand(name_c, callback, help_c);
 	else if (callback_void) cmd = new ConCommand(name_c, callback_void, help_c);
-	else throw std::logic_error("no callback in CatCommand");
+	else throw std::logic_error(XStr("no callback in CatCommand"));
 	g_ICvar->RegisterConCommand(cmd);
 	RegisteredCommandsList().push_back(cmd);
 	// name_c and help_c are not freed because ConCommandBase doesn't copy them
@@ -194,7 +197,7 @@ std::string CatEnum::Name(int value) {
 	if (value >= min_value && value < max_value) {
 		return value_names.at(unsigned(value) - unsigned(min_value));
 	}
-	return "unknown";
+	return XStr("unknown");
 }
 
 std::vector<CatVar*>& CatVarList() {

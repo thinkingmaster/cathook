@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * entityhitboxcache.hpp
  *
@@ -60,7 +63,7 @@ public:
 
 extern EntityHitboxCache array[2048];
 inline EntityHitboxCache& Get(unsigned i) {
-	if (i > 2048) throw std::out_of_range("Requested out-of-range entity hitbox cache entry!");
+	if (i > 2048) throw std::out_of_range(XStr("Requested out-of-range entity hitbox cache entry!"));
 	return array[i];
 }
 

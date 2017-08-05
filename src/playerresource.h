@@ -1,3 +1,6 @@
+
+#include "xorstring.hpp"
+
 /*
  * playerresource.h
  *

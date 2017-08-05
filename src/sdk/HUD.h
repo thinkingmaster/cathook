@@ -1,3 +1,6 @@
+
+#include "../xorstring.hpp"
+
 /*
  * HUD.h
  *
@@ -18,7 +21,7 @@ public:
 	inline void Printf(const char* string) {
 		typedef void(*original_t)(CHudBaseChat*, int, const char*, ...);
 		original_t function = vfunc<original_t>(this, 0x15);
-		function(this, 0, "%s", string);
+		function(this, 0, XStr("%s"), string);
 	}
 };
 
