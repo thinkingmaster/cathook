@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 #pragma once
 
 // Copypasted from Darkstorm 2015 linux base

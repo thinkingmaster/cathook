@@ -1,6 +1,3 @@
-
-#include "../../xorstring.hpp"
-
 /*
  * Playerlist.cpp
  *
@@ -23,11 +20,11 @@ void RenderPlayer(int eid) {
 	if (success) {
 		int x = 0;
 		// UserID
-		ImGui::Text(XStr("%d"), info.userID);
+		ImGui::Text("%d", info.userID);
 		x += 48;
 		ImGui::SameLine(x);
 		// SteamID
-		ImGui::Text(XStr("%u"), info.friendsID);
+		ImGui::Text("%u", info.friendsID);
 		x += 80;
 		ImGui::SameLine(x);
 
@@ -41,13 +38,13 @@ void RenderPlayer(int eid) {
 			safename[j++] = info.name[i];
 		}
 
-		ImGui::Text(XStr("%s"), safename);
+		ImGui::Text("%s", safename);
 		x += 8 * 32;
 		ImGui::SameLine(x);
 
 		int iclazz = 0;
 		rgba_t bgcolor = colors::empty;
-		const char* text = XStr("N/A");
+		const char* text = "N/A";
 		IF_GAME (IsTF()) {
 			iclazz = g_pPlayerResource->GetClass(ENTITY(eid));
 			int team = g_pPlayerResource->GetTeam(eid);
@@ -67,7 +64,7 @@ void RenderPlayer(int eid) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a));
 		}
 
-		ImGui::Text(XStr("%s"), text);
+		ImGui::Text("%s", text);
 		x += 80;
 		ImGui::SameLine(x);
 
@@ -82,7 +79,7 @@ void RenderPlayer(int eid) {
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a));
 		}
 		ImGui::PushItemWidth(120);
-		ImGui::Combo(XStr(""), &state, playerlist::k_pszNames, 5);
+		ImGui::Combo("", &state, playerlist::k_pszNames, 5);
 		ImGui::PopItemWidth();
 
 		x += 124;
@@ -94,26 +91,26 @@ void RenderPlayer(int eid) {
 		if (backpacktf::enabled()) {
 			ImGui::SameLine(x);
 			if (info.fakeplayer) {
-				ImGui::Text(XStr("[BOT]"));
+				ImGui::Text("[BOT]");
 			} else if (!info.friendsID) {
-				ImGui::Text(XStr("Unknown"));
+				ImGui::Text("Unknown");
 			} else {
 				const auto& d = backpacktf::get_data(info.friendsID);
 				if (d.bad && not d.pending) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-					ImGui::Text(XStr("Error"));
+					ImGui::Text("Error");
 				} else if (d.pending) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
-					ImGui::Text(XStr("Loading"));
+					ImGui::Text("Loading");
 				} else if (d.no_value) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-					ImGui::Text(XStr("Private?"));
+					ImGui::Text("Private?");
 				} else if (d.outdated_value) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
-					ImGui::Text(XStr("$%.2f"), d.value);
+					ImGui::Text("$%.2f", d.value);
 				} else {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.8f, 0.0f, 1.0f));
-					ImGui::Text(XStr("$%.2f"), d.value);
+					ImGui::Text("$%.2f", d.value);
 				}
 				ImGui::PopStyleColor();
 			}
@@ -121,7 +118,7 @@ void RenderPlayer(int eid) {
 		}
 		ImGui::SameLine(x);
 		ImGui::PushItemWidth(200.0f);
-		if (ImGui::ColorEdit3(XStr(""), data.color)) {
+		if (ImGui::ColorEdit3("", data.color)) {
 			if (!data.color.r && !data.color.b && !data.color.g) {
 				data.color = colors::empty;
 			} else {
@@ -136,7 +133,7 @@ void RenderPlayer(int eid) {
 
 void RenderPlayerlist() {
 	if (!g_IEngine->IsInGame()) return;
-	if (ImGui::Begin(XStr("Player List"))) {
+	if (ImGui::Begin("Player List")) {
 		ImGui::SetWindowSize(ImVec2(0, 0));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 1));
 		std::vector<int> teammates {};

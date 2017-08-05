@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // stb_truetype.h - v1.14 - public domain
 // authored from 2009-2016 by Sean Barrett / RAD Game Tools
 //
@@ -31,7 +28,7 @@
 //       github:IntellectualKitty
 //
 //   Bug/warning reports/fixes:
-//       XStr("Zer") on mollyrocket (with fix)
+//       "Zer" on mollyrocket (with fix)
 //       Cass Everitt
 //       stoiko (Haemimont Games)
 //       Brian Hook 
@@ -42,7 +39,7 @@
 //       Anthony Pesch
 //       Johan Duparc
 //       Hou Qiming
-//       Fabian XStr("ryg") Giesen
+//       Fabian "ryg" Giesen
 //       Martins Mozeiko
 //       Cap Petschulat
 //       Omar Cornut
@@ -99,7 +96,7 @@
 //           stbtt_PackEnd()
 //           stbtt_GetPackedQuad()
 //
-//   XStr("Load") a font file from a memory buffer (you have to keep the buffer loaded)
+//   "Load" a font file from a memory buffer (you have to keep the buffer loaded)
 //           stbtt_InitFont()
 //           stbtt_GetFontOffsetForIndex()        -- indexing for TTC font collections
 //           stbtt_GetNumberOfFonts()             -- number of fonts for TTC font collections
@@ -127,7 +124,7 @@
 //
 //   Immediately after this block comment are a series of sample programs.
 //
-//   After the sample programs is the XStr("header file") section. This section
+//   After the sample programs is the "header file" section. This section
 //   includes documentation for each API function.
 //
 //   Some important concepts to understand to use this library:
@@ -135,7 +132,7 @@
 //      Codepoint
 //         Characters are defined by unicode codepoints, e.g. 65 is
 //         uppercase A, 231 is lowercase c with a cedilla, 0x7e30 is
-//         the hiragana for XStr("ma").
+//         the hiragana for "ma".
 //
 //      Glyph
 //         A visual character shape (every codepoint is rendered as
@@ -150,9 +147,9 @@
 //         and below the baseline.
 //
 //      Current Point
-//         As you draw text to the screen, you keep track of a XStr("current point")
+//         As you draw text to the screen, you keep track of a "current point"
 //         which is the origin of each character. The current point's vertical
-//         position is the baseline. Even XStr("baked fonts") use this model.
+//         position is the baseline. Even "baked fonts" use this model.
 //
 //      Vertical Font Metrics
 //         The vertical qualities of the font, used to vertically position
@@ -163,10 +160,10 @@
 //         is to specify how tall the font's vertical extent should be in pixels.
 //         If that sounds good enough, skip the next paragraph.
 //
-//         Most font APIs instead use XStr("points"), which are a common typographic
+//         Most font APIs instead use "points", which are a common typographic
 //         measurement for describing font size, defined as 72 points per inch.
 //         stb_truetype provides a point API for compatibility. However, true
-//         XStr("per inch") conventions don't make much sense on computer displays
+//         "per inch" conventions don't make much sense on computer displays
 //         since they different monitors have different number of pixels per
 //         inch. For example, Windows traditionally uses a convention that
 //         there are 96 pixels per inch, thus making 'inch' measurements have
@@ -252,7 +249,7 @@ GLuint ftex;
 
 void my_stbtt_initfont(void)
 {
-   fread(ttf_buffer, 1, 1<<20, fopen(XStr("c:/windows/fonts/times.ttf"), XStr("rb")));
+   fread(ttf_buffer, 1, 1<<20, fopen("c:/windows/fonts/times.ttf", "rb"));
    stbtt_BakeFontBitmap(ttf_buffer,0, 32.0, temp_bitmap,512,512, 32,96, cdata); // no guarantee this fits!
    // can free ttf_buffer at this point
    glGenTextures(1, &ftex);
@@ -301,14 +298,14 @@ int main(int argc, char **argv)
    unsigned char *bitmap;
    int w,h,i,j,c = (argc > 1 ? atoi(argv[1]) : 'a'), s = (argc > 2 ? atoi(argv[2]) : 20);
 
-   fread(ttf_buffer, 1, 1<<25, fopen(argc > 3 ? argv[3] : XStr("c:/windows/fonts/arialbd.ttf"), XStr("rb")));
+   fread(ttf_buffer, 1, 1<<25, fopen(argc > 3 ? argv[3] : "c:/windows/fonts/arialbd.ttf", "rb"));
 
    stbtt_InitFont(&font, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer,0));
    bitmap = stbtt_GetCodepointBitmap(&font, 0,stbtt_ScaleForPixelHeight(&font, s), c, &w, &h, 0,0);
 
    for (j=0; j < h; ++j) {
       for (i=0; i < w; ++i)
-         putchar(XStr(" .:ioVM@")[bitmap[j*w+i]>>5]);
+         putchar(" .:ioVM@"[bitmap[j*w+i]>>5]);
       putchar('\n');
    }
    return 0;
@@ -330,7 +327,7 @@ int main(int argc, char **argv)
 //  
 //////////////////////////////////////////////////////////////////////////////
 // 
-// Complete program: print XStr("Hello World!") banner, with bugs
+// Complete program: print "Hello World!" banner, with bugs
 //
 #if 0
 char buffer[24<<20];
@@ -341,9 +338,9 @@ int main(int arg, char **argv)
    stbtt_fontinfo font;
    int i,j,ascent,baseline,ch=0;
    float scale, xpos=2; // leave a little padding in case the character extends left
-   char *text = XStr("Heljo World!"); // intentionally misspelled to show 'lj' brokenness
+   char *text = "Heljo World!"; // intentionally misspelled to show 'lj' brokenness
 
-   fread(buffer, 1, 1000000, fopen(XStr("c:/windows/fonts/arialbd.ttf"), XStr("rb")));
+   fread(buffer, 1, 1000000, fopen("c:/windows/fonts/arialbd.ttf", "rb"));
    stbtt_InitFont(&font, buffer, 0);
 
    scale = stbtt_ScaleForPixelHeight(&font, 15);
@@ -359,7 +356,7 @@ int main(int arg, char **argv)
       // note that this stomps the old data, so where character boxes overlap (e.g. 'lj') it's wrong
       // because this API is really for baking character bitmaps into textures. if you want to render
       // a sequence of characters, you really need to render each bitmap to a temp buffer, then
-      // XStr("alpha blend") that into the working buffer
+      // "alpha blend" that into the working buffer
       xpos += (advance * scale);
       if (text[ch+1])
          xpos += scale*stbtt_GetCodepointKernAdvance(&font, text[ch],text[ch+1]);
@@ -368,7 +365,7 @@ int main(int arg, char **argv)
 
    for (j=0; j < 20; ++j) {
       for (i=0; i < 78; ++i)
-         putchar(XStr(" .:ioVM@")[screen[j][i]>>5]);
+         putchar(" .:ioVM@"[screen[j][i]>>5]);
       putchar('\n');
    }
 
@@ -416,7 +413,7 @@ int main(int arg, char **argv)
    #define STBTT_fabs(x)      fabs(x)
    #endif
 
-   // #define your own functions XStr("STBTT_malloc") / XStr("STBTT_free") to avoid malloc.h
+   // #define your own functions "STBTT_malloc" / "STBTT_free" to avoid malloc.h
    #ifndef STBTT_malloc
    #include <stdlib.h>
    #define STBTT_malloc(x,u)  ((void)(u),malloc(x))
@@ -508,7 +505,7 @@ STBTT_DEF void stbtt_GetBakedQuad(stbtt_bakedchar *chardata, int pw, int ph,  //
 // The coordinate system used assumes y increases downwards.
 //
 // Characters will extend both above and below the current position;
-// see discussion of XStr("BASELINE") above.
+// see discussion of "BASELINE" above.
 //
 // It's inefficient; you might want to c&p it and optimize it.
 
@@ -539,7 +536,7 @@ STBTT_DEF int  stbtt_PackBegin(stbtt_pack_context *spc, unsigned char *pixels, i
 // Future calls using this context will pack characters into the bitmap passed
 // in here: a 1-channel bitmap that is width * height. stride_in_bytes is
 // the distance from one row to the next (or 0 to mean they are packed tightly
-// together). XStr("padding") is the amount of padding to leave between each
+// together). "padding" is the amount of padding to leave between each
 // character (normally you want '1' for bitmaps you'll use as textures with
 // bilinear filtering).
 //
@@ -697,7 +694,7 @@ STBTT_DEF int stbtt_FindGlyphIndex(const stbtt_fontinfo *info, int unicode_codep
 //
 
 STBTT_DEF float stbtt_ScaleForPixelHeight(const stbtt_fontinfo *info, float pixels);
-// computes a scale factor to produce a font whose XStr("height") is 'pixels' tall.
+// computes a scale factor to produce a font whose "height" is 'pixels' tall.
 // Height is measured as the distance from the highest ascender to the lowest
 // descender; in other words, it's equivalent to calling stbtt_GetFontVMetrics
 // and computing:
@@ -713,7 +710,7 @@ STBTT_DEF void stbtt_GetFontVMetrics(const stbtt_fontinfo *info, int *ascent, in
 // ascent is the coordinate above the baseline the font extends; descent
 // is the coordinate below the baseline the font extends (i.e. it is typically negative)
 // lineGap is the spacing between one row's descent and the next row's ascent...
-// so you should advance the vertical position by XStr("*ascent - *descent + *lineGap")
+// so you should advance the vertical position by "*ascent - *descent + *lineGap"
 //   these are expressed in unscaled coordinates, so you must multiply by
 //   the scale factor for a given size
 
@@ -768,7 +765,7 @@ STBTT_DEF int stbtt_IsGlyphEmpty(const stbtt_fontinfo *info, int glyph_index);
 STBTT_DEF int stbtt_GetCodepointShape(const stbtt_fontinfo *info, int unicode_codepoint, stbtt_vertex **vertices);
 STBTT_DEF int stbtt_GetGlyphShape(const stbtt_fontinfo *info, int glyph_index, stbtt_vertex **vertices);
 // returns # of vertices and fills *vertices with the pointer to them
-//   these are expressed in XStr("unscaled") coordinates
+//   these are expressed in "unscaled" coordinates
 //
 // The shape is a series of countours. Each one starts with
 // a STBTT_moveto, then consists of a series of mixed
@@ -874,8 +871,8 @@ STBTT_DEF void stbtt_Rasterize(stbtt__bitmap *result,        // 1-channel bitmap
 
 STBTT_DEF int stbtt_FindMatchingFont(const unsigned char *fontdata, const char *name, int flags);
 // returns the offset (not index) of the font that matches, or -1 if none
-//   if you use STBTT_MACSTYLE_DONTCARE, use a font name like XStr("Arial Bold").
-//   if you use any other flag, use a font name like XStr("Arial"); this checks
+//   if you use STBTT_MACSTYLE_DONTCARE, use a font name like "Arial Bold".
+//   if you use any other flag, use a font name like "Arial"; this checks
 //     the 'macStyle' header field; i don't know if fonts set this consistently
 #define STBTT_MACSTYLE_DONTCARE     0
 #define STBTT_MACSTYLE_BOLD         1
@@ -964,7 +961,7 @@ enum { // languageID for STBTT_PLATFORM_ID_MAC
 #endif
 
 #if STBTT_MAX_OVERSAMPLE > 255
-#error XStr("STBTT_MAX_OVERSAMPLE cannot be > 255")
+#error "STBTT_MAX_OVERSAMPLE cannot be > 255"
 #endif
 
 typedef int stbtt__test_oversample_pow2[(STBTT_MAX_OVERSAMPLE & (STBTT_MAX_OVERSAMPLE-1)) == 0 ? 1 : -1];
@@ -1149,10 +1146,10 @@ static int stbtt__isfont(stbtt_uint8 *font)
 {
    // check the version number
    if (stbtt_tag4(font, '1',0,0,0))  return 1; // TrueType 1
-   if (stbtt_tag(font, XStr("typ1")))   return 1; // TrueType with type 1 font -- we don't support this!
-   if (stbtt_tag(font, XStr("OTTO")))   return 1; // OpenType with CFF
+   if (stbtt_tag(font, "typ1"))   return 1; // TrueType with type 1 font -- we don't support this!
+   if (stbtt_tag(font, "OTTO"))   return 1; // OpenType with CFF
    if (stbtt_tag4(font, 0,1,0,0)) return 1; // OpenType 1.0
-   if (stbtt_tag(font, XStr("true")))   return 1; // Apple specification for TrueType fonts
+   if (stbtt_tag(font, "true"))   return 1; // Apple specification for TrueType fonts
    return 0;
 }
 
@@ -1177,7 +1174,7 @@ static int stbtt_GetFontOffsetForIndex_internal(unsigned char *font_collection, 
       return index == 0 ? 0 : -1;
 
    // check if it's a TTC
-   if (stbtt_tag(font_collection, XStr("ttcf"))) {
+   if (stbtt_tag(font_collection, "ttcf")) {
       // version 1?
       if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
          stbtt_int32 n = ttLONG(font_collection+8);
@@ -1196,7 +1193,7 @@ static int stbtt_GetNumberOfFonts_internal(unsigned char *font_collection)
       return 1;
 
    // check if it's a TTC
-   if (stbtt_tag(font_collection, XStr("ttcf"))) {
+   if (stbtt_tag(font_collection, "ttcf")) {
       // version 1?
       if (ttULONG(font_collection+4) == 0x00010000 || ttULONG(font_collection+4) == 0x00020000) {
          return ttLONG(font_collection+8);
@@ -1227,13 +1224,13 @@ static int stbtt_InitFont_internal(stbtt_fontinfo *info, unsigned char *data, in
    info->fontstart = fontstart;
    info->cff = stbtt__new_buf(NULL, 0);
 
-   cmap = stbtt__find_table(data, fontstart, XStr("cmap"));       // required
-   info->loca = stbtt__find_table(data, fontstart, XStr("loca")); // required
-   info->head = stbtt__find_table(data, fontstart, XStr("head")); // required
-   info->glyf = stbtt__find_table(data, fontstart, XStr("glyf")); // required
-   info->hhea = stbtt__find_table(data, fontstart, XStr("hhea")); // required
-   info->hmtx = stbtt__find_table(data, fontstart, XStr("hmtx")); // required
-   info->kern = stbtt__find_table(data, fontstart, XStr("kern")); // not required
+   cmap = stbtt__find_table(data, fontstart, "cmap");       // required
+   info->loca = stbtt__find_table(data, fontstart, "loca"); // required
+   info->head = stbtt__find_table(data, fontstart, "head"); // required
+   info->glyf = stbtt__find_table(data, fontstart, "glyf"); // required
+   info->hhea = stbtt__find_table(data, fontstart, "hhea"); // required
+   info->hmtx = stbtt__find_table(data, fontstart, "hmtx"); // required
+   info->kern = stbtt__find_table(data, fontstart, "kern"); // not required
 
    if (!cmap || !info->head || !info->hhea || !info->hmtx)
       return 0;
@@ -1246,7 +1243,7 @@ static int stbtt_InitFont_internal(stbtt_fontinfo *info, unsigned char *data, in
       stbtt_uint32 cstype = 2, charstrings = 0, fdarrayoff = 0, fdselectoff = 0;
       stbtt_uint32 cff;
 
-      cff = stbtt__find_table(data, fontstart, XStr("CFF "));
+      cff = stbtt__find_table(data, fontstart, "CFF ");
       if (!cff) return 0;
 
       info->fontdicts = stbtt__new_buf(NULL, 0);
@@ -1290,7 +1287,7 @@ static int stbtt_InitFont_internal(stbtt_fontinfo *info, unsigned char *data, in
       info->charstrings = stbtt__cff_get_index(&b);
    }
 
-   t = stbtt__find_table(data, fontstart, XStr("maxp"));
+   t = stbtt__find_table(data, fontstart, "maxp");
    if (t)
       info->numGlyphs = ttUSHORT(data+t+4);
    else
@@ -1866,7 +1863,7 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
       case 0x13: // hintmask
       case 0x14: // cntrmask
          if (in_header)
-            maskbits += (sp / 2); // implicit XStr("vstem")
+            maskbits += (sp / 2); // implicit "vstem"
          in_header = 0;
          stbtt__buf_skip(&b, (maskbits + 7) / 8);
          break;
@@ -1880,22 +1877,22 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
 
       case 0x15: // rmoveto
          in_header = 0;
-         if (sp < 2) return STBTT__CSERR(XStr("rmoveto stack"));
+         if (sp < 2) return STBTT__CSERR("rmoveto stack");
          stbtt__csctx_rmove_to(c, s[sp-2], s[sp-1]);
          break;
       case 0x04: // vmoveto
          in_header = 0;
-         if (sp < 1) return STBTT__CSERR(XStr("vmoveto stack"));
+         if (sp < 1) return STBTT__CSERR("vmoveto stack");
          stbtt__csctx_rmove_to(c, 0, s[sp-1]);
          break;
       case 0x16: // hmoveto
          in_header = 0;
-         if (sp < 1) return STBTT__CSERR(XStr("hmoveto stack"));
+         if (sp < 1) return STBTT__CSERR("hmoveto stack");
          stbtt__csctx_rmove_to(c, s[sp-1], 0);
          break;
 
       case 0x05: // rlineto
-         if (sp < 2) return STBTT__CSERR(XStr("rlineto stack"));
+         if (sp < 2) return STBTT__CSERR("rlineto stack");
          for (; i + 1 < sp; i += 2)
             stbtt__csctx_rline_to(c, s[i], s[i+1]);
          break;
@@ -1904,10 +1901,10 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
       // starting from a different place.
 
       case 0x07: // vlineto
-         if (sp < 1) return STBTT__CSERR(XStr("vlineto stack"));
+         if (sp < 1) return STBTT__CSERR("vlineto stack");
          goto vlineto;
       case 0x06: // hlineto
-         if (sp < 1) return STBTT__CSERR(XStr("hlineto stack"));
+         if (sp < 1) return STBTT__CSERR("hlineto stack");
          for (;;) {
             if (i >= sp) break;
             stbtt__csctx_rline_to(c, s[i], 0);
@@ -1920,10 +1917,10 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
          break;
 
       case 0x1F: // hvcurveto
-         if (sp < 4) return STBTT__CSERR(XStr("hvcurveto stack"));
+         if (sp < 4) return STBTT__CSERR("hvcurveto stack");
          goto hvcurveto;
       case 0x1E: // vhcurveto
-         if (sp < 4) return STBTT__CSERR(XStr("vhcurveto stack"));
+         if (sp < 4) return STBTT__CSERR("vhcurveto stack");
          for (;;) {
             if (i + 3 >= sp) break;
             stbtt__csctx_rccurve_to(c, 0, s[i], s[i+1], s[i+2], s[i+3], (sp - i == 5) ? s[i + 4] : 0.0f);
@@ -1936,30 +1933,30 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
          break;
 
       case 0x08: // rrcurveto
-         if (sp < 6) return STBTT__CSERR(XStr("rcurveline stack"));
+         if (sp < 6) return STBTT__CSERR("rcurveline stack");
          for (; i + 5 < sp; i += 6)
             stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
          break;
 
       case 0x18: // rcurveline
-         if (sp < 8) return STBTT__CSERR(XStr("rcurveline stack"));
+         if (sp < 8) return STBTT__CSERR("rcurveline stack");
          for (; i + 5 < sp - 2; i += 6)
             stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
-         if (i + 1 >= sp) return STBTT__CSERR(XStr("rcurveline stack"));
+         if (i + 1 >= sp) return STBTT__CSERR("rcurveline stack");
          stbtt__csctx_rline_to(c, s[i], s[i+1]);
          break;
 
       case 0x19: // rlinecurve
-         if (sp < 8) return STBTT__CSERR(XStr("rlinecurve stack"));
+         if (sp < 8) return STBTT__CSERR("rlinecurve stack");
          for (; i + 1 < sp - 6; i += 2)
             stbtt__csctx_rline_to(c, s[i], s[i+1]);
-         if (i + 5 >= sp) return STBTT__CSERR(XStr("rlinecurve stack"));
+         if (i + 5 >= sp) return STBTT__CSERR("rlinecurve stack");
          stbtt__csctx_rccurve_to(c, s[i], s[i+1], s[i+2], s[i+3], s[i+4], s[i+5]);
          break;
 
       case 0x1A: // vvcurveto
       case 0x1B: // hhcurveto
-         if (sp < 4) return STBTT__CSERR(XStr("(vv|hh)curveto stack"));
+         if (sp < 4) return STBTT__CSERR("(vv|hh)curveto stack");
          f = 0.0;
          if (sp & 1) { f = s[i]; i++; }
          for (; i + 3 < sp; i += 4) {
@@ -1979,18 +1976,18 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
          }
          // fallthrough
       case 0x1D: // callgsubr
-         if (sp < 1) return STBTT__CSERR(XStr("call(g|)subr stack"));
+         if (sp < 1) return STBTT__CSERR("call(g|)subr stack");
          v = (int) s[--sp];
-         if (subr_stack_height >= 10) return STBTT__CSERR(XStr("recursion limit"));
+         if (subr_stack_height >= 10) return STBTT__CSERR("recursion limit");
          subr_stack[subr_stack_height++] = b;
          b = stbtt__get_subr(b0 == 0x0A ? subrs : info->gsubrs, v);
-         if (b.size == 0) return STBTT__CSERR(XStr("subr not found"));
+         if (b.size == 0) return STBTT__CSERR("subr not found");
          b.cursor = 0;
          clear_stack = 0;
          break;
 
       case 0x0B: // return
-         if (subr_stack_height <= 0) return STBTT__CSERR(XStr("return outside subr"));
+         if (subr_stack_height <= 0) return STBTT__CSERR("return outside subr");
          b = subr_stack[--subr_stack_height];
          clear_stack = 0;
          break;
@@ -2004,10 +2001,10 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
          float dx, dy;
          int b1 = stbtt__buf_get8(&b);
          switch (b1) {
-         // @TODO These XStr("flex") implementations ignore the flex-depth and resolution,
+         // @TODO These "flex" implementations ignore the flex-depth and resolution,
          // and always draw beziers.
          case 0x22: // hflex
-            if (sp < 7) return STBTT__CSERR(XStr("hflex stack"));
+            if (sp < 7) return STBTT__CSERR("hflex stack");
             dx1 = s[0];
             dx2 = s[1];
             dy2 = s[2];
@@ -2020,7 +2017,7 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
             break;
 
          case 0x23: // flex
-            if (sp < 13) return STBTT__CSERR(XStr("flex stack"));
+            if (sp < 13) return STBTT__CSERR("flex stack");
             dx1 = s[0];
             dy1 = s[1];
             dx2 = s[2];
@@ -2039,7 +2036,7 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
             break;
 
          case 0x24: // hflex1
-            if (sp < 9) return STBTT__CSERR(XStr("hflex1 stack"));
+            if (sp < 9) return STBTT__CSERR("hflex1 stack");
             dx1 = s[0];
             dy1 = s[1];
             dx2 = s[2];
@@ -2054,7 +2051,7 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
             break;
 
          case 0x25: // flex1
-            if (sp < 11) return STBTT__CSERR(XStr("flex1 stack"));
+            if (sp < 11) return STBTT__CSERR("flex1 stack");
             dx1 = s[0];
             dy1 = s[1];
             dx2 = s[2];
@@ -2077,13 +2074,13 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
             break;
 
          default:
-            return STBTT__CSERR(XStr("unimplemented"));
+            return STBTT__CSERR("unimplemented");
          }
       } break;
 
       default:
          if (b0 != 255 && b0 != 28 && (b0 < 32 || b0 > 254))
-            return STBTT__CSERR(XStr("reserved operator"));
+            return STBTT__CSERR("reserved operator");
 
          // push immediate
          if (b0 == 255) {
@@ -2092,14 +2089,14 @@ static int stbtt__run_charstring(const stbtt_fontinfo *info, int glyph_index, st
             stbtt__buf_skip(&b, -1);
             f = (float)(stbtt_int16)stbtt__cff_int(&b);
          }
-         if (sp >= 48) return STBTT__CSERR(XStr("push stack overflow"));
+         if (sp >= 48) return STBTT__CSERR("push stack overflow");
          s[sp++] = f;
          clear_stack = 0;
          break;
       }
       if (clear_stack) sp = 0;
    }
-   return STBTT__CSERR(XStr("no endchar"));
+   return STBTT__CSERR("no endchar");
 
 #undef STBTT__CSERR
 }
@@ -2338,7 +2335,7 @@ typedef struct stbtt__active_edge
    float sy;
    float ey;
    #else
-   #error XStr("Unrecognized value of STBTT_RASTERIZER_VERSION")
+   #error "Unrecognized value of STBTT_RASTERIZER_VERSION"
    #endif
 } stbtt__active_edge;
 
@@ -2387,7 +2384,7 @@ static stbtt__active_edge *stbtt__new_active(stbtt__hheap *hh, stbtt__edge *e, i
    return z;
 }
 #else
-#error XStr("Unrecognized value of STBTT_RASTERIZER_VERSION")
+#error "Unrecognized value of STBTT_RASTERIZER_VERSION"
 #endif
 
 #if STBTT_RASTERIZER_VERSION == 1
@@ -2831,7 +2828,7 @@ static void stbtt__rasterize_sorted_edges(stbtt__bitmap *result, stbtt__edge *e,
       STBTT_free(scanline, userdata);
 }
 #else
-#error XStr("Unrecognized value of STBTT_RASTERIZER_VERSION")
+#error "Unrecognized value of STBTT_RASTERIZER_VERSION"
 #endif
 
 #define STBTT__COMPARE(a,b)  ((a)->y0 < (b)->y0)
@@ -2937,7 +2934,7 @@ static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcou
 #elif STBTT_RASTERIZER_VERSION == 2
    int vsubsample = 1;
 #else
-   #error XStr("Unrecognized value of STBTT_RASTERIZER_VERSION")
+   #error "Unrecognized value of STBTT_RASTERIZER_VERSION"
 #endif
    // vsubsample should divide 255 evenly; otherwise we won't reach full opacity
 
@@ -3014,7 +3011,7 @@ static int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x
 
 static void stbtt__tesselate_cubic(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, float objspace_flatness_squared, int n)
 {
-   // @TODO this XStr("flatness") calculation is just made-up nonsense that seems to work well enough
+   // @TODO this "flatness" calculation is just made-up nonsense that seems to work well enough
    float dx0 = x1-x0;
    float dy0 = y1-y0;
    float dx1 = x2-x1;
@@ -3063,7 +3060,7 @@ static stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, 
    float objspace_flatness_squared = objspace_flatness * objspace_flatness;
    int i,n=0,start=0, pass;
 
-   // count how many XStr("moves") there are to get the contour count
+   // count how many "moves" there are to get the contour count
    for (i=0; i < num_verts; ++i)
       if (vertices[i].type == STBTT_vmove)
          ++n;
@@ -3566,7 +3563,7 @@ static float stbtt__oversample_shift(int oversample)
    if (!oversample)
       return 0.0f;
 
-   // The prefilter is a box filter of width XStr("oversample"),
+   // The prefilter is a box filter of width "oversample",
    // which shifts phase by (oversample - 1)/2 pixels in
    // oversampled space. We want to shift in the opposite
    // direction to counter this.
@@ -3823,7 +3820,7 @@ STBTT_DEF const char *stbtt_GetFontNameString(const stbtt_fontinfo *font, int *l
    stbtt_int32 i,count,stringOffset;
    stbtt_uint8 *fc = font->data;
    stbtt_uint32 offset = font->fontstart;
-   stbtt_uint32 nm = stbtt__find_table(fc, offset, XStr("name"));
+   stbtt_uint32 nm = stbtt__find_table(fc, offset, "name");
    if (!nm) return NULL;
 
    count = ttUSHORT(fc+nm+2);
@@ -3894,11 +3891,11 @@ static int stbtt__matches(stbtt_uint8 *fc, stbtt_uint32 offset, stbtt_uint8 *nam
 
    // check italics/bold/underline flags in macStyle...
    if (flags) {
-      hd = stbtt__find_table(fc, offset, XStr("head"));
+      hd = stbtt__find_table(fc, offset, "head");
       if ((ttUSHORT(fc+hd+44) & 7) != (flags & 7)) return 0;
    }
 
-   nm = stbtt__find_table(fc, offset, XStr("name"));
+   nm = stbtt__find_table(fc, offset, "name");
    if (!nm) return 0;
 
    if (flags) {
@@ -3928,7 +3925,7 @@ static int stbtt_FindMatchingFont_internal(unsigned char *font_collection, char 
 
 #if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored XStr("-Wcast-qual")
+#pragma GCC diagnostic ignored "-Wcast-qual"
 #endif
 
 STBTT_DEF int stbtt_BakeFontBitmap(const unsigned char *data, int offset,

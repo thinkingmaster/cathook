@@ -1,6 +1,3 @@
-
-#include "../../xorstring.hpp"
-
 /*
  * CritIndicator.cpp
  *
@@ -13,11 +10,11 @@
 
 namespace menu { namespace ncc {
 
-CatVar ci_enabled(CV_SWITCH, XStr("gui_ncc_crit_indicator"), XStr("1"), XStr("Crit Indicator"));
-CatVar ci_x(CV_INT, XStr("gui_ncc_crit_indicator_x"), XStr("400"), XStr("Crit Indicator X"));
-CatVar ci_y(CV_INT, XStr("gui_ncc_crit_indicator_y"), XStr("150"), XStr("Crit Indicator Y"));
+CatVar ci_enabled(CV_SWITCH, "gui_ncc_crit_indicator", "1", "Crit Indicator");
+CatVar ci_x(CV_INT, "gui_ncc_crit_indicator_x", "400", "Crit Indicator X");
+CatVar ci_y(CV_INT, "gui_ncc_crit_indicator_y", "150", "Crit Indicator Y");
 
-CritIndicator::CritIndicator() : CBaseWidget(XStr("ncc_crit_indicator")),
+CritIndicator::CritIndicator() : CBaseWidget("ncc_crit_indicator"),
 	crit_normal(&_binary_crit_1_start, 64, 64),
 	crit_none(&_binary_crit_2_start, 64, 64),
 	crit_ready(&_binary_crit_3_start, 64, 64),

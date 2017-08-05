@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * entitycache.h
  *
@@ -128,7 +125,7 @@ namespace entity_cache {
 
 extern CachedEntity array[MAX_ENTITIES]; // b1g fat array in
 inline CachedEntity& Get(int idx) {
-	if (idx < 0 || idx >= 2048) throw std::out_of_range(XStr("Entity index out of range!"));
+	if (idx < 0 || idx >= 2048) throw std::out_of_range("Entity index out of range!");
 	return array[idx];
 }
 void Update();

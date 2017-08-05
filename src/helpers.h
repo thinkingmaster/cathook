@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * helpers.h
  *
@@ -95,16 +92,16 @@ bool HasDarwins(CachedEntity* ent);
 bool AmbassadorCanHeadshot();
 
 inline const char* teamname(int team) {
-	if (team == 2) return XStr("RED");
-	else if (team == 3) return XStr("BLU");
-	return XStr("SPEC");
+	if (team == 2) return "RED";
+	else if (team == 3) return "BLU";
+	return "SPEC";
 }
 extern const std::string classes[10];
 inline const char* classname(int clazz) {
 	if (clazz > 0 && clazz < 10) {
 		return classes[clazz - 1].c_str();
 	}
-	return XStr("Unknown");
+	return "Unknown";
 }
 
 void PrintChat(const char* fmt, ...);

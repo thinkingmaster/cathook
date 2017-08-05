@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -37,7 +34,7 @@ namespace ftgl {
  * int main( int arrgc, char *argv[] )
  * {
  *     font_manager_t * manager = manager_new( 512, 512, 1 );
- *     texture_font_t * font = font_manager_get( manager, XStr("Mono"), 12, 0, 0 );
+ *     texture_font_t * font = font_manager_get( manager, "Mono", 12, 0, 0 );
  *
  *     return 0;
  * }

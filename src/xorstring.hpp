@@ -8,5 +8,4 @@
 #pragma once
 
 // TODO stub
-#define XStr(s) s
-#define LXStr(s) L##s
+#define XS(s) s

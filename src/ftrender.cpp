@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * ftrender.cpp
  *
@@ -38,23 +35,23 @@ mat4 model, view, projection;
 void FTGL_PreInit() {
 	pen.x = pen.y = 0;
 	atlas = texture_atlas_new(1024, 1024, 1);
-	buffer = vertex_buffer_new(XStr("vertex:3f,tex_coord:2f,color:4f"));
+	buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
 	mat4_set_identity(&projection);
 	mat4_set_identity(&view);
 	mat4_set_identity(&model);
 	mat4_set_orthographic(&projection, 0, draw::width, 0, draw::height, -1, 1);
-	fonts::ftgl_ESP = ftgl::texture_font_new_from_file(atlas, 14, XStr("cathook/fonts/opensans-bold.ttf"));
-	logging::Info(XStr("Pre-Init done %d %d"), draw::width, draw::height);
+	fonts::ftgl_ESP = ftgl::texture_font_new_from_file(atlas, 14, "cathook/fonts/opensans-bold.ttf");
+	logging::Info("Pre-Init done %d %d", draw::width, draw::height);
 }
 
 void FTGL_Init() {
-	logging::Info(XStr("Init glew.."));
+	logging::Info("Init glew..");
 	glewInit();
-	logging::Info(XStr("Done..."));
+	logging::Info("Done...");
 	glGenTextures(1, &atlas->id);
-	logging::Info(XStr("Loading shaders..."));
-	shader = shader_load(XStr("cathook/shaders/v3f-t2f-c4f.vert"), XStr("cathook/shaders/v3f-t2f-c4f.frag"));
-	logging::Info(XStr("Done init"));
+	logging::Info("Loading shaders...");
+	shader = shader_load("cathook/shaders/v3f-t2f-c4f.vert", "cathook/shaders/v3f-t2f-c4f.frag");
+	logging::Info("Done init");
 }
 
 void add_text(vertex_buffer_t * buffer, texture_font_t * font,
@@ -116,7 +113,7 @@ void FTGL_NewFrame() {
 
 void FTGL_ChangeFont(texture_font_t** font, const char* newfont) {
 	texture_atlas_clear(atlas);
-	texture_font_t* replacement = texture_font_new_from_file(atlas, 14, strfmt(XStr("cathook/fonts/%s.ttf"), newfont));
+	texture_font_t* replacement = texture_font_new_from_file(atlas, 14, strfmt("cathook/fonts/%s.ttf", newfont));
 	if (replacement) {
 		texture_font_delete(*font);
 		*font = replacement;
@@ -133,15 +130,15 @@ void FTGL_Render() {
 
 	glUseProgram(shader);
 	if (!loc_init) {
-		loc_texture = glGetUniformLocation(shader, XStr("texture"));
-		loc_model = glGetUniformLocation(shader, XStr("model"));
-		loc_view = glGetUniformLocation(shader, XStr("view"));
-		loc_projection = glGetUniformLocation(shader, XStr("projection"));
+		loc_texture = glGetUniformLocation(shader, "texture");
+		loc_model = glGetUniformLocation(shader, "model");
+		loc_view = glGetUniformLocation(shader, "view");
+		loc_projection = glGetUniformLocation(shader, "projection");
 		loc_init = true;
 	}
 	glBindTexture(GL_TEXTURE_2D, atlas->id);
 	if (atlas->dirty) {
-		logging::Info(XStr("[DEBUG] Atlas updated."));
+		logging::Info("[DEBUG] Atlas updated.");
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

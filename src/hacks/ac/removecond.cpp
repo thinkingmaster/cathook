@@ -1,6 +1,3 @@
-
-#include "../../xorstring.hpp"
-
 /*
  * removecond.cpp
  *
@@ -13,8 +10,8 @@
 
 namespace ac { namespace removecond {
 
-static CatVar removecond_detect(CV_SWITCH, XStr("ac_removecond"), XStr("0"), XStr("Detect RemoveCond"));
-static CatVar removecond_timer(CV_FLOAT, XStr("ac_removecond_timer"), XStr("1.1"), XStr("RemoveCond timer"));
+static CatVar removecond_detect(CV_SWITCH, "ac_removecond", "0", "Detect RemoveCond");
+static CatVar removecond_timer(CV_FLOAT, "ac_removecond_timer", "1.1", "RemoveCond timer");
 
 ac_data data_table[32] {};
 
@@ -39,7 +36,7 @@ void Update(CachedEntity* player) {
 			if (d.stime && (simtime - d.stime > float(removecond_timer))) {
 				d.detections++;
 				if (tickcount - d.last_accusation > 60 * 30 || !d.last_accusation) {
-					hacks::shared::anticheat::Accuse(player->m_IDX, XStr("Crithack/Removecond"), format(XStr("Detections: "), d.detections, XStr(" dt: "), simtime - d.stime));
+					hacks::shared::anticheat::Accuse(player->m_IDX, "Crithack/Removecond", format("Detections: ", d.detections, " dt: ", simtime - d.stime));
 					d.last_accusation = tickcount;
 				}
 			}

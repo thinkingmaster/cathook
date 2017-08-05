@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -39,7 +36,7 @@ namespace ftgl {
  * vec4 none   = {{1.0, 1.0, 1.0, 0.0}};
  *
  * markup_t normal = {
- *     .family  = XStr("Droid Serif"),
+ *     .family  = "Droid Serif",
  *     .size = 24.0,
  *     .bold = 0,
  *     .italic = 0,
@@ -66,7 +63,7 @@ namespace ftgl {
 typedef struct markup_t
 {
     /**
-     * A font family name such as XStr("normal"), XStr("sans"), XStr("serif") or XStr("monospace").
+     * A font family name such as "normal", "sans", "serif" or "monospace".
      */
     char * family;
 

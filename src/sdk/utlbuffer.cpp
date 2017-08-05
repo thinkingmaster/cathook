@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // $Header: $
@@ -57,28 +54,28 @@ public:
 //-----------------------------------------------------------------------------
 // List of character conversions
 //-----------------------------------------------------------------------------
-BEGIN_CUSTOM_CHAR_CONVERSION( CUtlCStringConversion, s_StringCharConversion, XStr("\""), '\\' )
-	{ '\n', XStr("n") },
-	{ '\t', XStr("t") },
-	{ '\v', XStr("v") },
-	{ '\b', XStr("b") },
-	{ '\r', XStr("r") },
-	{ '\f', XStr("f") },
-	{ '\a', XStr("a") },
-	{ '\\', XStr("\\") },
-	{ '\?', XStr("\?") },
-	{ '\'', XStr("\'") },
-	{ '\"', XStr("\"") },
-END_CUSTOM_CHAR_CONVERSION( CUtlCStringConversion, s_StringCharConversion, XStr("\""), '\\' )
+BEGIN_CUSTOM_CHAR_CONVERSION( CUtlCStringConversion, s_StringCharConversion, "\"", '\\' )
+	{ '\n', "n" },
+	{ '\t', "t" },
+	{ '\v', "v" },
+	{ '\b', "b" },
+	{ '\r', "r" },
+	{ '\f', "f" },
+	{ '\a', "a" },
+	{ '\\', "\\" },
+	{ '\?', "\?" },
+	{ '\'', "\'" },
+	{ '\"', "\"" },
+END_CUSTOM_CHAR_CONVERSION( CUtlCStringConversion, s_StringCharConversion, "\"", '\\' )
 
 CUtlCharConversion *GetCStringCharConversion()
 {
 	return &s_StringCharConversion;
 }
 
-BEGIN_CUSTOM_CHAR_CONVERSION( CUtlNoEscConversion, s_NoEscConversion, XStr("\""), 0x7F )
-	{ 0x7F, XStr("") },
-END_CUSTOM_CHAR_CONVERSION( CUtlNoEscConversion, s_NoEscConversion, XStr("\""), 0x7F )
+BEGIN_CUSTOM_CHAR_CONVERSION( CUtlNoEscConversion, s_NoEscConversion, "\"", 0x7F )
+	{ 0x7F, "" },
+END_CUSTOM_CHAR_CONVERSION( CUtlNoEscConversion, s_NoEscConversion, "\"", 0x7F )
 
 CUtlCharConversion *GetNoEscCharConversion()
 {
@@ -1647,7 +1644,7 @@ bool CUtlBuffer::ConvertCRLF( CUtlBuffer &outBuf )
 		const char *pCurr = &pBase[nCurrGet];
 		if ( bFromCRLF )
 		{
-			const char *pNext = Q_strnistr( pCurr, XStr("\r\n"), nInCount - nCurrGet );
+			const char *pNext = Q_strnistr( pCurr, "\r\n", nInCount - nCurrGet );
 			if ( !pNext )
 			{
 				outBuf.Put( pCurr, nInCount - nCurrGet );

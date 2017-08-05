@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * entitycache.cpp
  *
@@ -50,9 +47,9 @@ void CachedEntity::Reset() {
 
 CachedEntity::~CachedEntity() {}
 
-static CatVar ve_window(CV_FLOAT, XStr("debug_ve_window"), XStr("0"), XStr("VE Window"));
-static CatVar ve_smooth(CV_SWITCH, XStr("debug_ve_smooth"), XStr("1"), XStr("VE Smoothing"));
-static CatVar ve_averager_size(CV_INT, XStr("debug_ve_averaging"), XStr("8"), XStr("VE Averaging"));
+static CatVar ve_window(CV_FLOAT, "debug_ve_window", "0", "VE Window");
+static CatVar ve_smooth(CV_SWITCH, "debug_ve_smooth", "1", "VE Smoothing");
+static CatVar ve_averager_size(CV_INT, "debug_ve_averaging", "8", "VE Averaging");
 
 void CachedEntity::Update() {
 	SEGV_BEGIN
@@ -186,10 +183,10 @@ void CachedEntity::Update() {
 		m_iHealth = NET_INT(raw, netvar.iBuildingHealth);
 		m_iMaxHealth = NET_INT(raw, netvar.iBuildingMaxHealth);
 	}
-	SEGV_END_INFO(XStr("Updating entity"));
+	SEGV_END_INFO("Updating entity");
 }
 
-static CatVar fast_vischeck(CV_SWITCH, XStr("fast_vischeck"), XStr("0"), XStr("Fast VisCheck"), XStr("VisCheck only certain player hitboxes"));
+static CatVar fast_vischeck(CV_SWITCH, "fast_vischeck", "0", "Fast VisCheck", "VisCheck only certain player hitboxes");
 
 bool CachedEntity::IsVisible() {
 	static constexpr int optimal_hitboxes[] = { hitbox_t::head, hitbox_t::foot_L, hitbox_t::hand_R, hitbox_t::spine_1 };

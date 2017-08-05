@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // stb_rect_pack.h - v0.10 - public domain - rectangle packing
 // Sean Barrett 2014
 //
@@ -124,7 +121,7 @@ STBRP_DEF void stbrp_init_target (stbrp_context *context, int width, int height,
 //
 // You must call this function every time you start packing into a new target.
 //
-// There is no XStr("shutdown") function. The 'nodes' memory must stay valid for
+// There is no "shutdown" function. The 'nodes' memory must stay valid for
 // the following stbrp_pack_rects() call (or calls), but can be freed after
 // the call (or calls) finish.
 //

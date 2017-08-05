@@ -1,6 +1,3 @@
-
-#include "../../xorstring.hpp"
-
 /*
  * bhop.cpp
  *
@@ -13,7 +10,7 @@
 
 namespace ac { namespace bhop {
 
-static CatVar bhop_detect_count(CV_INT, XStr("ac_bhop_count"), XStr("4"), XStr("BHop Detections"));
+static CatVar bhop_detect_count(CV_INT, "ac_bhop_count", "4", "BHop Detections");
 
 ac_data data_table[32] {};
 
@@ -44,9 +41,9 @@ void Update(CachedEntity* player) {
 				data.detections++;
 				// TODO FIXME
 				if (data.detections >= int(bhop_detect_count)) {
-					logging::Info(XStr("[%d] Suspected BHop: %d"), player->m_IDX, data.detections);
+					logging::Info("[%d] Suspected BHop: %d", player->m_IDX, data.detections);
 					if ((tickcount - data.last_accusation) > 600) {
-						hacks::shared::anticheat::Accuse(player->m_IDX, XStr("Bunnyhop"), format(XStr("Perfect jumps = "), data.detections));
+						hacks::shared::anticheat::Accuse(player->m_IDX, "Bunnyhop", format("Perfect jumps = ", data.detections));
 						data.last_accusation = tickcount;
 					}
 				}

@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * drawmgr.cpp
  *
@@ -22,7 +19,7 @@ void BeginCheatVisuals() {
 
 std::mutex drawing_mutex;
 
-CatVar info_text(CV_SWITCH, XStr("info"), XStr("1"), XStr("Show info"), XStr("Show cathook version in top left corner"));
+CatVar info_text(CV_SWITCH, "info", "1", "Show info", "Show cathook version in top left corner");
 
 void DrawCheatVisuals() {
 	std::lock_guard<std::mutex> draw_lock(drawing_mutex);
@@ -35,12 +32,12 @@ void DrawCheatVisuals() {
 			PROF_SECTION(DRAW_info);
 			std::string name_s, reason_s;
 			PROF_SECTION(PT_info_text);
-			AddSideString(XStr("cathook by nullifiedcat"), colors::RainbowCurrent());
+			AddSideString("cathook by nullifiedcat", colors::RainbowCurrent());
 			AddSideString(hack::GetVersion(), GUIColor()); // github commit and date
 			AddSideString(hack::GetType(), GUIColor()); //  Compile type
 #if ENABLE_GUI
-			AddSideString(XStr("Press 'INSERT' or 'F11' key to open/close cheat menu."), GUIColor());
-			AddSideString(XStr("Use mouse to navigate in menu."), GUIColor());
+			AddSideString("Press 'INSERT' or 'F11' key to open/close cheat menu.", GUIColor());
+			AddSideString("Use mouse to navigate in menu.", GUIColor());
 #endif
 			if (!g_IEngine->IsInGame()
 #if ENABLE_GUI
@@ -48,12 +45,12 @@ void DrawCheatVisuals() {
 #endif
 			) {
 				name_s = force_name.GetString();
-				if (name_s.length() < 3) name_s = XStr("*Not Set*");
+				if (name_s.length() < 3) name_s = "*Not Set*";
 				reason_s = disconnect_reason.GetString();
-				if (reason_s.length() < 3) reason_s = XStr("*Not Set*");
-				AddSideString(XStr("")); // foolish
-				AddSideString(format(XStr("Custom Name: "), name_s), GUIColor());
-				AddSideString(format(XStr("Custom Disconnect Reason: "), reason_s), GUIColor());
+				if (reason_s.length() < 3) reason_s = "*Not Set*";
+				AddSideString(""); // foolish
+				AddSideString(format("Custom Name: ", name_s), GUIColor());
+				AddSideString(format("Custom Disconnect Reason: ", reason_s), GUIColor());
 			}
 		}
 		if (CE_GOOD(g_pLocalPlayer->entity) && !g_Settings.bInvalid) {

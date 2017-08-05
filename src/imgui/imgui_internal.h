@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // dear imgui, v1.51 WIP
 // (internals)
 
@@ -24,9 +21,9 @@
 
 #ifdef __clang__
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored XStr("-Wunused-function")        // for stb_textedit.h
-#pragma clang diagnostic ignored XStr("-Wmissing-prototypes")     // for stb_textedit.h
-#pragma clang diagnostic ignored XStr("-Wold-style-cast")
+#pragma clang diagnostic ignored "-Wunused-function"        // for stb_textedit.h
+#pragma clang diagnostic ignored "-Wmissing-prototypes"     // for stb_textedit.h
+#pragma clang diagnostic ignored "-Wold-style-cast"
 #endif
 
 //-----------------------------------------------------------------------------
@@ -141,7 +138,7 @@ static inline float  ImInvLength(const ImVec2& lhs, float fail_value)           
 static inline float  ImFloor(float f)                                           { return (float)(int)f; }
 static inline ImVec2 ImFloor(ImVec2 v)                                          { return ImVec2((float)(int)v.x, (float)(int)v.y); }
 
-// We call C++ constructor on own allocated memory via the placement XStr("new(ptr) Type()") syntax.
+// We call C++ constructor on own allocated memory via the placement "new(ptr) Type()" syntax.
 // Defining a custom placement new() with a dummy parameter allows us to bypass including <new> which on some platforms complains when user has disabled exceptions.
 #ifdef IMGUI_DEFINE_PLACEMENT_NEW
 struct ImPlacementNewDummy {};
@@ -514,7 +511,7 @@ struct ImGuiContext
         OsImePosRequest = OsImePosSet = ImVec2(-1.0f, -1.0f);
 
         ModalWindowDarkeningRatio = 0.0f;
-        OverlayDrawList._OwnerName = XStr("##Overlay"); // Give it a name for debugging
+        OverlayDrawList._OwnerName = "##Overlay"; // Give it a name for debugging
         MouseCursor = ImGuiMouseCursor_Arrow;
         memset(MouseCursorData, 0, sizeof(MouseCursorData));
 
@@ -632,7 +629,7 @@ struct IMGUI_API ImGuiWindow
     ImVec2                  SizeContentsExplicit;               // Size of contents explicitly set by the user via SetNextWindowContentSize()
     ImRect                  ContentsRegionRect;                 // Maximum visible content position in window coordinates. ~~ (SizeContentsExplicit ? SizeContentsExplicit : Size - ScrollbarSizes) - CursorStartPos, per axis
     ImVec2                  WindowPadding;                      // Window padding at the time of begin. We need to lock it, in particular manipulation of the ShowBorder would have an effect
-    ImGuiID                 MoveId;                             // == window->GetID(XStr("#MOVE"))
+    ImGuiID                 MoveId;                             // == window->GetID("#MOVE")
     ImVec2                  Scroll;
     ImVec2                  ScrollTarget;                       // target scroll position. stored as cursor position with scrolling canceled out, so the highest point is always 0.0f. (FLT_MAX for no change)
     ImVec2                  ScrollTargetCenterRatio;            // 0.0f = scroll so that target position is at top, 0.5f = scroll so that target position is centered
@@ -700,7 +697,7 @@ public:
 
 namespace ImGui
 {
-    // We should always have a CurrentWindow in the stack (there is an implicit XStr("Debug") window)
+    // We should always have a CurrentWindow in the stack (there is an implicit "Debug" window)
     // If this ever crash because g.CurrentWindow is NULL it means that either
     // - ImGui::NewFrame() has never been called, which is illegal.
     // - You are calling ImGui functions after ImGui::Render() and before the next ImGui::NewFrame(), which is also illegal.

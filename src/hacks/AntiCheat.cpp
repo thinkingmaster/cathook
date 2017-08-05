@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * AntiCheat.cpp
  *
@@ -20,22 +17,22 @@
 
 namespace hacks { namespace shared { namespace anticheat {
 
-static CatVar enabled(CV_SWITCH, XStr("ac_enabled"), XStr("0"), XStr("Enable AC"));
-static CatVar accuse_chat(CV_SWITCH, XStr("ac_chat"), XStr("0"), XStr("Accuse in chat"));
+static CatVar enabled(CV_SWITCH, "ac_enabled", "0", "Enable AC");
+static CatVar accuse_chat(CV_SWITCH, "ac_chat", "0", "Accuse in chat");
 
 void Accuse(int eid, const std::string& hack, const std::string& details) {
 	player_info_s info;
 	if (g_IEngine->GetPlayerInfo(eid, &info)) {
 		CachedEntity* ent = ENTITY(eid);
 		if (accuse_chat) {
-			hack::command_stack().push(format(XStr("say \""), info.name, XStr(" ("), classname(CE_INT(ent, netvar.iClass)), XStr(") suspected "), hack, XStr(": "), details,XStr("\"")));
+			hack::command_stack().push(format("say \"", info.name, " (", classname(CE_INT(ent, netvar.iClass)), ") suspected ", hack, ": ", details,"\""));
 		} else {
-			PrintChat(XStr("\x07%06X%s\x01 (%s) suspected \x07%06X%s\x01: %s"), colors::chat::team(ENTITY(eid)->m_iTeam), info.name, classname(CE_INT(ent, netvar.iClass)), 0xe05938, hack.c_str(), details.c_str());
+			PrintChat("\x07%06X%s\x01 (%s) suspected \x07%06X%s\x01: %s", colors::chat::team(ENTITY(eid)->m_iTeam), info.name, classname(CE_INT(ent, netvar.iClass)), 0xe05938, hack.c_str(), details.c_str());
 		}
 	}
 }
 
-static CatVar skip_local(CV_SWITCH, XStr("ac_ignore_local"), XStr("1"), XStr("Ignore Local"));
+static CatVar skip_local(CV_SWITCH, "ac_ignore_local", "1", "Ignore Local");
 
 void CreateMove() {
 	if (!enabled) return;
@@ -72,12 +69,12 @@ public:
 	virtual void FireGameEvent(KeyValues* event) {
 		if (!enabled) return;
 		std::string name(event->GetName());
-		if (name == XStr("player_activate")) {
-			int uid = event->GetInt(XStr("userid"));
+		if (name == "player_activate") {
+			int uid = event->GetInt("userid");
 			int entity = g_IEngine->GetPlayerForUserID(uid);
 			ResetPlayer(entity);
-		} else if (name == XStr("player_disconnect")) {
-			int uid = event->GetInt(XStr("userid"));
+		} else if (name == "player_disconnect") {
+			int uid = event->GetInt("userid");
 			int entity = g_IEngine->GetPlayerForUserID(uid);
 			ResetPlayer(entity);
 		}

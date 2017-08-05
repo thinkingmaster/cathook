@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 #pragma once
 
 #include <unordered_map>
@@ -9,7 +6,7 @@
 #include <memory>
 #include "../logging.h"
 
-// this and the cpp are creds to XStr("Altimor")
+// this and the cpp are creds to "Altimor"
 
 class RecvTable;
 class RecvProp;
@@ -68,7 +65,7 @@ private:
 	int get_offset_recursive(map_type &map, int acc, const char *name)
 	{
 		if (!map.count(name)) {
-			logging::Info(XStr("can't find %s!"), name);
+			logging::Info("can't find %s!", name);
 			return 0;
 		}
 		return acc + map[name]->offset;
@@ -88,7 +85,7 @@ private:
 	int get_offset_recursive(map_type &map, int acc, const char *name, args_t... args)
 	{
 		if (!map.count(name)) {
-			logging::Info(XStr("can't find %s!"), name);
+			logging::Info("can't find %s!", name);
 			return 0;
 		}
 		const auto &node = map[name];
@@ -121,7 +118,7 @@ public:
 	{
 		const auto &node = nodes[name];
 		if (node == 0) {
-			logging::Info(XStr("Invalid NetVar node: %s"), name);
+			logging::Info("Invalid NetVar node: %s", name);
 			return 0;
 		}
 		int offset = get_offset_recursive(node->nodes, node->offset, args...);

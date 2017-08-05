@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // dear imgui, v1.51 WIP
 // (main code and documentation)
 
@@ -47,7 +44,7 @@
  - minimize setup and maintenance
  - minimize state storage on user side
  - portable, minimize dependencies, run on target (consoles, phones, etc.)
- - efficient runtime (NB- we do allocate when XStr("growing") content - creating a window / opening a tree node for the first time, etc. - but a typical frame won't allocate anything)
+ - efficient runtime (NB- we do allocate when "growing" content - creating a window / opening a tree node for the first time, etc. - but a typical frame won't allocate anything)
  - read about immediate-mode gui principles @ http://mollyrocket.com/861, http://mollyrocket.com/forums/index.html
 
  Designed for developers and content-creators, not the typical end-user! Some of the weaknesses includes:
@@ -100,7 +97,7 @@
          (if you don't need to render, you still need to call Render() and ignore the callback, or call EndFrame() instead. if you call neither some aspects of windows focusing/moving will appear broken.)
    - all rendering information are stored into command-lists until ImGui::Render() is called.
    - ImGui never touches or know about your GPU state. the only function that knows about GPU is the RenderDrawListFn handler that you provide.
-   - effectively it means you can create widgets at any time in your code, regardless of considerations of being in XStr("update") vs XStr("render") phases of your own application.
+   - effectively it means you can create widgets at any time in your code, regardless of considerations of being in "update" vs "render" phases of your own application.
    - refer to the examples applications in the examples/ folder for instruction on how to setup your code.
    - a typical application skeleton may be:
 
@@ -108,7 +105,7 @@
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize.x = 1920.0f;
         io.DisplaySize.y = 1280.0f;
-        io.IniFilename = XStr("imgui.ini");
+        io.IniFilename = "imgui.ini";
         io.RenderDrawListsFn = my_render_function;  // Setup a render function, or set to NULL and call GetDrawData() after Render() to access the render data.
         // TODO: Fill others settings of the io structure
 
@@ -136,7 +133,7 @@
             ImGui::NewFrame();
 
             // 3) most of your application code here
-            MyGameUpdate(); // may use any ImGui functions, e.g. ImGui::Begin(XStr("My window")); ImGui::Text(XStr("Hello, world!")); ImGui::End();
+            MyGameUpdate(); // may use any ImGui functions, e.g. ImGui::Begin("My window"); ImGui::Text("Hello, world!"); ImGui::End();
             MyGameRender(); // may use any ImGui functions
 
             // 4) render & swap video buffers
@@ -174,7 +171,7 @@
                        If this is confusing, pick the RGB value from title bar from an old screenshot and apply this as TitleBg/TitleBgActive. Or you may just create TitleBgActive from a tweaked TitleBg color.
  - 2016/05/07 (1.49) - removed confusing set of GetInternalState(), GetInternalStateSize(), SetInternalState() functions. Now using CreateContext(), DestroyContext(), GetCurrentContext(), SetCurrentContext().
  - 2016/05/02 (1.49) - renamed SetNextTreeNodeOpened() to SetNextTreeNodeOpen(), no redirection.
- - 2016/05/01 (1.49) - obsoleted old signature of CollapsingHeader(const char* label, const char* str_id = NULL, bool display_frame = true, bool default_open = false) as extra parameters were badly designed and rarely used. You can replace the XStr("default_open = true") flag in new API with CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen).
+ - 2016/05/01 (1.49) - obsoleted old signature of CollapsingHeader(const char* label, const char* str_id = NULL, bool display_frame = true, bool default_open = false) as extra parameters were badly designed and rarely used. You can replace the "default_open = true" flag in new API with CollapsingHeader(label, ImGuiTreeNodeFlags_DefaultOpen).
  - 2016/04/26 (1.49) - changed ImDrawList::PushClipRect(ImVec4 rect) to ImDraw::PushClipRect(Imvec2 min,ImVec2 max,bool intersect_with_current_clip_rect=false). Note that higher-level ImGui::PushClipRect() is preferable because it will clip at logic/widget level, whereas ImDrawList::PushClipRect() only affect your renderer.
  - 2016/04/03 (1.48) - removed style.WindowFillAlphaDefault setting which was redundant. Bake default BG alpha inside style.Colors[ImGuiCol_WindowBg] and all other Bg color values. (ref github issue #337).
  - 2016/04/03 (1.48) - renamed ImGuiCol_TooltipBg to ImGuiCol_PopupBg, used by popups/menus and tooltips. popups/menus were previously using ImGuiCol_WindowBg. (ref github issue #337)
@@ -218,7 +215,7 @@
  - 2015/05/31 (1.40) - renamed GetWindowCollapsed() to IsWindowCollapsed() for consistency. Kept inline redirection function (will obsolete).
  - 2015/05/31 (1.40) - renamed IsRectClipped() to IsRectVisible() for consistency. Note that return value is opposite! Kept inline redirection function (will obsolete).
  - 2015/05/27 (1.40) - removed the third 'repeat_if_held' parameter from Button() - sorry! it was rarely used and inconsistent. Use PushButtonRepeat(true) / PopButtonRepeat() to enable repeat on desired buttons.
- - 2015/05/11 (1.40) - changed BeginPopup() API, takes a string identifier instead of a bool. ImGui needs to manage the open/closed state of popups. Call OpenPopup() to actually set the XStr("open") state of a popup. BeginPopup() returns true if the popup is opened.
+ - 2015/05/11 (1.40) - changed BeginPopup() API, takes a string identifier instead of a bool. ImGui needs to manage the open/closed state of popups. Call OpenPopup() to actually set the "open" state of a popup. BeginPopup() returns true if the popup is opened.
  - 2015/05/03 (1.40) - removed style.AutoFitPadding, using style.WindowPadding makes more sense (the default values were already the same).
  - 2015/04/13 (1.38) - renamed IsClipped() to IsRectClipped(). Kept inline redirection function until 1.50.
  - 2015/04/09 (1.38) - renamed ImDrawList::AddArc() to ImDrawList::AddArcFast() for compatibility with future API
@@ -285,7 +282,7 @@
       stb_truetype.h
     Don't overwrite imconfig.h if you have made modification to your copy.
     If you have a problem with a missing function/symbols, search for its name in the code, there will likely be a comment about it. 
-    Check the XStr("API BREAKING CHANGES") sections for a list of occasional API breaking changes. 
+    Check the "API BREAKING CHANGES" sections for a list of occasional API breaking changes. 
     Please report any issue to the GitHub page!
 
  Q: What is ImTextureID and how do I display an image?
@@ -311,42 +308,42 @@
 
    - Elements that are not clickable, such as Text() items don't need an ID.
 
-   - Interactive widgets require state to be carried over multiple frames (most typically ImGui often needs to remember what is the XStr("active") widget).
+   - Interactive widgets require state to be carried over multiple frames (most typically ImGui often needs to remember what is the "active" widget).
      to do so they need a unique ID. unique ID are typically derived from a string label, an integer index or a pointer.
 
-       Button(XStr("OK"));        // Label = XStr("OK"),     ID = hash of XStr("OK")
-       Button(XStr("Cancel"));    // Label = XStr("Cancel"), ID = hash of XStr("Cancel")
+       Button("OK");        // Label = "OK",     ID = hash of "OK"
+       Button("Cancel");    // Label = "Cancel", ID = hash of "Cancel"
 
-   - ID are uniquely scoped within windows, tree nodes, etc. so no conflict can happen if you have two buttons called XStr("OK") in two different windows
+   - ID are uniquely scoped within windows, tree nodes, etc. so no conflict can happen if you have two buttons called "OK" in two different windows
      or in two different locations of a tree.
 
    - If you have a same ID twice in the same location, you'll have a conflict:
 
-       Button(XStr("OK"));
-       Button(XStr("OK"));           // ID collision! Both buttons will be treated as the same.
+       Button("OK");
+       Button("OK");           // ID collision! Both buttons will be treated as the same.
 
      Fear not! this is easy to solve and there are many ways to solve it!
 
    - When passing a label you can optionally specify extra unique ID information within string itself. This helps solving the simpler collision cases.
-     use XStr("##") to pass a complement to the ID that won't be visible to the end-user:
+     use "##" to pass a complement to the ID that won't be visible to the end-user:
 
-       Button(XStr("Play"));         // Label = XStr("Play"),   ID = hash of XStr("Play")
-       Button(XStr("Play##foo1"));   // Label = XStr("Play"),   ID = hash of XStr("Play##foo1") (different from above)
-       Button(XStr("Play##foo2"));   // Label = XStr("Play"),   ID = hash of XStr("Play##foo2") (different from above)
+       Button("Play");         // Label = "Play",   ID = hash of "Play"
+       Button("Play##foo1");   // Label = "Play",   ID = hash of "Play##foo1" (different from above)
+       Button("Play##foo2");   // Label = "Play",   ID = hash of "Play##foo2" (different from above)
 
    - If you want to completely hide the label, but still need an ID:
 
-       Checkbox(XStr("##On"), &b);   // Label = XStr(""),       ID = hash of XStr("##On") (no label!)
+       Checkbox("##On", &b);   // Label = "",       ID = hash of "##On" (no label!)
 
    - Occasionally/rarely you might want change a label while preserving a constant ID. This allows you to animate labels.
      For example you may want to include varying information in a window title bar (and windows are uniquely identified by their ID.. obviously)
-     Use XStr("###") to pass a label that isn't part of ID:
+     Use "###" to pass a label that isn't part of ID:
 
-       Button(XStr("Hello###ID");   // Label = XStr("Hello"),  ID = hash of XStr("ID")
-       Button(XStr("World###ID");   // Label = XStr("World"),  ID = hash of XStr("ID") (same as above)
+       Button("Hello###ID";   // Label = "Hello",  ID = hash of "ID"
+       Button("World###ID";   // Label = "World",  ID = hash of "ID" (same as above)
 
-       sprintf(buf, XStr("My game (%f FPS)###MyGame"));
-       Begin(buf);            // Variable label,   ID = hash of XStr("MyGame")
+       sprintf(buf, "My game (%f FPS)###MyGame");
+       Begin(buf);            // Variable label,   ID = hash of "MyGame"
 
    - Use PushID() / PopID() to create scopes and avoid ID conflicts within the same Window.
      This is the most convenient way of distinguishing ID if you are iterating and creating many UI elements.
@@ -355,7 +352,7 @@
        for (int i = 0; i < 100; i++)
        {
          PushID(i);
-         Button(XStr("Click"));   // Label = XStr("Click"),  ID = hash of integer + XStr("label") (unique)
+         Button("Click");   // Label = "Click",  ID = hash of integer + "label" (unique)
          PopID();
        }
 
@@ -363,7 +360,7 @@
        {
          MyObject* obj = Objects[i];
          PushID(obj);
-         Button(XStr("Click"));   // Label = XStr("Click"),  ID = hash of pointer + XStr("label") (unique)
+         Button("Click");   // Label = "Click",  ID = hash of pointer + "label" (unique)
          PopID();
        }
 
@@ -371,26 +368,26 @@
        {
          MyObject* obj = Objects[i];
          PushID(obj->Name);
-         Button(XStr("Click"));   // Label = XStr("Click"),  ID = hash of string + XStr("label") (unique)
+         Button("Click");   // Label = "Click",  ID = hash of string + "label" (unique)
          PopID();
        }
 
    - More example showing that you can stack multiple prefixes into the ID stack:
 
-       Button(XStr("Click"));     // Label = XStr("Click"),  ID = hash of XStr("Click")
-       PushID(XStr("node"));
-       Button(XStr("Click"));     // Label = XStr("Click"),  ID = hash of XStr("node") + XStr("Click")
+       Button("Click");     // Label = "Click",  ID = hash of "Click"
+       PushID("node");
+       Button("Click");     // Label = "Click",  ID = hash of "node" + "Click"
          PushID(my_ptr);
-           Button(XStr("Click")); // Label = XStr("Click"),  ID = hash of XStr("node") + ptr + XStr("Click")
+           Button("Click"); // Label = "Click",  ID = hash of "node" + ptr + "Click"
          PopID();
        PopID();
 
    - Tree nodes implicitly creates a scope for you by calling PushID().
 
-       Button(XStr("Click"));     // Label = XStr("Click"),  ID = hash of XStr("Click")
-       if (TreeNode(XStr("node")))
+       Button("Click");     // Label = "Click",  ID = hash of "Click"
+       if (TreeNode("node"))
        {
-         Button(XStr("Click"));   // Label = XStr("Click"),  ID = hash of XStr("node") + XStr("Click")
+         Button("Click");   // Label = "Click",  ID = hash of "node" + "Click"
          TreePop();
        }
 
@@ -411,7 +408,7 @@
  A: Use the font atlas to load the TTF file you want:
 
       ImGuiIO& io = ImGui::GetIO();
-      io.Fonts->AddFontFromFileTTF(XStr("myfontfile.ttf"), size_in_pixels);
+      io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
       io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
 
  Q: How can I easily use icons in my application?
@@ -424,8 +421,8 @@
 
       ImGuiIO& io = ImGui::GetIO();
       ImFont* font0 = io.Fonts->AddFontDefault();
-      ImFont* font1 = io.Fonts->AddFontFromFileTTF(XStr("myfontfile.ttf"), size_in_pixels);
-      ImFont* font2 = io.Fonts->AddFontFromFileTTF(XStr("myfontfile2.ttf"), size_in_pixels);
+      ImFont* font1 = io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels);
+      ImFont* font2 = io.Fonts->AddFontFromFileTTF("myfontfile2.ttf", size_in_pixels);
       io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
       // the first loaded font gets used by default
       // use ImGui::PushFont()/ImGui::PopFont() to change the font at runtime
@@ -436,23 +433,23 @@
       config.OversampleV = 1;
       config.GlyphOffset.y -= 2.0f;      // Move everything by 2 pixels up
       config.GlyphExtraSpacing.x = 1.0f; // Increase spacing between characters
-      io.Fonts->LoadFromFileTTF(XStr("myfontfile.ttf"), size_pixels, &config);
+      io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, &config);
 
       // Combine multiple fonts into one (e.g. for icon fonts)
       ImWchar ranges[] = { 0xf000, 0xf3ff, 0 };
       ImFontConfig config;
       config.MergeMode = true;
       io.Fonts->AddFontDefault();
-      io.Fonts->LoadFromFileTTF(XStr("fontawesome-webfont.ttf"), 16.0f, &config, ranges); // Merge icon font
-      io.Fonts->LoadFromFileTTF(XStr("myfontfile.ttf"), size_pixels, NULL, &config, io.Fonts->GetGlyphRangesJapanese()); // Merge japanese glyphs
+      io.Fonts->LoadFromFileTTF("fontawesome-webfont.ttf", 16.0f, &config, ranges); // Merge icon font
+      io.Fonts->LoadFromFileTTF("myfontfile.ttf", size_pixels, NULL, &config, io.Fonts->GetGlyphRangesJapanese()); // Merge japanese glyphs
 
  Q: How can I display and input non-Latin characters such as Chinese, Japanese, Korean, Cyrillic?
  A: When loading a font, pass custom Unicode ranges to specify the glyphs to load. 
     All your strings needs to use UTF-8 encoding. Specifying literal in your source code using a local code page (such as CP-923 for Japanese or CP-1251 for Cyrillic) will not work.
-    In C++11 you can encode a string literal in UTF-8 by using the u8XStr("hello") syntax. Otherwise you can convert yourself to UTF-8 or load text data from file already saved as UTF-8.
+    In C++11 you can encode a string literal in UTF-8 by using the u8"hello" syntax. Otherwise you can convert yourself to UTF-8 or load text data from file already saved as UTF-8.
     You can also try to remap your local codepage characters to their Unicode codepoint using font->AddRemapChar(), but international users may have problems reading/editing your source code.
 
-      io.Fonts->AddFontFromFileTTF(XStr("myfontfile.ttf"), size_in_pixels, NULL, io.Fonts->GetGlyphRangesJapanese());  // Load Japanese characters
+      io.Fonts->AddFontFromFileTTF("myfontfile.ttf", size_in_pixels, NULL, io.Fonts->GetGlyphRangesJapanese());  // Load Japanese characters
       io.Fonts->GetTexDataAsRGBA32() or GetTexDataAsAlpha8()
       io.ImeWindowHandle = MY_HWND;      // To input using Microsoft IME, give ImGui the hwnd of your application
 
@@ -463,7 +460,7 @@
     then retrieve the ImDrawList* via GetWindowDrawList() and draw to it in any way you like.
 
  - tip: the construct 'IMGUI_ONCE_UPON_A_FRAME { ... }' will run the block of code only once a frame. You can use it to quickly add custom UI in the middle of a deep nested inner loop in your code.
- - tip: you can create widgets without a Begin()/End() block, they will go in an implicit window called XStr("Debug")
+ - tip: you can create widgets without a Begin()/End() block, they will go in an implicit window called "Debug"
  - tip: you can call Begin() multiple times with the same name during the same frame, it will keep appending to the same window. this is also useful to set yourself in the context of another window (to get/set other settings)
  - tip: you can call Render() multiple times (e.g for VR renders).
  - tip: call and read the ShowTestWindow() code in imgui_demo.cpp for more example of how to use ImGui!
@@ -475,7 +472,7 @@
  The list below consist mostly of ideas noted down before they are requested/discussed by users (at which point it usually moves to the github)
 
  - doc: add a proper documentation+regression testing system (#435)
- - window: add a way for very transient windows (non-saved, temporary overlay over hundreds of objects) to XStr("clean") up from the global window list. perhaps a lightweight explicit cleanup pass.
+ - window: add a way for very transient windows (non-saved, temporary overlay over hundreds of objects) to "clean" up from the global window list. perhaps a lightweight explicit cleanup pass.
  - window: calling SetNextWindowSize() every frame with <= 0 doesn't do anything, may be useful to allow (particularly when used for a single axis) (#690)
  - window: auto-fit feedback loop when user relies on any dynamic layout (window width multiplier, column) appears weird to end-user. clarify.
  - window: allow resizing of child windows (possibly given min/max for each axis?)
@@ -486,7 +483,7 @@
  - window: get size/pos helpers given names (see discussion in #249)
  - window: a collapsed window can be stuck behind the main menu bar?
  - window: when window is small, prioritize resize button over close button.
- - window: detect extra End() call that pop the XStr("Debug") window out and assert at call site instead of later.
+ - window: detect extra End() call that pop the "Debug" window out and assert at call site instead of later.
  - window/tooltip: allow to set the width of a tooltip to allow TextWrapped() etc. while keeping the height automatic.
  - window: increase minimum size of a window with menus or fix the menu rendering so that it doesn't look odd.
  - draw-list: maintaining bounding box per command would allow to merge draw command when clipping isn't relied on (typical non-scrolling window or non-overflowing column would merge with previous command).
@@ -542,7 +539,7 @@
 !- popups/menus: clarify usage of popups id, how MenuItem/Selectable closing parent popups affects the ID, etc. this is quite fishy needs improvement! (#331, #402)
  - popups: add variant using global identifier similar to Begin/End (#402)
  - popups: border options. richer api like BeginChild() perhaps? (#197)
- - tooltip: tooltip that doesn't fit in entire screen seems to lose their XStr("last preferred button") and may teleport when moving mouse
+ - tooltip: tooltip that doesn't fit in entire screen seems to lose their "last preferred button" and may teleport when moving mouse
  - menus: local shortcuts, global shortcuts (#456, #126)
  - menus: icons
  - menus: menubars: some sort of priority / effect of main menu-bar on desktop size?
@@ -557,7 +554,7 @@
  - drag'n drop, dragging helpers (carry dragging info, visualize drag source before clicking, drop target, etc.) (#143, #479)
  - plot: PlotLines() should use the polygon-stroke facilities (currently issues with averaging normals)
  - plot: make it easier for user to draw extra stuff into the graph (e.g: draw basis, highlight certain points, 2d plots, multiple plots)
- - plot: XStr("smooth") automatic scale over time, user give an input 0.0(full user scale) 1.0(full derived from value)
+ - plot: "smooth" automatic scale over time, user give an input 0.0(full user scale) 1.0(full derived from value)
  - plot: add a helper e.g. Plot(char* label, float value, float time_span=2.0f) that stores values and Plot them for you - probably another function name. and/or automatically allow to plot ANY displayed value (more reliance on stable ID)
  - slider: allow using the [-]/[+] buttons used by InputFloat()/InputInt()
  - slider: initial absolute click is imprecise. change to relative movement slider (same as scrollbar).
@@ -578,7 +575,7 @@
  - style: add window shadows.
  - style/optimization: store rounded corners in texture to use 1 quad per corner (filled and wireframe) to lower the cost of rounding.
  - style: color-box not always square?
- - style: a concept of XStr("compact style") that the end-user can easily rely on (e.g. PushStyleCompact()?) that maps to other settings? avoid implementing duplicate helpers such as SmallCheckbox(), etc.
+ - style: a concept of "compact style" that the end-user can easily rely on (e.g. PushStyleCompact()?) that maps to other settings? avoid implementing duplicate helpers such as SmallCheckbox(), etc.
  - style: try to make PushStyleVar() more robust to incorrect parameters (to be more friendly to edit & continues situation).
  - style: global scale setting.
  - style: WindowPadding needs to be EVEN needs the 0.5 multiplier probably have a subtle effect on clip rectangle
@@ -594,7 +591,7 @@
  - log: let user copy any window content to clipboard easily (CTRL+C on windows? while moving it? context menu?). code is commented because it fails with multiple Begin/End pairs.
  - filters: set a current filter that tree node can automatically query to hide themselves
  - filters: handle wildcards (with implicit leading/trailing *), regexps
- - shortcuts: add a shortcut api, e.g. parse XStr("&Save") and/or XStr("Save (CTRL+S)"), pass in to widgets or provide simple ways to use (button=activate, input=focus)
+ - shortcuts: add a shortcut api, e.g. parse "&Save" and/or "Save (CTRL+S)", pass in to widgets or provide simple ways to use (button=activate, input=focus)
 !- keyboard: tooltip & combo boxes are messing up / not honoring keyboard tabbing
  - keyboard: full keyboard navigation and focus. (#323)
  - focus: preserve ActiveId/focus stack state, e.g. when opening a menu and close it, previously selected InputText() focus gets restored (#622)
@@ -646,22 +643,22 @@
 
 // Clang warnings with -Weverything
 #ifdef __clang__
-#pragma clang diagnostic ignored XStr("-Wunknown-pragmas")        // warning : unknown warning group '-Wformat-pedantic *'        // not all warnings are known by all clang versions.. so ignoring warnings triggers new warnings on some configuration. great!
-#pragma clang diagnostic ignored XStr("-Wold-style-cast")         // warning : use of old-style cast                              // yes, they are more terse.
-#pragma clang diagnostic ignored XStr("-Wfloat-equal")            // warning : comparing floating point with == or != is unsafe   // storing and comparing against same constants (typically 0.0f) is ok.
-#pragma clang diagnostic ignored XStr("-Wformat-nonliteral")      // warning : format string is not a string literal              // passing non-literal to vsnformat(). yes, user passing incorrect format strings can crash the code.
-#pragma clang diagnostic ignored XStr("-Wexit-time-destructors")  // warning : declaration requires an exit-time destructor       // exit-time destruction order is undefined. if MemFree() leads to users code that has been disabled before exit it might cause problems. ImGui coding style welcomes static/globals.
-#pragma clang diagnostic ignored XStr("-Wglobal-constructors")    // warning : declaration requires a global destructor           // similar to above, not sure what the exact difference it.
-#pragma clang diagnostic ignored XStr("-Wsign-conversion")        // warning : implicit conversion changes signedness             //
-#pragma clang diagnostic ignored XStr("-Wformat-pedantic")        // warning : format specifies type 'void *' but the argument has type 'xxxx *' // unreasonable, would lead to casting every %p arg to void*. probably enabled by -pedantic. 
-#pragma clang diagnostic ignored XStr("-Wint-to-void-pointer-cast") // warning : cast to 'void *' from smaller integer type 'int' //
+#pragma clang diagnostic ignored "-Wunknown-pragmas"        // warning : unknown warning group '-Wformat-pedantic *'        // not all warnings are known by all clang versions.. so ignoring warnings triggers new warnings on some configuration. great!
+#pragma clang diagnostic ignored "-Wold-style-cast"         // warning : use of old-style cast                              // yes, they are more terse.
+#pragma clang diagnostic ignored "-Wfloat-equal"            // warning : comparing floating point with == or != is unsafe   // storing and comparing against same constants (typically 0.0f) is ok.
+#pragma clang diagnostic ignored "-Wformat-nonliteral"      // warning : format string is not a string literal              // passing non-literal to vsnformat(). yes, user passing incorrect format strings can crash the code.
+#pragma clang diagnostic ignored "-Wexit-time-destructors"  // warning : declaration requires an exit-time destructor       // exit-time destruction order is undefined. if MemFree() leads to users code that has been disabled before exit it might cause problems. ImGui coding style welcomes static/globals.
+#pragma clang diagnostic ignored "-Wglobal-constructors"    // warning : declaration requires a global destructor           // similar to above, not sure what the exact difference it.
+#pragma clang diagnostic ignored "-Wsign-conversion"        // warning : implicit conversion changes signedness             //
+#pragma clang diagnostic ignored "-Wformat-pedantic"        // warning : format specifies type 'void *' but the argument has type 'xxxx *' // unreasonable, would lead to casting every %p arg to void*. probably enabled by -pedantic. 
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast" // warning : cast to 'void *' from smaller integer type 'int' //
 #elif defined(__GNUC__)
-#pragma GCC diagnostic ignored XStr("-Wunused-function")          // warning: 'xxxx' defined but not used
-#pragma GCC diagnostic ignored XStr("-Wint-to-pointer-cast")      // warning: cast to pointer from integer of different size
-#pragma GCC diagnostic ignored XStr("-Wformat")                   // warning: format '%p' expects argument of type 'void*', but argument 6 has type 'ImGuiWindow*'
-#pragma GCC diagnostic ignored XStr("-Wdouble-promotion")         // warning: implicit conversion from 'float' to 'double' when passing argument to function
-#pragma GCC diagnostic ignored XStr("-Wconversion")               // warning: conversion to 'xxxx' from 'xxxx' may alter its value
-#pragma GCC diagnostic ignored XStr("-Wcast-qual")                // warning: cast from type 'xxxx' to type 'xxxx' casts away qualifiers
+#pragma GCC diagnostic ignored "-Wunused-function"          // warning: 'xxxx' defined but not used
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"      // warning: cast to pointer from integer of different size
+#pragma GCC diagnostic ignored "-Wformat"                   // warning: format '%p' expects argument of type 'void*', but argument 6 has type 'ImGuiWindow*'
+#pragma GCC diagnostic ignored "-Wdouble-promotion"         // warning: implicit conversion from 'float' to 'double' when passing argument to function
+#pragma GCC diagnostic ignored "-Wconversion"               // warning: conversion to 'xxxx' from 'xxxx' may alter its value
+#pragma GCC diagnostic ignored "-Wcast-qual"                // warning: cast from type 'xxxx' to type 'xxxx' casts away qualifiers
 #endif
 
 //-------------------------------------------------------------------------
@@ -828,8 +825,8 @@ ImGuiIO::ImGuiIO()
     DisplaySize = ImVec2(-1.0f, -1.0f);
     DeltaTime = 1.0f/60.0f;
     IniSavingRate = 5.0f;
-    IniFilename = XStr("imgui.ini");
-    LogFilename = XStr("imgui_log.txt");
+    IniFilename = "imgui.ini";
+    LogFilename = "imgui_log.txt";
     Fonts = &GImDefaultFontAtlas;
     FontGlobalScale = 1.0f;
     FontDefault = NULL;
@@ -896,9 +893,9 @@ void ImGuiIO::AddInputCharactersUTF8(const char* utf8_chars)
 
 // Play it nice with Windows users. Notepad in 2015 still doesn't display text data with Unix-style \n.
 #ifdef _WIN32
-#define IM_NEWLINE XStr("\r\n")
+#define IM_NEWLINE "\r\n"
 #else
-#define IM_NEWLINE XStr("\n")
+#define IM_NEWLINE "\n"
 #endif
 
 bool ImIsPointInTriangle(const ImVec2& p, const ImVec2& a, const ImVec2& b, const ImVec2& c)
@@ -1031,7 +1028,7 @@ ImU32 ImHash(const void* data, int data_size, ImU32 seed)
         // Zero-terminated string
         while (unsigned char c = *current++)
         {
-            // We support a syntax of XStr("label###id") where only XStr("###id") is included in the hash, and only XStr("label") gets displayed.
+            // We support a syntax of "label###id" where only "###id" is included in the hash, and only "label" gets displayed.
             // Because this syntax is rarely used we are optimizing for the common case.
             // - If we reach ### in the string we discard the hash so far and reset to the seed.
             // - We don't do 'current += 2; continue;' after handling ### to keep the code smaller.
@@ -1503,7 +1500,7 @@ void ImGuiStorage::SetAllInt(int v)
 // ImGuiTextFilter
 //-----------------------------------------------------------------------------
 
-// Helper: Parse and apply text filters. In format XStr("aaaaa[,bbbb][,ccccc]")
+// Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]"
 ImGuiTextFilter::ImGuiTextFilter(const char* default_filter)
 {
     if (default_filter)
@@ -1571,7 +1568,7 @@ bool ImGuiTextFilter::PassFilter(const char* text, const char* text_end) const
         return true;
 
     if (text == NULL)
-        text = XStr("");
+        text = "";
 
     for (int i = 0; i != Filters.Size; i++)
     {
@@ -1776,7 +1773,7 @@ ImGuiWindow::ImGuiWindow(const char* name)
     Name = ImStrdup(name);
     ID = ImHash(name, 0);
     IDStack.push_back(ID);
-    MoveId = GetID(XStr("#MOVE"));
+    MoveId = GetID("#MOVE");
 
     Flags = 0;
     OrderWithinParent = 0;
@@ -2058,7 +2055,7 @@ void ImGui::MemFree(void* ptr)
 
 const char* ImGui::GetClipboardText()
 {
-    return GImGui->IO.GetClipboardTextFn ? GImGui->IO.GetClipboardTextFn(GImGui->IO.ClipboardUserData) : XStr("");
+    return GImGui->IO.GetClipboardTextFn ? GImGui->IO.GetClipboardTextFn(GImGui->IO.ClipboardUserData) : "";
 }
 
 void ImGui::SetClipboardText(const char* text)
@@ -2370,7 +2367,7 @@ void ImGui::NewFrame()
 
     // Create implicit window - we will only render it if the user has added something to it.
     ImGui::SetNextWindowSize(ImVec2(400,400), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin(XStr("Debug"));
+    ImGui::Begin("Debug");
 }
 
 // NB: behavior of ImGui after Shutdown() is not tested/guaranteed at the moment. This function is merely here to free heap allocations.
@@ -2473,7 +2470,7 @@ static void LoadIniSettingsFromDisk(const char* ini_filename)
         return;
 
     int file_size;
-    char* file_data = (char*)ImFileLoadToMemory(ini_filename, XStr("rb"), &file_size, 1);
+    char* file_data = (char*)ImFileLoadToMemory(ini_filename, "rb", &file_size, 1);
     if (!file_data)
         return;
 
@@ -2488,7 +2485,7 @@ static void LoadIniSettingsFromDisk(const char* ini_filename)
         if (line_start[0] == '[' && line_end > line_start && line_end[-1] == ']')
         {
             char name[64];
-            ImFormatString(name, IM_ARRAYSIZE(name), XStr("%.*s"), (int)(line_end-line_start-2), line_start+1);
+            ImFormatString(name, IM_ARRAYSIZE(name), "%.*s", (int)(line_end-line_start-2), line_start+1);
             settings = FindWindowSettings(name);
             if (!settings)
                 settings = AddWindowSettings(name);
@@ -2497,11 +2494,11 @@ static void LoadIniSettingsFromDisk(const char* ini_filename)
         {
             float x, y;
             int i;
-            if (sscanf(line_start, XStr("Pos=%f,%f"), &x, &y) == 2)
+            if (sscanf(line_start, "Pos=%f,%f", &x, &y) == 2)
                 settings->Pos = ImVec2(x, y);
-            else if (sscanf(line_start, XStr("Size=%f,%f"), &x, &y) == 2)
+            else if (sscanf(line_start, "Size=%f,%f", &x, &y) == 2)
                 settings->Size = ImMax(ImVec2(x, y), g.Style.WindowMinSize);
-            else if (sscanf(line_start, XStr("Collapsed=%d"), &i) == 1)
+            else if (sscanf(line_start, "Collapsed=%d", &i) == 1)
                 settings->Collapsed = (i != 0);
         }
 
@@ -2532,7 +2529,7 @@ static void SaveIniSettingsToDisk(const char* ini_filename)
 
     // Write .ini file
     // If a window wasn't opened in this session we preserve its settings
-    FILE* f = ImFileOpen(ini_filename, XStr("wt"));
+    FILE* f = ImFileOpen(ini_filename, "wt");
     if (!f)
         return;
     for (int i = 0; i != g.Settings.Size; i++)
@@ -2541,13 +2538,13 @@ static void SaveIniSettingsToDisk(const char* ini_filename)
         if (settings->Pos.x == FLT_MAX)
             continue;
         const char* name = settings->Name;
-        if (const char* p = strstr(name, XStr("###")))  // Skip to the XStr("###") marker if any. We don't skip past to match the behavior of GetID()
+        if (const char* p = strstr(name, "###"))  // Skip to the "###" marker if any. We don't skip past to match the behavior of GetID()
             name = p;
-        fprintf(f, XStr("[%s]\n"), name);
-        fprintf(f, XStr("Pos=%d,%d\n"), (int)settings->Pos.x, (int)settings->Pos.y);
-        fprintf(f, XStr("Size=%d,%d\n"), (int)settings->Size.x, (int)settings->Size.y);
-        fprintf(f, XStr("Collapsed=%d\n"), settings->Collapsed);
-        fprintf(f, XStr("\n"));
+        fprintf(f, "[%s]\n", name);
+        fprintf(f, "Pos=%d,%d\n", (int)settings->Pos.x, (int)settings->Pos.y);
+        fprintf(f, "Size=%d,%d\n", (int)settings->Size.x, (int)settings->Size.y);
+        fprintf(f, "Collapsed=%d\n", settings->Collapsed);
+        fprintf(f, "\n");
     }
 
     fclose(f);
@@ -2667,7 +2664,7 @@ void ImGui::EndFrame()
         g.OsImePosSet = g.OsImePosRequest;
     }
 
-    // Hide implicit XStr("Debug") window if it hasn't been used
+    // Hide implicit "Debug" window if it hasn't been used
     IM_ASSERT(g.CurrentWindowStack.Size == 1);    // Mismatched Begin()/End() calls
     if (g.CurrentWindow && !g.CurrentWindow->Accessed)
         g.CurrentWindow->Active = false;
@@ -2866,9 +2863,9 @@ static void LogRenderedText(const ImVec2& ref_pos, const char* text, const char*
         {
             const int char_count = (int)(line_end - text_remaining);
             if (log_new_line || !is_first_line)
-                ImGui::LogText(IM_NEWLINE XStr("%*s%.*s"), tree_depth*4, XStr(""), char_count, text_remaining);
+                ImGui::LogText(IM_NEWLINE "%*s%.*s", tree_depth*4, "", char_count, text_remaining);
             else
-                ImGui::LogText(XStr(" %.*s"), char_count, text_remaining);
+                ImGui::LogText(" %.*s", char_count, text_remaining);
         }
 
         if (is_last_line)
@@ -3033,7 +3030,7 @@ void ImGui::RenderCheckMark(ImVec2 pos, ImU32 col)
 }
 
 // Calculate text size. Text can be multi-line. Optionally ignore text after a ## marker.
-// CalcTextSize(XStr("")) should return ImVec2(0.0f, GImGui->FontSize)
+// CalcTextSize("") should return ImVec2(0.0f, GImGui->FontSize)
 ImVec2 ImGui::CalcTextSize(const char* text, const char* text_end, bool hide_text_after_double_hash, float wrap_width)
 {
     ImGuiContext& g = *GImGui;
@@ -3388,14 +3385,14 @@ static void BeginTooltipEx(bool override_previous_tooltip)
 {
     ImGuiContext& g = *GImGui;
     char window_name[16];
-    ImFormatString(window_name, IM_ARRAYSIZE(window_name), XStr("##Tooltip%02d"), g.TooltipOverrideCount);
+    ImFormatString(window_name, IM_ARRAYSIZE(window_name), "##Tooltip%02d", g.TooltipOverrideCount);
     if (override_previous_tooltip)
         if (ImGuiWindow* window = ImGui::FindWindowByName(window_name))
             if (window->Active)
             {
-                // Hide previous tooltips. We can't easily XStr("reset") the content of a window so we create a new one.
+                // Hide previous tooltips. We can't easily "reset" the content of a window so we create a new one.
                 window->HiddenFrames = 1;
-                ImFormatString(window_name, IM_ARRAYSIZE(window_name), XStr("##Tooltip%02d"), ++g.TooltipOverrideCount);
+                ImFormatString(window_name, IM_ARRAYSIZE(window_name), "##Tooltip%02d", ++g.TooltipOverrideCount);
             }
     ImGui::Begin(window_name, NULL, ImGuiWindowFlags_Tooltip|ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_AlwaysAutoResize);
 }
@@ -3442,7 +3439,7 @@ void ImGui::OpenPopupEx(const char* str_id, bool reopen_existing)
     ImGuiWindow* window = g.CurrentWindow;
     ImGuiID id = window->GetID(str_id);
     int current_stack_size = g.CurrentPopupStack.Size;
-    ImGuiPopupRef popup_ref = ImGuiPopupRef(id, window, window->GetID(XStr("##menus")), g.IO.MousePos); // Tagged as new ref because constructor sets Window to NULL (we are passing the ParentWindow info here)
+    ImGuiPopupRef popup_ref = ImGuiPopupRef(id, window, window->GetID("##menus"), g.IO.MousePos); // Tagged as new ref because constructor sets Window to NULL (we are passing the ParentWindow info here)
     if (g.OpenPopupStack.Size < current_stack_size + 1)
         g.OpenPopupStack.push_back(popup_ref);
     else if (reopen_existing || g.OpenPopupStack[current_stack_size].PopupId != id)
@@ -3551,9 +3548,9 @@ static bool BeginPopupEx(const char* str_id, ImGuiWindowFlags extra_flags)
 
     char name[20];
     if (flags & ImGuiWindowFlags_ChildMenu)
-        ImFormatString(name, IM_ARRAYSIZE(name), XStr("##menu_%d"), g.CurrentPopupStack.Size);    // Recycle windows based on depth
+        ImFormatString(name, IM_ARRAYSIZE(name), "##menu_%d", g.CurrentPopupStack.Size);    // Recycle windows based on depth
     else
-        ImFormatString(name, IM_ARRAYSIZE(name), XStr("##popup_%08x"), id); // Not recycling, so we can close/open during the same frame
+        ImFormatString(name, IM_ARRAYSIZE(name), "##popup_%08x", id); // Not recycling, so we can close/open during the same frame
 
     bool is_open = ImGui::Begin(name, NULL, flags);
     if (!(window->Flags & ImGuiWindowFlags_ShowBorders))
@@ -3609,7 +3606,7 @@ void ImGui::EndPopup()
 }
 
 // This is a helper to handle the most simple case of associating one named popup to one given widget.
-// 1. If you have many possible popups (for different XStr("instances") of a same widget, or for wholly different widgets), you may be better off handling
+// 1. If you have many possible popups (for different "instances" of a same widget, or for wholly different widgets), you may be better off handling
 //    this yourself so you can store data relative to the widget that opened the popup instead of choosing different popup identifiers.
 // 2. If you want right-clicking on the same item to reopen the popup at new location, use the same code replacing IsItemHovered() with IsItemHoveredRect()
 //    and passing true to the OpenPopupEx().
@@ -3625,7 +3622,7 @@ bool ImGui::BeginPopupContextItem(const char* str_id, int mouse_button)
 
 bool ImGui::BeginPopupContextWindow(bool also_over_items, const char* str_id, int mouse_button)
 {
-    if (!str_id) str_id = XStr("window_context_menu");
+    if (!str_id) str_id = "window_context_menu";
     if (IsMouseHoveringWindow() && IsMouseClicked(mouse_button))
         if (also_over_items || !IsAnyItemHovered())
             OpenPopupEx(str_id, true);
@@ -3634,7 +3631,7 @@ bool ImGui::BeginPopupContextWindow(bool also_over_items, const char* str_id, in
 
 bool ImGui::BeginPopupContextVoid(const char* str_id, int mouse_button)
 {
-    if (!str_id) str_id = XStr("void_context_menu");
+    if (!str_id) str_id = "void_context_menu";
     if (!IsMouseHoveringAnyWindow() && IsMouseClicked(mouse_button))
         OpenPopupEx(str_id, true);
     return BeginPopup(str_id);
@@ -3665,9 +3662,9 @@ static bool BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, b
 
     char title[256];
     if (name)
-        ImFormatString(title, IM_ARRAYSIZE(title), XStr("%s.%s.%08X"), window->Name, name, id);
+        ImFormatString(title, IM_ARRAYSIZE(title), "%s.%s.%08X", window->Name, name, id);
     else
-        ImFormatString(title, IM_ARRAYSIZE(title), XStr("%s.%08X"), window->Name, id);
+        ImFormatString(title, IM_ARRAYSIZE(title), "%s.%08X", window->Name, id);
 
     bool ret = ImGui::Begin(title, NULL, size, -1.0f, flags);
 
@@ -3739,12 +3736,12 @@ static void CheckStacksSize(ImGuiWindow* window, bool write)
     // NOT checking: DC.ItemWidth, DC.AllowKeyboardFocus, DC.ButtonRepeat, DC.TextWrapPos (per window) to allow user to conveniently push once and not pop (they are cleared on Begin)
     ImGuiContext& g = *GImGui;
     int* p_backup = &window->DC.StackSizesBackup[0];
-    { int current = window->IDStack.Size;       if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("PushID/PopID or TreeNode/TreePop Mismatch!"));   p_backup++; }    // Too few or too many PopID()/TreePop()
-    { int current = window->DC.GroupStack.Size; if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("BeginGroup/EndGroup Mismatch!"));                p_backup++; }    // Too few or too many EndGroup()
-    { int current = g.CurrentPopupStack.Size;   if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("BeginMenu/EndMenu or BeginPopup/EndPopup Mismatch")); p_backup++;}// Too few or too many EndMenu()/EndPopup()
-    { int current = g.ColorModifiers.Size;      if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("PushStyleColor/PopStyleColor Mismatch!"));       p_backup++; }    // Too few or too many PopStyleColor()
-    { int current = g.StyleModifiers.Size;      if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("PushStyleVar/PopStyleVar Mismatch!"));           p_backup++; }    // Too few or too many PopStyleVar()
-    { int current = g.FontStack.Size;           if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && XStr("PushFont/PopFont Mismatch!"));                   p_backup++; }    // Too few or too many PopFont()
+    { int current = window->IDStack.Size;       if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "PushID/PopID or TreeNode/TreePop Mismatch!");   p_backup++; }    // Too few or too many PopID()/TreePop()
+    { int current = window->DC.GroupStack.Size; if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "BeginGroup/EndGroup Mismatch!");                p_backup++; }    // Too few or too many EndGroup()
+    { int current = g.CurrentPopupStack.Size;   if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "BeginMenu/EndMenu or BeginPopup/EndPopup Mismatch"); p_backup++;}// Too few or too many EndMenu()/EndPopup()
+    { int current = g.ColorModifiers.Size;      if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "PushStyleColor/PopStyleColor Mismatch!");       p_backup++; }    // Too few or too many PopStyleColor()
+    { int current = g.StyleModifiers.Size;      if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "PushStyleVar/PopStyleVar Mismatch!");           p_backup++; }    // Too few or too many PopStyleVar()
+    { int current = g.FontStack.Size;           if (write) *p_backup = current; else IM_ASSERT(*p_backup == current && "PushFont/PopFont Mismatch!");                   p_backup++; }    // Too few or too many PopFont()
     IM_ASSERT(p_backup == window->DC.StackSizesBackup + IM_ARRAYSIZE(window->DC.StackSizesBackup));
 }
 
@@ -3879,11 +3876,11 @@ static void ApplySizeFullWithConstraint(ImGuiWindow* window, ImVec2 new_size)
 }
 
 // Push a new ImGui window to add widgets to.
-// - A default window called XStr("Debug") is automatically stacked at the beginning of every frame so you can use widgets without explicitly calling a Begin/End pair.
+// - A default window called "Debug" is automatically stacked at the beginning of every frame so you can use widgets without explicitly calling a Begin/End pair.
 // - Begin/End can be called multiple times during the frame with the same window name to append content.
 // - 'size_on_first_use' for a regular window denote the initial size for first-time creation (no saved data) and isn't that useful. Use SetNextWindowSize() prior to calling Begin() for more flexible window manipulation.
 // - The window name is used as a unique identifier to preserve window information across frames (and save rudimentary information to the .ini file).
-//   You can use the XStr("##") or XStr("###") markers to use the same label with different id, or same id with different label. See documentation at the top of this file.
+//   You can use the "##" or "###" markers to use the same label with different id, or same id with different label. See documentation at the top of this file.
 // - Return false when window is collapsed, so you can early out in your code. You always need to call ImGui::End() even if false is returned.
 // - Passing 'bool* p_open' displays a Close button on the upper-right corner of the window, the pointed value will be set to false when the button is pressed.
 // - Passing non-zero 'size' is roughly equivalent to calling SetNextWindowSize(size, ImGuiSetCond_FirstUseEver) prior to calling Begin().
@@ -3926,7 +3923,7 @@ bool ImGui::Begin(const char* name, bool* p_open, const ImVec2& size_on_first_us
     CheckStacksSize(window, true);
     IM_ASSERT(parent_window != NULL || !(flags & ImGuiWindowFlags_ChildWindow));
 
-    bool window_was_active = (window->LastFrameActive == current_frame - 1);   // Not using !WasActive because the implicit XStr("Debug") window would always toggle off->on
+    bool window_was_active = (window->LastFrameActive == current_frame - 1);   // Not using !WasActive because the implicit "Debug" window would always toggle off->on
     if (flags & ImGuiWindowFlags_Popup)
     {
         ImGuiPopupRef& popup_ref = g.OpenPopupStack[g.CurrentPopupStack.Size];
@@ -4228,7 +4225,7 @@ bool ImGui::Begin(const char* name, bool* p_open, const ImVec2& size_on_first_us
                 // Manual resize
                 const ImVec2 br = window->Rect().GetBR();
                 const ImRect resize_rect(br - ImVec2(resize_corner_size * 0.75f, resize_corner_size * 0.75f), br);
-                const ImGuiID resize_id = window->GetID(XStr("#RESIZE"));
+                const ImGuiID resize_id = window->GetID("#RESIZE");
                 bool hovered, held;
                 ButtonBehavior(resize_rect, resize_id, &hovered, &held, ImGuiButtonFlags_FlattenChilds);
                 resize_col = GetColorU32(held ? ImGuiCol_ResizeGripActive : hovered ? ImGuiCol_ResizeGripHovered : ImGuiCol_ResizeGrip);
@@ -4373,7 +4370,7 @@ bool ImGui::Begin(const char* name, bool* p_open, const ImVec2& size_on_first_us
             {
                 const float pad = 2.0f;
                 const float rad = (window->TitleBarHeight() - pad*2.0f) * 0.5f;
-                if (CloseButton(window->GetID(XStr("#CLOSE")), window->Rect().GetTR() + ImVec2(-pad - rad, pad + rad), rad))
+                if (CloseButton(window->GetID("#CLOSE"), window->Rect().GetTR() + ImVec2(-pad - rad, pad + rad), rad))
                     *p_open = false;
             }
 
@@ -4426,7 +4423,7 @@ bool ImGui::Begin(const char* name, bool* p_open, const ImVec2& size_on_first_us
     window->BeginCount++;
     g.SetNextWindowSizeConstraint = false;
 
-    // Child window can be out of sight and have XStr("negative") clip windows.
+    // Child window can be out of sight and have "negative" clip windows.
     // Mark them as collapsed so commands are skipped earlier (we can't manually collapse because they have no title bar).
     if (flags & ImGuiWindowFlags_ChildWindow)
     {
@@ -4455,7 +4452,7 @@ void ImGui::End()
     ImGuiWindow* window = g.CurrentWindow;
 
     if (window->DC.ColumnsCount != 1) // close columns set if any is open
-        Columns(1, XStr("#CLOSECOLUMNS"));
+        Columns(1, "#CLOSECOLUMNS");
     PopClipRect();   // inner window clip rectangle
 
     // Stop logging
@@ -4480,7 +4477,7 @@ static void Scrollbar(ImGuiWindow* window, bool horizontal)
 {
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
-    const ImGuiID id = window->GetID(horizontal ? XStr("#SCROLLX") : XStr("#SCROLLY"));
+    const ImGuiID id = window->GetID(horizontal ? "#SCROLLX" : "#SCROLLY");
 
     // Render background
     bool other_scrollbar = (horizontal ? window->ScrollbarY : window->ScrollbarX);
@@ -4821,55 +4818,55 @@ void ImGui::PopStyleVar(int count)
 
 const char* ImGui::GetStyleColName(ImGuiCol idx)
 {
-    // Create switch-case from enum with regexp: ImGuiCol_{.*}, --> case ImGuiCol_\1: return XStr("\1");
+    // Create switch-case from enum with regexp: ImGuiCol_{.*}, --> case ImGuiCol_\1: return "\1";
     switch (idx)
     {
-    case ImGuiCol_Text: return XStr("Text");
-    case ImGuiCol_TextDisabled: return XStr("TextDisabled");
-    case ImGuiCol_WindowBg: return XStr("WindowBg");
-    case ImGuiCol_ChildWindowBg: return XStr("ChildWindowBg");
-    case ImGuiCol_PopupBg: return XStr("PopupBg");
-    case ImGuiCol_Border: return XStr("Border");
-    case ImGuiCol_BorderShadow: return XStr("BorderShadow");
-    case ImGuiCol_FrameBg: return XStr("FrameBg");
-    case ImGuiCol_FrameBgHovered: return XStr("FrameBgHovered");
-    case ImGuiCol_FrameBgActive: return XStr("FrameBgActive");
-    case ImGuiCol_TitleBg: return XStr("TitleBg");
-    case ImGuiCol_TitleBgCollapsed: return XStr("TitleBgCollapsed");
-    case ImGuiCol_TitleBgActive: return XStr("TitleBgActive");
-    case ImGuiCol_MenuBarBg: return XStr("MenuBarBg");
-    case ImGuiCol_ScrollbarBg: return XStr("ScrollbarBg");
-    case ImGuiCol_ScrollbarGrab: return XStr("ScrollbarGrab");
-    case ImGuiCol_ScrollbarGrabHovered: return XStr("ScrollbarGrabHovered");
-    case ImGuiCol_ScrollbarGrabActive: return XStr("ScrollbarGrabActive");
-    case ImGuiCol_ComboBg: return XStr("ComboBg");
-    case ImGuiCol_CheckMark: return XStr("CheckMark");
-    case ImGuiCol_SliderGrab: return XStr("SliderGrab");
-    case ImGuiCol_SliderGrabActive: return XStr("SliderGrabActive");
-    case ImGuiCol_Button: return XStr("Button");
-    case ImGuiCol_ButtonHovered: return XStr("ButtonHovered");
-    case ImGuiCol_ButtonActive: return XStr("ButtonActive");
-    case ImGuiCol_Header: return XStr("Header");
-    case ImGuiCol_HeaderHovered: return XStr("HeaderHovered");
-    case ImGuiCol_HeaderActive: return XStr("HeaderActive");
-    case ImGuiCol_Column: return XStr("Column");
-    case ImGuiCol_ColumnHovered: return XStr("ColumnHovered");
-    case ImGuiCol_ColumnActive: return XStr("ColumnActive");
-    case ImGuiCol_ResizeGrip: return XStr("ResizeGrip");
-    case ImGuiCol_ResizeGripHovered: return XStr("ResizeGripHovered");
-    case ImGuiCol_ResizeGripActive: return XStr("ResizeGripActive");
-    case ImGuiCol_CloseButton: return XStr("CloseButton");
-    case ImGuiCol_CloseButtonHovered: return XStr("CloseButtonHovered");
-    case ImGuiCol_CloseButtonActive: return XStr("CloseButtonActive");
-    case ImGuiCol_PlotLines: return XStr("PlotLines");
-    case ImGuiCol_PlotLinesHovered: return XStr("PlotLinesHovered");
-    case ImGuiCol_PlotHistogram: return XStr("PlotHistogram");
-    case ImGuiCol_PlotHistogramHovered: return XStr("PlotHistogramHovered");
-    case ImGuiCol_TextSelectedBg: return XStr("TextSelectedBg");
-    case ImGuiCol_ModalWindowDarkening: return XStr("ModalWindowDarkening");
+    case ImGuiCol_Text: return "Text";
+    case ImGuiCol_TextDisabled: return "TextDisabled";
+    case ImGuiCol_WindowBg: return "WindowBg";
+    case ImGuiCol_ChildWindowBg: return "ChildWindowBg";
+    case ImGuiCol_PopupBg: return "PopupBg";
+    case ImGuiCol_Border: return "Border";
+    case ImGuiCol_BorderShadow: return "BorderShadow";
+    case ImGuiCol_FrameBg: return "FrameBg";
+    case ImGuiCol_FrameBgHovered: return "FrameBgHovered";
+    case ImGuiCol_FrameBgActive: return "FrameBgActive";
+    case ImGuiCol_TitleBg: return "TitleBg";
+    case ImGuiCol_TitleBgCollapsed: return "TitleBgCollapsed";
+    case ImGuiCol_TitleBgActive: return "TitleBgActive";
+    case ImGuiCol_MenuBarBg: return "MenuBarBg";
+    case ImGuiCol_ScrollbarBg: return "ScrollbarBg";
+    case ImGuiCol_ScrollbarGrab: return "ScrollbarGrab";
+    case ImGuiCol_ScrollbarGrabHovered: return "ScrollbarGrabHovered";
+    case ImGuiCol_ScrollbarGrabActive: return "ScrollbarGrabActive";
+    case ImGuiCol_ComboBg: return "ComboBg";
+    case ImGuiCol_CheckMark: return "CheckMark";
+    case ImGuiCol_SliderGrab: return "SliderGrab";
+    case ImGuiCol_SliderGrabActive: return "SliderGrabActive";
+    case ImGuiCol_Button: return "Button";
+    case ImGuiCol_ButtonHovered: return "ButtonHovered";
+    case ImGuiCol_ButtonActive: return "ButtonActive";
+    case ImGuiCol_Header: return "Header";
+    case ImGuiCol_HeaderHovered: return "HeaderHovered";
+    case ImGuiCol_HeaderActive: return "HeaderActive";
+    case ImGuiCol_Column: return "Column";
+    case ImGuiCol_ColumnHovered: return "ColumnHovered";
+    case ImGuiCol_ColumnActive: return "ColumnActive";
+    case ImGuiCol_ResizeGrip: return "ResizeGrip";
+    case ImGuiCol_ResizeGripHovered: return "ResizeGripHovered";
+    case ImGuiCol_ResizeGripActive: return "ResizeGripActive";
+    case ImGuiCol_CloseButton: return "CloseButton";
+    case ImGuiCol_CloseButtonHovered: return "CloseButtonHovered";
+    case ImGuiCol_CloseButtonActive: return "CloseButtonActive";
+    case ImGuiCol_PlotLines: return "PlotLines";
+    case ImGuiCol_PlotLinesHovered: return "PlotLinesHovered";
+    case ImGuiCol_PlotHistogram: return "PlotHistogram";
+    case ImGuiCol_PlotHistogramHovered: return "PlotHistogramHovered";
+    case ImGuiCol_TextSelectedBg: return "TextSelectedBg";
+    case ImGuiCol_ModalWindowDarkening: return "ModalWindowDarkening";
     }
     IM_ASSERT(0);
-    return XStr("Unknown");
+    return "Unknown";
 }
 
 bool ImGui::IsWindowHovered()
@@ -5296,7 +5293,7 @@ void ImGui::SetScrollFromPosY(float pos_y, float center_y_ratio)
     ImGuiWindow* window = GetCurrentWindow();
     IM_ASSERT(center_y_ratio >= 0.0f && center_y_ratio <= 1.0f);
     window->ScrollTarget.y = (float)(int)(pos_y + window->Scroll.y);
-    if (center_y_ratio <= 0.0f && window->ScrollTarget.y <= window->WindowPadding.y)    // Minor hack to make XStr("scroll to top") take account of WindowPadding, else it would scroll to (WindowPadding.y - ItemSpacing.y)
+    if (center_y_ratio <= 0.0f && window->ScrollTarget.y <= window->WindowPadding.y)    // Minor hack to make "scroll to top" take account of WindowPadding, else it would scroll to (WindowPadding.y - ItemSpacing.y)
         window->ScrollTarget.y = 0.0f;
     window->ScrollTargetCenterRatio.y = center_y_ratio;
 }
@@ -5777,7 +5774,7 @@ bool ImGui::ImageButton(ImTextureID user_texture_id, const ImVec2& size, const I
     // Default to using texture ID as ID. User can still push string/integer prefixes.
     // We could hash the size/uv to create a unique ID but that would prevent the user from animating UV.
     PushID((void *)user_texture_id);
-    const ImGuiID id = window->GetID(XStr("#image"));
+    const ImGuiID id = window->GetID("#image");
     PopID();
 
     const ImVec2 padding = (frame_padding >= 0) ? ImVec2((float)frame_padding, (float)frame_padding) : style.FramePadding;
@@ -5830,7 +5827,7 @@ void ImGui::LogToFile(int max_depth, const char* filename)
             return;
     }
 
-    g.LogFile = ImFileOpen(filename, XStr("ab"));
+    g.LogFile = ImFileOpen(filename, "ab");
     if (!g.LogFile)
     {
         IM_ASSERT(g.LogFile != NULL); // Consider this an error
@@ -5885,13 +5882,13 @@ void ImGui::LogButtons()
 {
     ImGuiContext& g = *GImGui;
 
-    PushID(XStr("LogButtons"));
-    const bool log_to_tty = Button(XStr("Log To TTY")); SameLine();
-    const bool log_to_file = Button(XStr("Log To File")); SameLine();
-    const bool log_to_clipboard = Button(XStr("Log To Clipboard")); SameLine();
+    PushID("LogButtons");
+    const bool log_to_tty = Button("Log To TTY"); SameLine();
+    const bool log_to_file = Button("Log To File"); SameLine();
+    const bool log_to_clipboard = Button("Log To Clipboard"); SameLine();
     PushItemWidth(80.0f);
     PushAllowKeyboardFocus(false);
-    SliderInt(XStr("Depth"), &g.LogAutoExpandMaxDepth, 0, 9, NULL);
+    SliderInt("Depth", &g.LogAutoExpandMaxDepth, 0, 9, NULL);
     PopAllowKeyboardFocus();
     PopItemWidth();
     PopID();
@@ -6029,8 +6026,8 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         if (g.LogEnabled)
         {
             // NB: '##' is normally used to hide text (as a library-wide feature), so we need to specify the text range to make sure the ## aren't stripped out here.
-            const char log_prefix[] = XStr("\n##");
-            const char log_suffix[] = XStr("##");
+            const char log_prefix[] = "\n##";
+            const char log_suffix[] = "##";
             LogRenderedText(text_pos, log_prefix, log_prefix+3);
             RenderTextClipped(text_pos, bb.Max, label, label_end, &label_size);
             LogRenderedText(text_pos, log_suffix+1, log_suffix+3);
@@ -6051,7 +6048,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         else if (!(flags & ImGuiTreeNodeFlags_Leaf))
             RenderCollapseTriangle(bb.Min + ImVec2(padding.x, g.FontSize*0.15f + text_base_offset_y), is_open, 0.70f);
         if (g.LogEnabled)
-            LogRenderedText(text_pos, XStr(">"));
+            LogRenderedText(text_pos, ">");
         RenderText(text_pos, label, label_end, false);
     }
 
@@ -6313,16 +6310,16 @@ static inline void DataTypeFormatString(ImGuiDataType data_type, void* data_ptr,
     if (data_type == ImGuiDataType_Int)
     {
         if (decimal_precision < 0)
-            ImFormatString(buf, buf_size, XStr("%d"), *(int*)data_ptr);
+            ImFormatString(buf, buf_size, "%d", *(int*)data_ptr);
         else
-            ImFormatString(buf, buf_size, XStr("%.*d"), decimal_precision, *(int*)data_ptr);
+            ImFormatString(buf, buf_size, "%.*d", decimal_precision, *(int*)data_ptr);
     }
     else if (data_type == ImGuiDataType_Float)
     {
         if (decimal_precision < 0)
-            ImFormatString(buf, buf_size, XStr("%f"), *(float*)data_ptr);     // Ideally we'd have a minimum decimal precision of 1 to visually denote that it is a float, while hiding non-significant digits?
+            ImFormatString(buf, buf_size, "%f", *(float*)data_ptr);     // Ideally we'd have a minimum decimal precision of 1 to visually denote that it is a float, while hiding non-significant digits?
         else
-            ImFormatString(buf, buf_size, XStr("%.*f"), decimal_precision, *(float*)data_ptr);
+            ImFormatString(buf, buf_size, "%.*f", decimal_precision, *(float*)data_ptr);
     }
 }
 
@@ -6369,7 +6366,7 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
     if (data_type == ImGuiDataType_Int)
     {
         if (!scalar_format)
-            scalar_format = XStr("%d");
+            scalar_format = "%d";
         int* v = (int*)data_ptr;
         const int old_v = *v;
         int arg0 = *v;
@@ -6378,16 +6375,16 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
 
         // Store operand in a float so we can use fractional value for multipliers (*1.1), but constant always parsed as integer so we can fit big integers (e.g. 2000000003) past float precision
         float arg1 = 0.0f;
-        if (op == '+')      { if (sscanf(buf, XStr("%f"), &arg1) == 1) *v = (int)(arg0 + arg1); }                // Add (use XStr("+-") to subtract)
-        else if (op == '*') { if (sscanf(buf, XStr("%f"), &arg1) == 1) *v = (int)(arg0 * arg1); }                // Multiply
-        else if (op == '/') { if (sscanf(buf, XStr("%f"), &arg1) == 1 && arg1 != 0.0f) *v = (int)(arg0 / arg1); }// Divide
+        if (op == '+')      { if (sscanf(buf, "%f", &arg1) == 1) *v = (int)(arg0 + arg1); }                // Add (use "+-" to subtract)
+        else if (op == '*') { if (sscanf(buf, "%f", &arg1) == 1) *v = (int)(arg0 * arg1); }                // Multiply
+        else if (op == '/') { if (sscanf(buf, "%f", &arg1) == 1 && arg1 != 0.0f) *v = (int)(arg0 / arg1); }// Divide
         else                { if (sscanf(buf, scalar_format, &arg0) == 1) *v = arg0; }                     // Assign constant
         return (old_v != *v);
     }
     else if (data_type == ImGuiDataType_Float)
     {
-        // For floats we have to ignore format with precision (e.g. XStr("%.2f")) because sscanf doesn't take them in
-        scalar_format = XStr("%f");
+        // For floats we have to ignore format with precision (e.g. "%.2f") because sscanf doesn't take them in
+        scalar_format = "%f";
         float* v = (float*)data_ptr;
         const float old_v = *v;
         float arg0 = *v;
@@ -6397,7 +6394,7 @@ static bool DataTypeApplyOpFromText(const char* buf, const char* initial_value_b
         float arg1 = 0.0f;
         if (sscanf(buf, scalar_format, &arg1) < 1)
             return false;
-        if (op == '+')      { *v = arg0 + arg1; }                    // Add (use XStr("+-") to subtract)
+        if (op == '+')      { *v = arg0 + arg1; }                    // Add (use "+-" to subtract)
         else if (op == '*') { *v = arg0 * arg1; }                    // Multiply
         else if (op == '/') { if (arg1 != 0.0f) *v = arg0 / arg1; }  // Divide
         else                { *v = arg1; }                           // Assign constant
@@ -6445,7 +6442,7 @@ int ImGui::ParseFormatPrecision(const char* fmt, int default_precision)
     while ((fmt = strchr(fmt, '%')) != NULL)
     {
         fmt++;
-        if (fmt[0] == '%') { fmt++; continue; } // Ignore XStr("%%")
+        if (fmt[0] == '%') { fmt++; continue; } // Ignore "%%"
         while (*fmt >= '0' && *fmt <= '9')
             fmt++;
         if (*fmt == '.')
@@ -6612,9 +6609,9 @@ bool ImGui::SliderBehavior(const ImRect& frame_bb, ImGuiID id, float* v, float v
 
 // Use power!=1.0 for logarithmic sliders.
 // Adjust display_format to decorate the value with a prefix or a suffix.
-//   XStr("%.3f")         1.234
-//   XStr("%5.2f secs")   01.23 secs
-//   XStr("Gold: %.0f")   Gold: 1
+//   "%.3f"         1.234
+//   "%5.2f secs"   01.23 secs
+//   "Gold: %.0f"   Gold: 1
 bool ImGui::SliderFloat(const char* label, float* v, float v_min, float v_max, const char* display_format, float power)
 {
     ImGuiWindow* window = GetCurrentWindow();
@@ -6642,7 +6639,7 @@ bool ImGui::SliderFloat(const char* label, float* v, float v_min, float v_max, c
         SetHoveredID(id);
 
     if (!display_format)
-        display_format = XStr("%.3f");
+        display_format = "%.3f";
     int decimal_precision = ParseFormatPrecision(display_format, 3);
 
     // Tabbing or CTRL-clicking on Slider turns it into an input box
@@ -6701,7 +6698,7 @@ bool ImGui::VSliderFloat(const char* label, const ImVec2& size, float* v, float 
         SetHoveredID(id);
 
     if (!display_format)
-        display_format = XStr("%.3f");
+        display_format = "%.3f";
     int decimal_precision = ParseFormatPrecision(display_format, 3);
 
     if (hovered && g.IO.MouseClicked[0])
@@ -6727,7 +6724,7 @@ bool ImGui::VSliderFloat(const char* label, const ImVec2& size, float* v, float 
 bool ImGui::SliderAngle(const char* label, float* v_rad, float v_degrees_min, float v_degrees_max)
 {
     float v_deg = (*v_rad) * 360.0f / (2*IM_PI);
-    bool value_changed = SliderFloat(label, &v_deg, v_degrees_min, v_degrees_max, XStr("%.0f deg"), 1.0f);
+    bool value_changed = SliderFloat(label, &v_deg, v_degrees_min, v_degrees_max, "%.0f deg", 1.0f);
     *v_rad = v_deg * (2*IM_PI) / 360.0f;
     return value_changed;
 }
@@ -6735,7 +6732,7 @@ bool ImGui::SliderAngle(const char* label, float* v_rad, float v_degrees_min, fl
 bool ImGui::SliderInt(const char* label, int* v, int v_min, int v_max, const char* display_format)
 {
     if (!display_format)
-        display_format = XStr("%.0f");
+        display_format = "%.0f";
     float v_f = (float)*v;
     bool value_changed = SliderFloat(label, &v_f, (float)v_min, (float)v_max, display_format, 1.0f);
     *v = (int)v_f;
@@ -6745,7 +6742,7 @@ bool ImGui::SliderInt(const char* label, int* v, int v_min, int v_max, const cha
 bool ImGui::VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* display_format)
 {
     if (!display_format)
-        display_format = XStr("%.0f");
+        display_format = "%.0f";
     float v_f = (float)*v;
     bool value_changed = VSliderFloat(label, size, &v_f, (float)v_min, (float)v_max, display_format, 1.0f);
     *v = (int)v_f;
@@ -6767,7 +6764,7 @@ bool ImGui::SliderFloatN(const char* label, float* v, int components, float v_mi
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= SliderFloat(XStr("##v"), &v[i], v_min, v_max, display_format, power);
+        value_changed |= SliderFloat("##v", &v[i], v_min, v_max, display_format, power);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -6809,7 +6806,7 @@ bool ImGui::SliderIntN(const char* label, int* v, int components, int v_min, int
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= SliderInt(XStr("##v"), &v[i], v_min, v_max, display_format);
+        value_changed |= SliderInt("##v", &v[i], v_min, v_max, display_format);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -6940,7 +6937,7 @@ bool ImGui::DragFloat(const char* label, float* v, float v_speed, float v_min, f
         SetHoveredID(id);
 
     if (!display_format)
-        display_format = XStr("%.3f");
+        display_format = "%.3f";
     int decimal_precision = ParseFormatPrecision(display_format, 3);
 
     // Tabbing or CTRL-clicking on Drag turns it into an input box
@@ -6989,7 +6986,7 @@ bool ImGui::DragFloatN(const char* label, float* v, int components, float v_spee
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= DragFloat(XStr("##v"), &v[i], v_speed, v_min, v_max, display_format, power);
+        value_changed |= DragFloat("##v", &v[i], v_speed, v_min, v_max, display_format, power);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -7028,10 +7025,10 @@ bool ImGui::DragFloatRange2(const char* label, float* v_current_min, float* v_cu
     BeginGroup();
     PushMultiItemsWidths(2);
 
-    bool value_changed = DragFloat(XStr("##min"), v_current_min, v_speed, (v_min >= v_max) ? -FLT_MAX : v_min, (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max), display_format, power);
+    bool value_changed = DragFloat("##min", v_current_min, v_speed, (v_min >= v_max) ? -FLT_MAX : v_min, (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max), display_format, power);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
-    value_changed |= DragFloat(XStr("##max"), v_current_max, v_speed, (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min), (v_min >= v_max) ? FLT_MAX : v_max, display_format_max ? display_format_max : display_format, power);
+    value_changed |= DragFloat("##max", v_current_max, v_speed, (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min), (v_min >= v_max) ? FLT_MAX : v_max, display_format_max ? display_format_max : display_format, power);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
@@ -7046,7 +7043,7 @@ bool ImGui::DragFloatRange2(const char* label, float* v_current_min, float* v_cu
 bool ImGui::DragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* display_format)
 {
     if (!display_format)
-        display_format = XStr("%.0f");
+        display_format = "%.0f";
     float v_f = (float)*v;
     bool value_changed = DragFloat(label, &v_f, v_speed, (float)v_min, (float)v_max, display_format);
     *v = (int)v_f;
@@ -7067,7 +7064,7 @@ bool ImGui::DragIntN(const char* label, int* v, int components, float v_speed, i
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= DragInt(XStr("##v"), &v[i], v_speed, v_min, v_max, display_format);
+        value_changed |= DragInt("##v", &v[i], v_speed, v_min, v_max, display_format);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -7106,10 +7103,10 @@ bool ImGui::DragIntRange2(const char* label, int* v_current_min, int* v_current_
     BeginGroup();
     PushMultiItemsWidths(2);
 
-    bool value_changed = DragInt(XStr("##min"), v_current_min, v_speed, (v_min >= v_max) ? INT_MIN : v_min, (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max), display_format);
+    bool value_changed = DragInt("##min", v_current_min, v_speed, (v_min >= v_max) ? INT_MIN : v_min, (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max), display_format);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
-    value_changed |= DragInt(XStr("##max"), v_current_max, v_speed, (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min), (v_min >= v_max) ? INT_MAX : v_max, display_format_max ? display_format_max : display_format);
+    value_changed |= DragInt("##max", v_current_max, v_speed, (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min), (v_min >= v_max) ? INT_MAX : v_max, display_format_max ? display_format_max : display_format);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
@@ -7177,9 +7174,9 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
             const float v0 = values_getter(data, (v_idx + values_offset) % values_count);
             const float v1 = values_getter(data, (v_idx + 1 + values_offset) % values_count);
             if (plot_type == ImGuiPlotType_Lines)
-                SetTooltip(XStr("%d: %8.4g\n%d: %8.4g"), v_idx, v0, v_idx+1, v1);
+                SetTooltip("%d: %8.4g\n%d: %8.4g", v_idx, v0, v_idx+1, v1);
             else if (plot_type == ImGuiPlotType_Histogram)
-                SetTooltip(XStr("%d: %8.4g"), v_idx, v0);
+                SetTooltip("%d: %8.4g", v_idx, v0);
             v_hovered = v_idx;
         }
 
@@ -7291,7 +7288,7 @@ void ImGui::ProgressBar(float fraction, const ImVec2& size_arg, const char* over
     char overlay_buf[32];
     if (!overlay)
     {
-        ImFormatString(overlay_buf, IM_ARRAYSIZE(overlay_buf), XStr("%.0f%%"), fraction*100+0.01f);
+        ImFormatString(overlay_buf, IM_ARRAYSIZE(overlay_buf), "%.0f%%", fraction*100+0.01f);
         overlay = overlay_buf;
     }
 
@@ -7341,7 +7338,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
     }
 
     if (g.LogEnabled)
-        LogRenderedText(text_bb.GetTL(), *v ? XStr("[x]") : XStr("[ ]"));
+        LogRenderedText(text_bb.GetTL(), *v ? "[x]" : "[ ]");
     if (label_size.x > 0.0f)
         RenderText(text_bb.GetTL(), label);
 
@@ -7413,7 +7410,7 @@ bool ImGui::RadioButton(const char* label, bool active)
     }
 
     if (g.LogEnabled)
-        LogRenderedText(text_bb.GetTL(), active ? XStr("(x)") : XStr("( )"));
+        LogRenderedText(text_bb.GetTL(), active ? "(x)" : "( )");
     if (label_size.x > 0.0f)
         RenderText(text_bb.GetTL(), label);
 
@@ -7760,7 +7757,7 @@ bool ImGui::InputTextEx(const char* label, char* buf, int buf_size, const ImVec2
         g.MouseCursor = ImGuiMouseCursor_TextInput;
     }
     const bool user_clicked = hovered && io.MouseClicked[0];
-    const bool user_scrolled = is_multiline && g.ActiveId == 0 && edit_state.Id == id && g.ActiveIdPreviousFrame == draw_window->GetIDNoKeepAlive(XStr("#SCROLLY"));
+    const bool user_scrolled = is_multiline && g.ActiveId == 0 && edit_state.Id == id && g.ActiveIdPreviousFrame == draw_window->GetIDNoKeepAlive("#SCROLLY");
 
     bool select_all = (g.ActiveId != id) && (flags & ImGuiInputTextFlags_AutoSelectAll) != 0;
     if (focus_requested || user_clicked || user_scrolled)
@@ -8088,7 +8085,7 @@ bool ImGui::InputTextEx(const char* label, char* buf, int buf_size, const ImVec2
     const ImVec4 clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y); // Not using frame_bb.Max because we have adjusted size
     ImVec2 render_pos = is_multiline ? draw_window->DC.CursorPos : frame_bb.Min + style.FramePadding;
     ImVec2 text_size(0.f, 0.f);
-    const bool is_currently_scrolling = (edit_state.Id == id && is_multiline && g.ActiveId == draw_window->GetIDNoKeepAlive(XStr("#SCROLLY")));
+    const bool is_currently_scrolling = (edit_state.Id == id && is_multiline && g.ActiveId == draw_window->GetIDNoKeepAlive("#SCROLLY"));
     if (g.ActiveId == id || is_currently_scrolling)
     {
         edit_state.CursorAnim += io.DeltaTime;
@@ -8268,7 +8265,7 @@ bool ImGui::InputTextMultiline(const char* label, char* buf, size_t buf_size, co
     return InputTextEx(label, buf, (int)buf_size, size, flags | ImGuiInputTextFlags_Multiline, callback, user_data);
 }
 
-// NB: scalar_format here must be a simple XStr("%xx") format string with no prefix/suffix (unlike the Drag/Slider functions XStr("display_format") argument)
+// NB: scalar_format here must be a simple "%xx" format string with no prefix/suffix (unlike the Drag/Slider functions "display_format" argument)
 bool ImGui::InputScalarEx(const char* label, ImGuiDataType data_type, void* data_ptr, void* step_ptr, void* step_fast_ptr, const char* scalar_format, ImGuiInputTextFlags extra_flags)
 {
     ImGuiWindow* window = GetCurrentWindow();
@@ -8292,7 +8289,7 @@ bool ImGui::InputScalarEx(const char* label, ImGuiDataType data_type, void* data
     if (!(extra_flags & ImGuiInputTextFlags_CharsHexadecimal))
         extra_flags |= ImGuiInputTextFlags_CharsDecimal;
     extra_flags |= ImGuiInputTextFlags_AutoSelectAll;
-    if (InputText(XStr(""), buf, IM_ARRAYSIZE(buf), extra_flags)) // PushId(label) + XStr("") gives us the expected ID from outside point of view
+    if (InputText("", buf, IM_ARRAYSIZE(buf), extra_flags)) // PushId(label) + "" gives us the expected ID from outside point of view
         value_changed = DataTypeApplyOpFromText(buf, GImGui->InputTextState.InitialText.begin(), data_type, data_ptr, scalar_format);
 
     // Step buttons
@@ -8300,13 +8297,13 @@ bool ImGui::InputScalarEx(const char* label, ImGuiDataType data_type, void* data
     {
         PopItemWidth();
         SameLine(0, style.ItemInnerSpacing.x);
-        if (ButtonEx(XStr("-"), button_sz, ImGuiButtonFlags_Repeat | ImGuiButtonFlags_DontClosePopups))
+        if (ButtonEx("-", button_sz, ImGuiButtonFlags_Repeat | ImGuiButtonFlags_DontClosePopups))
         {
             DataTypeApplyOp(data_type, '-', data_ptr, g.IO.KeyCtrl && step_fast_ptr ? step_fast_ptr : step_ptr);
             value_changed = true;
         }
         SameLine(0, style.ItemInnerSpacing.x);
-        if (ButtonEx(XStr("+"), button_sz, ImGuiButtonFlags_Repeat | ImGuiButtonFlags_DontClosePopups))
+        if (ButtonEx("+", button_sz, ImGuiButtonFlags_Repeat | ImGuiButtonFlags_DontClosePopups))
         {
             DataTypeApplyOp(data_type, '+', data_ptr, g.IO.KeyCtrl && step_fast_ptr ? step_fast_ptr : step_ptr);
             value_changed = true;
@@ -8329,16 +8326,16 @@ bool ImGui::InputFloat(const char* label, float* v, float step, float step_fast,
 {
     char display_format[16];
     if (decimal_precision < 0)
-        strcpy(display_format, XStr("%f"));      // Ideally we'd have a minimum decimal precision of 1 to visually denote that this is a float, while hiding non-significant digits? %f doesn't have a minimum of 1
+        strcpy(display_format, "%f");      // Ideally we'd have a minimum decimal precision of 1 to visually denote that this is a float, while hiding non-significant digits? %f doesn't have a minimum of 1
     else
-        ImFormatString(display_format, IM_ARRAYSIZE(display_format), XStr("%%.%df"), decimal_precision);
+        ImFormatString(display_format, IM_ARRAYSIZE(display_format), "%%.%df", decimal_precision);
     return InputScalarEx(label, ImGuiDataType_Float, (void*)v, (void*)(step>0.0f ? &step : NULL), (void*)(step_fast>0.0f ? &step_fast : NULL), display_format, extra_flags);
 }
 
 bool ImGui::InputInt(const char* label, int* v, int step, int step_fast, ImGuiInputTextFlags extra_flags)
 {
     // Hexadecimal input provided as a convenience but the flag name is awkward. Typically you'd use InputText() to parse your own data, if you want to handle prefixes.
-    const char* scalar_format = (extra_flags & ImGuiInputTextFlags_CharsHexadecimal) ? XStr("%08X") : XStr("%d");
+    const char* scalar_format = (extra_flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%08X" : "%d";
     return InputScalarEx(label, ImGuiDataType_Int, (void*)v, (void*)(step>0.0f ? &step : NULL), (void*)(step_fast>0.0f ? &step_fast : NULL), scalar_format, extra_flags);
 }
 
@@ -8356,7 +8353,7 @@ bool ImGui::InputFloatN(const char* label, float* v, int components, int decimal
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= InputFloat(XStr("##v"), &v[i], 0, 0, decimal_precision, extra_flags);
+        value_changed |= InputFloat("##v", &v[i], 0, 0, decimal_precision, extra_flags);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -8399,7 +8396,7 @@ bool ImGui::InputIntN(const char* label, int* v, int components, ImGuiInputTextF
     for (int i = 0; i < components; i++)
     {
         PushID(i);
-        value_changed |= InputInt(XStr("##v"), &v[i], 0, 0, extra_flags);
+        value_changed |= InputInt("##v", &v[i], 0, 0, extra_flags);
         SameLine(0, g.Style.ItemInnerSpacing.x);
         PopID();
         PopItemWidth();
@@ -8567,7 +8564,7 @@ bool ImGui::Combo(const char* label, int* current_item, bool (*items_getter)(voi
                 const bool item_selected = (i == *current_item);
                 const char* item_text;
                 if (!items_getter(data, i, &item_text))
-                    item_text = XStr("*Unknown item*");
+                    item_text = "*Unknown item*";
                 if (Selectable(item_text, item_selected))
                 {
                     ClearActiveID();
@@ -8585,7 +8582,7 @@ bool ImGui::Combo(const char* label, int* current_item, bool (*items_getter)(voi
     return value_changed;
 }
 
-// Tip: pass an empty label (e.g. XStr("##dummy")) then you can use the space to draw other text or image.
+// Tip: pass an empty label (e.g. "##dummy") then you can use the space to draw other text or image.
 // But you need to make sure the ID is unique, e.g. enclose calls in PushID/PopID.
 bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags flags, const ImVec2& size_arg)
 {
@@ -8676,7 +8673,7 @@ bool ImGui::Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags
 }
 
 // Helper to calculate the size of a listbox and display a label on the right.
-// Tip: To have a list filling the entire window width, PushItemWidth(-1) and pass an empty label XStr("##empty")
+// Tip: To have a list filling the entire window width, PushItemWidth(-1) and pass an empty label "##empty"
 bool ImGui::ListBoxHeader(const char* label, const ImVec2& size_arg)
 {
     ImGuiWindow* window = GetCurrentWindow();
@@ -8754,7 +8751,7 @@ bool ImGui::ListBox(const char* label, int* current_item, bool (*items_getter)(v
             const bool item_selected = (i == *current_item);
             const char* item_text;
             if (!items_getter(data, i, &item_text))
-                item_text = XStr("*Unknown item*");
+                item_text = "*Unknown item*";
 
             PushID(i);
             if (Selectable(item_text, item_selected))
@@ -8813,7 +8810,7 @@ bool ImGui::BeginMainMenuBar()
     SetNextWindowSize(ImVec2(g.IO.DisplaySize.x, g.FontBaseSize + g.Style.FramePadding.y * 2.0f));
     PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0,0));
-    if (!Begin(XStr("##MainMenuBar"), NULL, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_MenuBar)
+    if (!Begin("##MainMenuBar", NULL, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_MenuBar)
         || !BeginMenuBar())
     {
         End();
@@ -8841,7 +8838,7 @@ bool ImGui::BeginMenuBar()
 
     IM_ASSERT(!window->DC.MenuBarAppending);
     BeginGroup(); // Save position
-    PushID(XStr("##menubar"));
+    PushID("##menubar");
     ImRect rect = window->MenuBarRect();
     PushClipRect(ImVec2(ImFloor(rect.Min.x+0.5f), ImFloor(rect.Min.y + window->BorderSize + 0.5f)), ImVec2(ImFloor(rect.Max.x+0.5f), ImFloor(rect.Max.y+0.5f)), false);
     window->DC.CursorPos = ImVec2(rect.Min.x + window->DC.MenuBarOffsetX, rect.Min.y);// + g.Style.FramePadding.y);
@@ -8883,7 +8880,7 @@ bool ImGui::BeginMenu(const char* label, bool enabled)
 
     bool pressed;
     bool menu_is_open = IsPopupOpen(id);
-    bool menuset_is_open = !(window->Flags & ImGuiWindowFlags_Popup) && (g.OpenPopupStack.Size > g.CurrentPopupStack.Size && g.OpenPopupStack[g.CurrentPopupStack.Size].ParentMenuSet == window->GetID(XStr("##menus")));
+    bool menuset_is_open = !(window->Flags & ImGuiWindowFlags_Popup) && (g.OpenPopupStack.Size > g.CurrentPopupStack.Size && g.OpenPopupStack[g.CurrentPopupStack.Size].ParentMenuSet == window->GetID("##menus"));
     if (menuset_is_open)
         g.FocusedWindow = window;
 
@@ -8947,7 +8944,7 @@ bool ImGui::BeginMenu(const char* label, bool enabled)
     }
     else if (pressed || (hovered && menuset_is_open && !menu_is_open)) // menu-bar: first click to open, then hover to open others
         want_open = true;
-    if (!enabled) // explicitly close if an open menu becomes disabled, facilitate users code a lot in pattern such as 'if (BeginMenu(XStr("options"), has_object)) { ..use object.. }'
+    if (!enabled) // explicitly close if an open menu becomes disabled, facilitate users code a lot in pattern such as 'if (BeginMenu("options", has_object)) { ..use object.. }'
         want_close = true;
     if (want_close && IsPopupOpen(id))
         ClosePopupToLevel(GImGui->CurrentPopupStack.Size);
@@ -8988,7 +8985,7 @@ bool ImGui::ColorButton(const ImVec4& col, bool small_height, bool outline_borde
 
     ImGuiContext& g = *GImGui;
     const ImGuiStyle& style = g.Style;
-    const ImGuiID id = window->GetID(XStr("#colorbutton"));
+    const ImGuiID id = window->GetID("#colorbutton");
     const float square_size = g.FontSize;
     const ImRect bb(window->DC.CursorPos, window->DC.CursorPos + ImVec2(square_size + style.FramePadding.y*2, square_size + (small_height ? 0 : style.FramePadding.y*2)));
     ItemSize(bb, small_height ? 0.0f : style.FramePadding.y);
@@ -9000,7 +8997,7 @@ bool ImGui::ColorButton(const ImVec4& col, bool small_height, bool outline_borde
     RenderFrame(bb.Min, bb.Max, GetColorU32(col), outline_border, style.FrameRounding);
 
     if (hovered)
-        SetTooltip(XStr("Color:\n(%.2f,%.2f,%.2f,%.2f)\n#%02X%02X%02X%02X"), col.x, col.y, col.z, col.w, IM_F32_TO_INT8_SAT(col.x), IM_F32_TO_INT8_SAT(col.y), IM_F32_TO_INT8_SAT(col.z), IM_F32_TO_INT8_SAT(col.w));
+        SetTooltip("Color:\n(%.2f,%.2f,%.2f,%.2f)\n#%02X%02X%02X%02X", col.x, col.y, col.z, col.w, IM_F32_TO_INT8_SAT(col.x), IM_F32_TO_INT8_SAT(col.y), IM_F32_TO_INT8_SAT(col.z), IM_F32_TO_INT8_SAT(col.w));
 
     return pressed;
 }
@@ -9060,13 +9057,13 @@ bool ImGui::ColorEdit4(const char* label, float col[4], bool alpha)
             const float w_item_one  = ImMax(1.0f, (float)(int)((w_items_all - (style.ItemInnerSpacing.x) * (components-1)) / (float)components));
             const float w_item_last = ImMax(1.0f, (float)(int)(w_items_all - (w_item_one + style.ItemInnerSpacing.x) * (components-1)));
 
-            const bool hide_prefix = (w_item_one <= CalcTextSize(XStr("M:999")).x);
-            const char* ids[4] = { XStr("##X"), XStr("##Y"), XStr("##Z"), XStr("##W") };
+            const bool hide_prefix = (w_item_one <= CalcTextSize("M:999").x);
+            const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
             const char* fmt_table[3][4] =
             {
-                {   XStr("%3.0f"),   XStr("%3.0f"),   XStr("%3.0f"),   XStr("%3.0f") },
-                { XStr("R:%3.0f"), XStr("G:%3.0f"), XStr("B:%3.0f"), XStr("A:%3.0f") },
-                { XStr("H:%3.0f"), XStr("S:%3.0f"), XStr("V:%3.0f"), XStr("A:%3.0f") }
+                {   "%3.0f",   "%3.0f",   "%3.0f",   "%3.0f" },
+                { "R:%3.0f", "G:%3.0f", "B:%3.0f", "A:%3.0f" },
+                { "H:%3.0f", "S:%3.0f", "V:%3.0f", "A:%3.0f" }
             };
             const char** fmt = hide_prefix ? fmt_table[0] : hsv ? fmt_table[2] : fmt_table[1];
 
@@ -9089,11 +9086,11 @@ bool ImGui::ColorEdit4(const char* label, float col[4], bool alpha)
             const float w_slider_all = w_full - square_sz;
             char buf[64];
             if (alpha)
-                ImFormatString(buf, IM_ARRAYSIZE(buf), XStr("#%02X%02X%02X%02X"), i[0], i[1], i[2], i[3]);
+                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", i[0], i[1], i[2], i[3]);
             else
-                ImFormatString(buf, IM_ARRAYSIZE(buf), XStr("#%02X%02X%02X"), i[0], i[1], i[2]);
+                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", i[0], i[1], i[2]);
             PushItemWidth(w_slider_all - style.ItemInnerSpacing.x);
-            if (InputText(XStr("##Text"), buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase))
+            if (InputText("##Text", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase))
             {
                 value_changed |= true;
                 char* p = buf;
@@ -9101,9 +9098,9 @@ bool ImGui::ColorEdit4(const char* label, float col[4], bool alpha)
                     p++;
                 i[0] = i[1] = i[2] = i[3] = 0;
                 if (alpha)
-                    sscanf(p, XStr("%02X%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
+                    sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
                 else
-                    sscanf(p, XStr("%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
+                    sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
             }
             PopItemWidth();
         }
@@ -9118,12 +9115,12 @@ bool ImGui::ColorEdit4(const char* label, float col[4], bool alpha)
 
     // Recreate our own tooltip over's ColorButton() one because we want to display correct alpha here
     if (IsItemHovered())
-        SetTooltip(XStr("Color:\n(%.2f,%.2f,%.2f,%.2f)\n#%02X%02X%02X%02X"), col[0], col[1], col[2], col[3], IM_F32_TO_INT8_SAT(col[0]), IM_F32_TO_INT8_SAT(col[1]), IM_F32_TO_INT8_SAT(col[2]), IM_F32_TO_INT8_SAT(col[3]));
+        SetTooltip("Color:\n(%.2f,%.2f,%.2f,%.2f)\n#%02X%02X%02X%02X", col[0], col[1], col[2], col[3], IM_F32_TO_INT8_SAT(col[0]), IM_F32_TO_INT8_SAT(col[1]), IM_F32_TO_INT8_SAT(col[2]), IM_F32_TO_INT8_SAT(col[3]));
 
     if (window->DC.ColorEditMode == ImGuiColorEditMode_UserSelectShowButton)
     {
         SameLine(0, style.ItemInnerSpacing.x);
-        const char* button_titles[3] = { XStr("RGB"), XStr("HSV"), XStr("HEX") };
+        const char* button_titles[3] = { "RGB", "HSV", "HEX" };
         if (ButtonEx(button_titles[edit_mode], ImVec2(0,0), ImGuiButtonFlags_DontClosePopups))
             g.ColorEditModeStorage.SetInt(id, (edit_mode + 1) % 3); // Don't set local copy of 'edit_mode' right away!
     }
@@ -9190,7 +9187,7 @@ void ImGui::Separator()
 
     ImGuiContext& g = *GImGui;
     if (g.LogEnabled)
-        LogText(IM_NEWLINE XStr("--------------------------------"));
+        LogText(IM_NEWLINE "--------------------------------");
 
     if (window->DC.ColumnsCount > 1)
     {
@@ -9230,7 +9227,7 @@ bool ImGui::IsRectVisible(const ImVec2& rect_min, const ImVec2& rect_max)
     return window->ClipRect.Overlaps(ImRect(rect_min, rect_max));
 }
 
-// Lock horizontal starting position + capture group bounding box into one XStr("item") (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
+// Lock horizontal starting position + capture group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
 void ImGui::BeginGroup()
 {
     ImGuiWindow* window = GetCurrentWindow();
@@ -9467,7 +9464,7 @@ void ImGui::Columns(int columns_count, const char* id, bool border)
         window->DC.CursorPos.y = window->DC.ColumnsCellMaxY;
     }
 
-    // Draw columns borders and handle resize at the time of XStr("closing") a columns set
+    // Draw columns borders and handle resize at the time of "closing" a columns set
     if (window->DC.ColumnsCount != columns_count && window->DC.ColumnsCount != 1 && window->DC.ColumnsShowBorders && !window->SkipItems)
     {
         const float y1 = window->DC.ColumnsStartPosY;
@@ -9503,7 +9500,7 @@ void ImGui::Columns(int columns_count, const char* id, bool border)
     // Differentiate column ID with an arbitrary prefix for cases where users name their columns set the same as another widget.
     // In addition, when an identifier isn't explicitly provided we include the number of columns in the hash to make it uniquer.
     PushID(0x11223347 + (id ? 0 : columns_count));
-    window->DC.ColumnsSetId = window->GetID(id ? id : XStr("columns"));
+    window->DC.ColumnsSetId = window->GetID(id ? id : "columns");
     PopID();
 
     // Set state for first column
@@ -9562,7 +9559,7 @@ void ImGui::TreePush(const char* str_id)
     ImGuiWindow* window = GetCurrentWindow();
     Indent();
     window->DC.TreeDepth++;
-    PushID(str_id ? str_id : XStr("#TreePush"));
+    PushID(str_id ? str_id : "#TreePush");
 }
 
 void ImGui::TreePush(const void* ptr_id)
@@ -9570,7 +9567,7 @@ void ImGui::TreePush(const void* ptr_id)
     ImGuiWindow* window = GetCurrentWindow();
     Indent();
     window->DC.TreeDepth++;
-    PushID(ptr_id ? ptr_id : (const void*)XStr("#TreePush"));
+    PushID(ptr_id ? ptr_id : (const void*)"#TreePush");
 }
 
 void ImGui::TreePushRawID(ImGuiID id)
@@ -9591,17 +9588,17 @@ void ImGui::TreePop()
 
 void ImGui::Value(const char* prefix, bool b)
 {
-    Text(XStr("%s: %s"), prefix, (b ? XStr("true") : XStr("false")));
+    Text("%s: %s", prefix, (b ? "true" : "false"));
 }
 
 void ImGui::Value(const char* prefix, int v)
 {
-    Text(XStr("%s: %d"), prefix, v);
+    Text("%s: %d", prefix, v);
 }
 
 void ImGui::Value(const char* prefix, unsigned int v)
 {
-    Text(XStr("%s: %d"), prefix, v);
+    Text("%s: %d", prefix, v);
 }
 
 void ImGui::Value(const char* prefix, float v, const char* float_format)
@@ -9609,26 +9606,26 @@ void ImGui::Value(const char* prefix, float v, const char* float_format)
     if (float_format)
     {
         char fmt[64];
-        ImFormatString(fmt, IM_ARRAYSIZE(fmt), XStr("%%s: %s"), float_format);
+        ImFormatString(fmt, IM_ARRAYSIZE(fmt), "%%s: %s", float_format);
         Text(fmt, prefix, v);
     }
     else
     {
-        Text(XStr("%s: %.3f"), prefix, v);
+        Text("%s: %.3f", prefix, v);
     }
 }
 
 // FIXME: May want to remove those helpers?
 void ImGui::ValueColor(const char* prefix, const ImVec4& v)
 {
-    Text(XStr("%s: (%.2f,%.2f,%.2f,%.2f)"), prefix, v.x, v.y, v.z, v.w);
+    Text("%s: (%.2f,%.2f,%.2f,%.2f)", prefix, v.x, v.y, v.z, v.w);
     SameLine();
     ColorButton(v, true);
 }
 
 void ImGui::ValueColor(const char* prefix, ImU32 v)
 {
-    Text(XStr("%s: %08X"), prefix, v);
+    Text("%s: %08X", prefix, v);
     SameLine();
     ColorButton(ColorConvertU32ToFloat4(v), true);
 }
@@ -9647,7 +9644,7 @@ void ImGui::ValueColor(const char* prefix, ImU32 v)
 #if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCS)
 
 #ifdef _MSC_VER
-#pragma comment(lib, XStr("user32"))
+#pragma comment(lib, "user32")
 #endif
 
 static const char* GetClipboardTextFn_DefaultImpl(void*)
@@ -9716,7 +9713,7 @@ static void SetClipboardTextFn_DefaultImpl(void*, const char* text)
 
 #include <imm.h>
 #ifdef _MSC_VER
-#pragma comment(lib, XStr("imm32"))
+#pragma comment(lib, "imm32")
 #endif
 
 static void ImeSetInputScreenPosFn_DefaultImpl(int x, int y)
@@ -9745,25 +9742,25 @@ static void ImeSetInputScreenPosFn_DefaultImpl(int, int) {}
 
 void ImGui::ShowMetricsWindow(bool* p_open)
 {
-    if (ImGui::Begin(XStr("ImGui Metrics"), p_open))
+    if (ImGui::Begin("ImGui Metrics", p_open))
     {
-        ImGui::Text(XStr("ImGui %s"), ImGui::GetVersion());
-        ImGui::Text(XStr("Application average %.3f ms/frame (%.1f FPS)"), 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::Text(XStr("%d vertices, %d indices (%d triangles)"), ImGui::GetIO().MetricsRenderVertices, ImGui::GetIO().MetricsRenderIndices, ImGui::GetIO().MetricsRenderIndices / 3);
-        ImGui::Text(XStr("%d allocations"), ImGui::GetIO().MetricsAllocs);
+        ImGui::Text("ImGui %s", ImGui::GetVersion());
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("%d vertices, %d indices (%d triangles)", ImGui::GetIO().MetricsRenderVertices, ImGui::GetIO().MetricsRenderIndices, ImGui::GetIO().MetricsRenderIndices / 3);
+        ImGui::Text("%d allocations", ImGui::GetIO().MetricsAllocs);
         static bool show_clip_rects = true;
-        ImGui::Checkbox(XStr("Show clipping rectangles when hovering a ImDrawCmd"), &show_clip_rects);
+        ImGui::Checkbox("Show clipping rectangles when hovering a ImDrawCmd", &show_clip_rects);
         ImGui::Separator();
 
         struct Funcs
         {
             static void NodeDrawList(ImDrawList* draw_list, const char* label)
             {
-                bool node_open = ImGui::TreeNode(draw_list, XStr("%s: '%s' %d vtx, %d indices, %d cmds"), label, draw_list->_OwnerName ? draw_list->_OwnerName : XStr(""), draw_list->VtxBuffer.Size, draw_list->IdxBuffer.Size, draw_list->CmdBuffer.Size);
+                bool node_open = ImGui::TreeNode(draw_list, "%s: '%s' %d vtx, %d indices, %d cmds", label, draw_list->_OwnerName ? draw_list->_OwnerName : "", draw_list->VtxBuffer.Size, draw_list->IdxBuffer.Size, draw_list->CmdBuffer.Size);
                 if (draw_list == ImGui::GetWindowDrawList())
                 {
                     ImGui::SameLine();
-                    ImGui::TextColored(ImColor(255,100,100), XStr("CURRENTLY APPENDING")); // Can't display stats for active draw list! (we don't have the data double-buffered)
+                    ImGui::TextColored(ImColor(255,100,100), "CURRENTLY APPENDING"); // Can't display stats for active draw list! (we don't have the data double-buffered)
                     if (node_open) ImGui::TreePop();
                     return;
                 }
@@ -9777,11 +9774,11 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                 {
                     if (pcmd->UserCallback)
                     {
-                        ImGui::BulletText(XStr("Callback %p, user_data %p"), pcmd->UserCallback, pcmd->UserCallbackData);
+                        ImGui::BulletText("Callback %p, user_data %p", pcmd->UserCallback, pcmd->UserCallbackData);
                         continue;
                     }
                     ImDrawIdx* idx_buffer = (draw_list->IdxBuffer.Size > 0) ? draw_list->IdxBuffer.Data : NULL;
-                    bool pcmd_node_open = ImGui::TreeNode((void*)(pcmd - draw_list->CmdBuffer.begin()), XStr("Draw %-4d %s vtx, tex = %p, clip_rect = (%.0f,%.0f)..(%.0f,%.0f)"), pcmd->ElemCount, draw_list->IdxBuffer.Size > 0 ? XStr("indexed") : XStr("non-indexed"), pcmd->TextureId, pcmd->ClipRect.x, pcmd->ClipRect.y, pcmd->ClipRect.z, pcmd->ClipRect.w);
+                    bool pcmd_node_open = ImGui::TreeNode((void*)(pcmd - draw_list->CmdBuffer.begin()), "Draw %-4d %s vtx, tex = %p, clip_rect = (%.0f,%.0f)..(%.0f,%.0f)", pcmd->ElemCount, draw_list->IdxBuffer.Size > 0 ? "indexed" : "non-indexed", pcmd->TextureId, pcmd->ClipRect.x, pcmd->ClipRect.y, pcmd->ClipRect.z, pcmd->ClipRect.w);
                     if (show_clip_rects && ImGui::IsItemHovered())
                     {
                         ImRect clip_rect = pcmd->ClipRect;
@@ -9803,7 +9800,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                             {
                                 ImDrawVert& v = draw_list->VtxBuffer[idx_buffer ? idx_buffer[vtx_i] : vtx_i];
                                 triangles_pos[n] = v.pos;
-                                buf_p += sprintf(buf_p, XStr("%s %04d { pos = (%8.2f,%8.2f), uv = (%.6f,%.6f), col = %08X }\n"), (n == 0) ? XStr("vtx") : XStr("   "), vtx_i, v.pos.x, v.pos.y, v.uv.x, v.uv.y, v.col);
+                                buf_p += sprintf(buf_p, "%s %04d { pos = (%8.2f,%8.2f), uv = (%.6f,%.6f), col = %08X }\n", (n == 0) ? "vtx" : "   ", vtx_i, v.pos.x, v.pos.y, v.uv.x, v.uv.y, v.col);
                             }
                             ImGui::Selectable(buf, false);
                             if (ImGui::IsItemHovered())
@@ -9817,52 +9814,52 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 
             static void NodeWindows(ImVector<ImGuiWindow*>& windows, const char* label)
             {
-                if (!ImGui::TreeNode(label, XStr("%s (%d)"), label, windows.Size))
+                if (!ImGui::TreeNode(label, "%s (%d)", label, windows.Size))
                     return;
                 for (int i = 0; i < windows.Size; i++)
-                    Funcs::NodeWindow(windows[i], XStr("Window"));
+                    Funcs::NodeWindow(windows[i], "Window");
                 ImGui::TreePop();
             }
 
             static void NodeWindow(ImGuiWindow* window, const char* label)
             {
-                if (!ImGui::TreeNode(window, XStr("%s '%s', %d @ 0x%p"), label, window->Name, window->Active || window->WasActive, window))
+                if (!ImGui::TreeNode(window, "%s '%s', %d @ 0x%p", label, window->Name, window->Active || window->WasActive, window))
                     return;
-                NodeDrawList(window->DrawList, XStr("DrawList"));
-                ImGui::BulletText(XStr("Pos: (%.1f,%.1f)"), window->Pos.x, window->Pos.y);
-                ImGui::BulletText(XStr("Size: (%.1f,%.1f), SizeContents (%.1f,%.1f)"), window->Size.x, window->Size.y, window->SizeContents.x, window->SizeContents.y);
-                ImGui::BulletText(XStr("Scroll: (%.2f,%.2f)"), window->Scroll.x, window->Scroll.y);
-                if (window->RootWindow != window) NodeWindow(window->RootWindow, XStr("RootWindow"));
-                if (window->DC.ChildWindows.Size > 0) NodeWindows(window->DC.ChildWindows, XStr("ChildWindows"));
-                ImGui::BulletText(XStr("Storage: %d bytes"), window->StateStorage.Data.Size * (int)sizeof(ImGuiStorage::Pair));
+                NodeDrawList(window->DrawList, "DrawList");
+                ImGui::BulletText("Pos: (%.1f,%.1f)", window->Pos.x, window->Pos.y);
+                ImGui::BulletText("Size: (%.1f,%.1f), SizeContents (%.1f,%.1f)", window->Size.x, window->Size.y, window->SizeContents.x, window->SizeContents.y);
+                ImGui::BulletText("Scroll: (%.2f,%.2f)", window->Scroll.x, window->Scroll.y);
+                if (window->RootWindow != window) NodeWindow(window->RootWindow, "RootWindow");
+                if (window->DC.ChildWindows.Size > 0) NodeWindows(window->DC.ChildWindows, "ChildWindows");
+                ImGui::BulletText("Storage: %d bytes", window->StateStorage.Data.Size * (int)sizeof(ImGuiStorage::Pair));
                 ImGui::TreePop();
             }
         };
 
         ImGuiContext& g = *GImGui;                // Access private state
-        Funcs::NodeWindows(g.Windows, XStr("Windows"));
-        if (ImGui::TreeNode(XStr("DrawList"), XStr("Active DrawLists (%d)"), g.RenderDrawLists[0].Size))
+        Funcs::NodeWindows(g.Windows, "Windows");
+        if (ImGui::TreeNode("DrawList", "Active DrawLists (%d)", g.RenderDrawLists[0].Size))
         {
             for (int i = 0; i < g.RenderDrawLists[0].Size; i++)
-                Funcs::NodeDrawList(g.RenderDrawLists[0][i], XStr("DrawList"));
+                Funcs::NodeDrawList(g.RenderDrawLists[0][i], "DrawList");
             ImGui::TreePop();
         }
-        if (ImGui::TreeNode(XStr("Popups"), XStr("Open Popups Stack (%d)"), g.OpenPopupStack.Size))
+        if (ImGui::TreeNode("Popups", "Open Popups Stack (%d)", g.OpenPopupStack.Size))
         {
             for (int i = 0; i < g.OpenPopupStack.Size; i++)
             {
                 ImGuiWindow* window = g.OpenPopupStack[i].Window;
-                ImGui::BulletText(XStr("PopupID: %08x, Window: '%s'%s%s"), g.OpenPopupStack[i].PopupId, window ? window->Name : XStr("NULL"), window && (window->Flags & ImGuiWindowFlags_ChildWindow) ? XStr(" ChildWindow") : XStr(""), window && (window->Flags & ImGuiWindowFlags_ChildMenu) ? XStr(" ChildMenu") : XStr(""));
+                ImGui::BulletText("PopupID: %08x, Window: '%s'%s%s", g.OpenPopupStack[i].PopupId, window ? window->Name : "NULL", window && (window->Flags & ImGuiWindowFlags_ChildWindow) ? " ChildWindow" : "", window && (window->Flags & ImGuiWindowFlags_ChildMenu) ? " ChildMenu" : "");
             }
             ImGui::TreePop();
         }
-        if (ImGui::TreeNode(XStr("Basic state")))
+        if (ImGui::TreeNode("Basic state"))
         {
-            ImGui::Text(XStr("FocusedWindow: '%s'"), g.FocusedWindow ? g.FocusedWindow->Name : XStr("NULL"));
-            ImGui::Text(XStr("HoveredWindow: '%s'"), g.HoveredWindow ? g.HoveredWindow->Name : XStr("NULL"));
-            ImGui::Text(XStr("HoveredRootWindow: '%s'"), g.HoveredRootWindow ? g.HoveredRootWindow->Name : XStr("NULL"));
-            ImGui::Text(XStr("HoveredID: 0x%08X/0x%08X"), g.HoveredId, g.HoveredIdPreviousFrame); // Data is XStr("in-flight") so depending on when the Metrics window is called we may see current frame information or not
-            ImGui::Text(XStr("ActiveID: 0x%08X/0x%08X"), g.ActiveId, g.ActiveIdPreviousFrame);
+            ImGui::Text("FocusedWindow: '%s'", g.FocusedWindow ? g.FocusedWindow->Name : "NULL");
+            ImGui::Text("HoveredWindow: '%s'", g.HoveredWindow ? g.HoveredWindow->Name : "NULL");
+            ImGui::Text("HoveredRootWindow: '%s'", g.HoveredRootWindow ? g.HoveredRootWindow->Name : "NULL");
+            ImGui::Text("HoveredID: 0x%08X/0x%08X", g.HoveredId, g.HoveredIdPreviousFrame); // Data is "in-flight" so depending on when the Metrics window is called we may see current frame information or not
+            ImGui::Text("ActiveID: 0x%08X/0x%08X", g.ActiveId, g.ActiveIdPreviousFrame);
             ImGui::TreePop();
         }
     }

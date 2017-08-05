@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * playerlist.hpp
  *
@@ -28,8 +25,8 @@ enum class k_EState {
 
 
 extern rgba_t k_Colors[];
-const std::string k_Names[] = { XStr("DEFAULT"), XStr("FRIEND"), XStr("RAGE"), XStr("IPC"), XStr("DEVELOPER") };
-const char* const k_pszNames[] = { XStr("DEFAULT"), XStr("FRIEND"), XStr("RAGE"), XStr("IPC"), XStr("DEVELOPER") };
+const std::string k_Names[] = { "DEFAULT", "FRIEND", "RAGE", "IPC", "DEVELOPER" };
+const char* const k_pszNames[] = { "DEFAULT", "FRIEND", "RAGE", "IPC", "DEVELOPER" };
 
 struct userdata {
 	k_EState state { k_EState::DEFAULT };

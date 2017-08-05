@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 

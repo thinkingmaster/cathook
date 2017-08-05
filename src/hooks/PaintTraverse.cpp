@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * PaintTraverse.cpp
  *
@@ -17,15 +14,15 @@
 #include "../profiler.h"
 #include "../netmessage.h"
 
-CatVar clean_screenshots(CV_SWITCH, XStr("clean_screenshots"), XStr("1"), XStr("Clean screenshots"), XStr("Don't draw visuals while taking a screenshot"));
-CatVar disable_visuals(CV_SWITCH, XStr("no_visuals"), XStr("0"), XStr("Disable ALL drawing"), XStr("Completely hides cathook"));
-CatVar no_zoom(CV_SWITCH, XStr("no_zoom"), XStr("0"), XStr("Disable scope"), XStr("Disables black scope overlay"));
-CatVar pure_bypass(CV_SWITCH, XStr("pure_bypass"), XStr("0"), XStr("Pure Bypass"), XStr("Bypass sv_pure"));
+CatVar clean_screenshots(CV_SWITCH, "clean_screenshots", "1", "Clean screenshots", "Don't draw visuals while taking a screenshot");
+CatVar disable_visuals(CV_SWITCH, "no_visuals", "0", "Disable ALL drawing", "Completely hides cathook");
+CatVar no_zoom(CV_SWITCH, "no_zoom", "0", "Disable scope", "Disables black scope overlay");
+CatVar pure_bypass(CV_SWITCH, "pure_bypass", "0", "Pure Bypass", "Bypass sv_pure");
 void* pure_orig = nullptr;
 void** pure_addr = nullptr;
 
-CatEnum software_cursor_enum({XStr("KEEP"), XStr("ALWAYS"), XStr("NEVER"), XStr("MENU ON"), XStr("MENU OFF")});
-CatVar software_cursor_mode(software_cursor_enum, XStr("software_cursor_mode"), XStr("0"), XStr("Software cursor"), XStr("Try to change this and see what works best for you"));
+CatEnum software_cursor_enum({"KEEP", "ALWAYS", "NEVER", "MENU ON", "MENU OFF"});
+CatVar software_cursor_mode(software_cursor_enum, "software_cursor_mode", "0", "Software cursor", "Try to change this and see what works best for you");
 
 void PaintTraverse_hook(void* _this, unsigned int vp, bool fr, bool ar) {
 	static const PaintTraverse_t original = (PaintTraverse_t)hooks::panel.GetMethod(offsets::PaintTraverse());
@@ -35,7 +32,7 @@ void PaintTraverse_hook(void* _this, unsigned int vp, bool fr, bool ar) {
 	static unsigned long panel_top = 0;
 	static bool cur, draw_flag = false;
 	static bool call_default = true;
-	static ConVar* software_cursor = g_ICvar->FindVar(XStr("cl_software_cursor"));
+	static ConVar* software_cursor = g_ICvar->FindVar("cl_software_cursor");
 	static const char *name;
 	static std::string name_s, name_stripped, reason_stripped;
 #if DEBUG_SEGV == true
@@ -52,7 +49,7 @@ void PaintTraverse_hook(void* _this, unsigned int vp, bool fr, bool ar) {
 #endif
 	if (pure_bypass) {
 		if (!pure_addr) {
-			pure_addr = *reinterpret_cast<void***>(gSignatures.GetEngineSignature(XStr("55 89 E5 83 EC 18 A1 ? ? ? ? 89 04 24 E8 0D FF FF FF A1 ? ? ? ? 85 C0 74 08 89 04 24 E8 ? ? ? ? C9 C3")) + 7);
+			pure_addr = *reinterpret_cast<void***>(gSignatures.GetEngineSignature("55 89 E5 83 EC 18 A1 ? ? ? ? 89 04 24 E8 0D FF FF FF A1 ? ? ? ? 85 C0 74 08 89 04 24 E8 ? ? ? ? C9 C3") + 7);
 		}
 		if (*pure_addr)
 			pure_orig = *pure_addr;
@@ -115,7 +112,7 @@ void PaintTraverse_hook(void* _this, unsigned int vp, bool fr, bool ar) {
 	}
 	if (!panel_scope) {
 		name = g_IPanel->GetName(vp);
-		if (!strcmp(name, XStr("HudScope"))) {
+		if (!strcmp(name, "HudScope")) {
 			panel_scope = vp;
 		}
 	}

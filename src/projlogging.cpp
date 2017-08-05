@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * projlogging.cpp
  *
@@ -25,8 +22,8 @@ void Update() {
 				const Vector& a = ent->m_vecAcceleration;
 				Vector eav;
 				velocity::EstimateAbsVelocity(RAW_ENT(ent), eav);
-//				logging::Info(XStr("%d [%s]: CatVelocity: %.2f %.2f %.2f (%.2f) | EAV: %.2f %.2f %.2f (%.2f)"), i, RAW_ENT(ent)->GetClientClass()->GetName(), v.x, v.y, v.z, v.Length(), a.x, a.y, a.z);
-				logging::Info(XStr("%d [%s]: CatVelocity: %.2f %.2f %.2f (%.2f) | EAV: %.2f %.2f %.2f (%.2f)"), i, RAW_ENT(ent)->GetClientClass()->GetName(), v.x, v.y, v.z, v.Length(), eav.x, eav.y, eav.z, eav.Length());
+//				logging::Info("%d [%s]: CatVelocity: %.2f %.2f %.2f (%.2f) | EAV: %.2f %.2f %.2f (%.2f)", i, RAW_ENT(ent)->GetClientClass()->GetName(), v.x, v.y, v.z, v.Length(), a.x, a.y, a.z);
+				logging::Info("%d [%s]: CatVelocity: %.2f %.2f %.2f (%.2f) | EAV: %.2f %.2f %.2f (%.2f)", i, RAW_ENT(ent)->GetClientClass()->GetName(), v.x, v.y, v.z, v.Length(), eav.x, eav.y, eav.z, eav.Length());
 			}
 		}
 	}

@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * prediction.cpp
  *
@@ -58,7 +55,7 @@ std::vector<std::vector<Vector>> predicted_players {};
 
 int predicted_player_count = 0;
 
-static CatVar debug_enginepred(CV_SWITCH, XStr("debug_engine_pred_others"), XStr("0"), XStr("DO NOT USE - MOVEMENT"));
+static CatVar debug_enginepred(CV_SWITCH, "debug_engine_pred_others", "0", "DO NOT USE - MOVEMENT");
 
 void Prediction_CreateMove() {
 	static bool setup = false;
@@ -79,7 +76,7 @@ void Prediction_CreateMove() {
 			}
 			ent->m_vecOrigin = o;
 			CE_VECTOR(ent, 0x354) = o;
-			//logging::Info(XStr("Predicted %d to be at [%.2f, %.2f, %.2f] vs [%.2f, %.2f, %.2f]"), i, r.x,r.y,r.z, o.x, o.y, o.z);
+			//logging::Info("Predicted %d to be at [%.2f, %.2f, %.2f] vs [%.2f, %.2f, %.2f]", i, r.x,r.y,r.z, o.x, o.y, o.z);
 			predicted_player_count = i;
 		}
 	}
@@ -221,12 +218,12 @@ Vector ProjectilePrediction_Engine(CachedEntity* ent, int hb, float speed, float
 	bestpos.z += (400 * besttime * besttime * gravitymod);
 	// S = at^2/2 ; t = sqrt(2S/a)*/
 	Vector result = bestpos + hitbox_offset;
-	logging::Info(XStr("[Pred][%d] delta: %.2f   %.2f   %.2f"), result.x - origin.x, result.y - origin.y, result.z - origin.z	);
+	logging::Info("[Pred][%d] delta: %.2f   %.2f   %.2f", result.x - origin.x, result.y - origin.y, result.z - origin.z	);
 	return result;
 }
 
-CatVar debug_pp_extrapolate(CV_SWITCH, XStr("debug_pp_extrapolate"), XStr("0"), XStr("Extrapolate entity position when predicting projectiles"));
-CatVar debug_pp_rockettimeping(CV_SWITCH, XStr("debug_pp_rocket_time_ping"), XStr("0"), XStr("Compensate for ping in pp"));
+CatVar debug_pp_extrapolate(CV_SWITCH, "debug_pp_extrapolate", "0", "Extrapolate entity position when predicting projectiles");
+CatVar debug_pp_rockettimeping(CV_SWITCH, "debug_pp_rocket_time_ping", "0", "Compensate for ping in pp");
 
 Vector ProjectilePrediction(CachedEntity* ent, int hb, float speed, float gravitymod, float entgmod) {
 	if (!ent) return Vector();
@@ -349,7 +346,7 @@ void RunPredictPlayers() {
 		// For ground prediction, we would just use the old method for now
 		if (ground) {
 			
-			// Set our last XStr("in air") state to false
+			// Set our last "in air" state to false
 			last_predicted_vector_inair[i] = false;
 			
 			
@@ -359,7 +356,7 @@ void RunPredictPlayers() {
 			// If we were not in the air last tick, we need to create our first prediction 
 			if (!last_predicted_inair[i]) {
 				
-				// Set XStr("in air") to true to allow air prediction to work next tick
+				// Set "in air" to true to allow air prediction to work next tick
 				last_predicted_inair[i] = true;
 				// Get our abs velocity and set it into the array
 				velocity::EstimateAbsVelocity(RAW_ENT(ent), last_predicted_vector[i]);

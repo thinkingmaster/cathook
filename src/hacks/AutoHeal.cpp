@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * AutoHeal.cpp
  *
@@ -15,25 +12,25 @@
 
 namespace hacks { namespace tf { namespace autoheal {
 
-CatVar enabled(CV_SWITCH, XStr("autoheal_enabled"), XStr("0"), XStr("AutoHeal"), XStr("Automatically heals nearby teammates"));
-CatVar silent(CV_SWITCH, XStr("autoheal_silent"), XStr("1"), XStr("Silent AutoHeal"), XStr("Silent AutoHeal. Disable this to make ghetto followbot"));
+CatVar enabled(CV_SWITCH, "autoheal_enabled", "0", "AutoHeal", "Automatically heals nearby teammates");
+CatVar silent(CV_SWITCH, "autoheal_silent", "1", "Silent AutoHeal", "Silent AutoHeal. Disable this to make ghetto followbot");
 //extern CatVar target_only;
 
 int m_iCurrentHealingTarget { -1 };
 int m_iNewTarget { 0 };
 
-static CatVar pop_uber_auto(CV_SWITCH, XStr("autoheal_uber"), XStr("1"), XStr("AutoUber"), XStr("Use ubercharge automatically"));
-static CatVar pop_uber_percent(CV_FLOAT, XStr("autoheal_uber_health"), XStr("30"), XStr("Pop uber if health% <"), XStr("When under a percentage of health, use ubercharge"));
-static CatVar share_uber(CV_SWITCH, XStr("autoheal_share_uber"), XStr("1"), XStr("Share ubercharge"), XStr("Aimbot will attempt to share uber charge with un-ubered players"));
+static CatVar pop_uber_auto(CV_SWITCH, "autoheal_uber", "1", "AutoUber", "Use ubercharge automatically");
+static CatVar pop_uber_percent(CV_FLOAT, "autoheal_uber_health", "30", "Pop uber if health% <", "When under a percentage of health, use ubercharge");
+static CatVar share_uber(CV_SWITCH, "autoheal_share_uber", "1", "Share ubercharge", "Aimbot will attempt to share uber charge with un-ubered players");
 
 int vaccinator_change_stage = 0;
 int vaccinator_change_ticks = 0;
 int vaccinator_ideal_resist = 0;
 int vaccinator_change_timer = 0;
 
-static CatVar auto_vacc_bullets(CV_SWITCH, XStr("auto_vacc_bullets"), XStr("1"), XStr("Check bullet danger"));
-static CatEnum vacc_sniper_enum({XStr("NEVER"), XStr("ZOOM & VISIBLE"), XStr("ANY ZOOMED")});
-static CatVar vacc_sniper(vacc_sniper_enum, XStr("auto_vacc_sniper_pop"), XStr("1"), XStr("Pop if Sniper"), XStr("Defines Auto-Vacc behaviour with snipers"));
+static CatVar auto_vacc_bullets(CV_SWITCH, "auto_vacc_bullets", "1", "Check bullet danger");
+static CatEnum vacc_sniper_enum({"NEVER", "ZOOM & VISIBLE", "ANY ZOOMED"});
+static CatVar vacc_sniper(vacc_sniper_enum, "auto_vacc_sniper_pop", "1", "Pop if Sniper", "Defines Auto-Vacc behaviour with snipers");
 
 int ChargeCount() {
 	return (CE_FLOAT(LOCAL_W, netvar.m_flChargeLevel) / 0.25f);
@@ -58,11 +55,11 @@ int BulletDangerValue(CachedEntity* patient) {
 	return any_zoomed_snipers;
 }
 
-static CatVar auto_vacc_fire_checking(CV_SWITCH, XStr("auto_vacc_fire"), XStr("1"), XStr("Check fire danger"));
-static CatEnum pyro_enum({XStr("NEVER"), XStr("PRIMARY OUT"), XStr("ALWAYS")});
-static CatVar auto_vacc_pop_if_pyro(pyro_enum, XStr("auto_vacc_fire_pop_pyro"), XStr("1"), XStr("Pop if pyro is near"), XStr("Defines Auto-Vacc behaviour with pyros"));
-static CatVar auto_vacc_check_on_fire(CV_SWITCH, XStr("auto_vacc_afterburn"), XStr("1"), XStr("Anti-Afterburn"));
-static CatVar auto_vacc_pyro_range(CV_INT, XStr("auto_vacc_pyro_range"), XStr("450"), XStr("Pyro Danger Range"));
+static CatVar auto_vacc_fire_checking(CV_SWITCH, "auto_vacc_fire", "1", "Check fire danger");
+static CatEnum pyro_enum({"NEVER", "PRIMARY OUT", "ALWAYS"});
+static CatVar auto_vacc_pop_if_pyro(pyro_enum, "auto_vacc_fire_pop_pyro", "1", "Pop if pyro is near", "Defines Auto-Vacc behaviour with pyros");
+static CatVar auto_vacc_check_on_fire(CV_SWITCH, "auto_vacc_afterburn", "1", "Anti-Afterburn");
+static CatVar auto_vacc_pyro_range(CV_INT, "auto_vacc_pyro_range", "450", "Pyro Danger Range");
 
 int FireDangerValue(CachedEntity* patient) {
 	// Find nearby pyros
@@ -92,10 +89,10 @@ struct proj_data_s {
 
 std::vector<proj_data_s> proj_data_array;
 
-static CatVar auto_vacc_blast_health(CV_INT, XStr("auto_vacc_blast_pop_health"), XStr("80"), XStr("Pop Blast if rocket & HP <"));
-static CatVar auto_vacc_blast_crit_pop(CV_SWITCH, XStr("auto_vacc_blast_pop_crit"), XStr("1"), XStr("Pop Blast if crit rocket near"));
-static CatVar auto_vacc_blast_checking(CV_SWITCH, XStr("auto_vacc_blast"), XStr("1"), XStr("Check blast danger"));
-static CatVar auto_vacc_proj_danger_range(CV_INT, XStr("auto_vacc_rocket_range"), XStr("650"), XStr("Rocket Danger Range"), XStr("This range should be high enough to give more time to change resistances."));
+static CatVar auto_vacc_blast_health(CV_INT, "auto_vacc_blast_pop_health", "80", "Pop Blast if rocket & HP <");
+static CatVar auto_vacc_blast_crit_pop(CV_SWITCH, "auto_vacc_blast_pop_crit", "1", "Pop Blast if crit rocket near");
+static CatVar auto_vacc_blast_checking(CV_SWITCH, "auto_vacc_blast", "1", "Check blast danger");
+static CatVar auto_vacc_proj_danger_range(CV_INT, "auto_vacc_rocket_range", "650", "Rocket Danger Range", "This range should be high enough to give more time to change resistances.");
 
 int BlastDangerValue(CachedEntity* patient) {
 	if (!auto_vacc_blast_checking) return 0;
@@ -139,11 +136,11 @@ int CurrentResistance() {
 	return CE_INT(LOCAL_W, netvar.m_nChargeResistType);
 }
 
-static CatVar change_timer(CV_INT, XStr("auto_vacc_reset_timer"), XStr("200"), XStr("Reset Timer"), XStr("If no dangers were detected for # ticks, resistance will be reset to default, 0 to disable"));
+static CatVar change_timer(CV_INT, "auto_vacc_reset_timer", "200", "Reset Timer", "If no dangers were detected for # ticks, resistance will be reset to default, 0 to disable");
 
-static CatVar auto_vacc_bullet_pop_ubers(CV_INT, XStr("auto_vacc_bullet_pop_ubers"), XStr("0"), XStr("Pop Bullet if Ubers >="), XStr("Only pop an uber if you have >= # Ubercharges in your Vaccinator"), 0, 4);
-static CatVar auto_vacc_fire_pop_ubers(CV_INT, XStr("auto_vacc_fire_pop_ubers"), XStr("0"), XStr("Pop Fire if Ubers >="), XStr("Only pop an uber if you have >= # Ubercharges in your Vaccinator"), 0, 4);
-static CatVar auto_vacc_blast_pop_ubers(CV_INT, XStr("auto_vacc_blast_pop_ubers"), XStr("0"), XStr("Pop Blast if Ubers >="), XStr("Only pop an uber if you have >= # Ubercharges in your Vaccinator"), 0, 4);
+static CatVar auto_vacc_bullet_pop_ubers(CV_INT, "auto_vacc_bullet_pop_ubers", "0", "Pop Bullet if Ubers >=", "Only pop an uber if you have >= # Ubercharges in your Vaccinator", 0, 4);
+static CatVar auto_vacc_fire_pop_ubers(CV_INT, "auto_vacc_fire_pop_ubers", "0", "Pop Fire if Ubers >=", "Only pop an uber if you have >= # Ubercharges in your Vaccinator", 0, 4);
+static CatVar auto_vacc_blast_pop_ubers(CV_INT, "auto_vacc_blast_pop_ubers", "0", "Pop Blast if Ubers >=", "Only pop an uber if you have >= # Ubercharges in your Vaccinator", 0, 4);
 
 int OptimalResistance(CachedEntity* patient, bool* shouldPop) {
 	int bd = BlastDangerValue(patient),
@@ -163,8 +160,8 @@ int OptimalResistance(CachedEntity* patient, bool* shouldPop) {
 	return -1;
 }
 
-static CatEnum resistances_enum({XStr("BULLET"), XStr("BLAST"), XStr("FIRE")});
-static CatVar default_resistance(resistances_enum, XStr("auto_vacc_default_resist"), XStr("0"), XStr("Default Resistance"), XStr("Select default resistance type"));
+static CatEnum resistances_enum({"BULLET", "BLAST", "FIRE"});
+static CatVar default_resistance(resistances_enum, "auto_vacc_default_resist", "0", "Default Resistance", "Select default resistance type");
 
 void SetResistance(int resistance) {
 	resistance = _clamp(0, 2, resistance);
@@ -206,9 +203,9 @@ void DoResistSwitching() {
 
 int force_healing_target { 0 };
 
-static CatCommand heal_steamid(XStr("autoheal_heal_steamid"), XStr("Heals a player with SteamID (ONCE. Use for easy airstuck med setup)"), [](const CCommand& args) {
+static CatCommand heal_steamid("autoheal_heal_steamid", "Heals a player with SteamID (ONCE. Use for easy airstuck med setup)", [](const CCommand& args) {
 	if (args.ArgC() < 2) {
-		logging::Info(XStr("Invalid call!"));
+		logging::Info("Invalid call!");
 		return;
 	}
 	for (int i = 1; i <= 32 && i < HIGHEST_ENTITY; i++) {
@@ -222,13 +219,13 @@ static CatCommand heal_steamid(XStr("autoheal_heal_steamid"), XStr("Heals a play
 	}
 });
 
-static CatCommand vaccinator_bullet(XStr("vacc_bullet"), XStr("Bullet Vaccinator"), []() {
+static CatCommand vaccinator_bullet("vacc_bullet", "Bullet Vaccinator", []() {
 	SetResistance(0);
 });
-static CatCommand vaccinator_blast(XStr("vacc_blast"), XStr("Blast Vaccinator"), []() {
+static CatCommand vaccinator_blast("vacc_blast", "Blast Vaccinator", []() {
 	SetResistance(1);
 });
-static CatCommand vaccinator_fire(XStr("vacc_fire"), XStr("Fire Vaccinator"), []() {
+static CatCommand vaccinator_fire("vacc_fire", "Fire Vaccinator", []() {
 	SetResistance(2);
 });
 
@@ -268,7 +265,7 @@ bool IsVaccinator() {
 	return CE_INT(LOCAL_W, netvar.iItemDefinitionIndex) == 998;
 }
 
-static CatVar auto_vacc(CV_SWITCH, XStr("auto_vacc"), XStr("0"), XStr("Auto Vaccinator"), XStr("Pick resistance for incoming damage types"));
+static CatVar auto_vacc(CV_SWITCH, "auto_vacc", "0", "Auto Vaccinator", "Pick resistance for incoming damage types");
 
 void CreateMove() {
 	bool pop = false;

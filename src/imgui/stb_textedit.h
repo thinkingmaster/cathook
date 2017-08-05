@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // [ImGui] this is a slightly modified version of stb_truetype.h 1.9. Those changes would need to be pushed into nothings/sb
 // [ImGui] - fixed linestart handler when over last character of multi-line buffer + simplified existing code (#588, #815)
 // [ImGui] - fixed a state corruption/crash bug in stb_text_redo and stb_textedit_discard_redo (#715)
@@ -74,7 +71,7 @@
 // Header-file mode:
 //
 //   If you do not define STB_TEXTEDIT_IMPLEMENTATION before including this,
-//   it will operate in XStr("header file") mode. In this mode, it declares a
+//   it will operate in "header file" mode. In this mode, it declares a
 //   single public symbol, STB_TexteditState, which encapsulates the current
 //   state of a text widget (except for the string, which you will store
 //   separately).
@@ -107,7 +104,7 @@
 //   need to provide your own APIs in the same file which will access the
 //   static functions.
 //
-//   The basic concept is that you provide a XStr("string") object which
+//   The basic concept is that you provide a "string" object which
 //   behaves like an array of characters. stb_textedit uses indices to
 //   refer to positions in the string, implicitly representing positions
 //   in the displayed textedit. This is true for both plain text and
@@ -183,7 +180,7 @@
 // then test for their presence in e.g. STB_TEXTEDIT_K_WORDLEFT. For example,
 // my Windows implementations add an additional CONTROL bit, and an additional KEYDOWN
 // bit. Then all of the STB_TEXTEDIT_K_ values bitwise-or in the KEYDOWN bit,
-// and I pass both WM_KEYDOWN and WM_CHAR events to the XStr("key") function in the
+// and I pass both WM_KEYDOWN and WM_CHAR events to the "key" function in the
 // API below. The control keys will only match WM_KEYDOWN events because of the
 // keydown bit I add, and STB_TEXTEDIT_KEYTOTEXT only tests for the KEYDOWN
 // bit so it only decodes WM_CHAR events.
@@ -196,7 +193,7 @@
 //
 // Each textfield keeps its own insert mode state, which is not how normal
 // applications work. To keep an app-wide insert mode, update/copy the
-// XStr("insert_mode") field of STB_TexteditState before/after calling API functions.
+// "insert_mode" field of STB_TexteditState before/after calling API functions.
 //
 // API
 //
@@ -235,7 +232,7 @@
 //     
 //      key:
 //          call this for keyboard inputs sent to the textfield. you can use it
-//          for XStr("key down") events or for XStr("translated") key events. if you need to
+//          for "key down" events or for "translated" key events. if you need to
 //          do both (as in Win32), or distinguish Unicode characters from control
 //          inputs, set a high bit to distinguish the two; then you can define the
 //          various definitions like STB_TEXTEDIT_K_LEFT have the is-key-event bit
@@ -376,7 +373,7 @@ typedef struct
 
 
 // implementation isn't include-guarded, since it might have indirectly
-// included just the XStr("header") portion
+// included just the "header" portion
 #ifdef STB_TEXTEDIT_IMPLEMENTATION
 
 #ifndef STB_TEXTEDIT_memmove

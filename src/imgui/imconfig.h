@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 //-----------------------------------------------------------------------------
 // USER IMPLEMENTATION
 // This file contains compile-time options for ImGui.

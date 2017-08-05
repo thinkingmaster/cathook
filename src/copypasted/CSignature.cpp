@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 // Replace darkstorm stuff with my stuff
 //#include "SDK.h"
 #include "../copypasted/CSignature.h"
@@ -41,14 +38,14 @@ Elf32_Shdr *getSectionHeader(void *module, const char *sectionName)
 		strtab = (char *)((unsigned)module + strhdr->sh_offset);
 
 		if(strtab == NULL)
-			//Log::Fatal(XStr("String table was NULL!"));
-			logging::Info(XStr("String table was NULL!"));
+			//Log::Fatal("String table was NULL!");
+			logging::Info("String table was NULL!");
 		strtabSize = strhdr->sh_size;
 	}
 	else
 	{
-		//Log::Fatal(XStr("String table header was corrupted!"));
-		logging::Info(XStr("String table header was corrupted!"));
+		//Log::Fatal("String table header was corrupted!");
+		logging::Info("String table header was corrupted!");
 	}
 	
 	for(int i = 0; i < ehdr->e_shnum; i++)
@@ -108,7 +105,7 @@ uintptr_t CSignature::GetClientSignature(char* chPattern)
 
 	//static void *module = (void *)moduleMap->l_addr;
 	
-	static Elf32_Shdr *textHeader = getSectionHeader(module, XStr(".text"));
+	static Elf32_Shdr *textHeader = getSectionHeader(module, ".text");
 
 	static int textOffset = textHeader->sh_offset;
 
@@ -129,7 +126,7 @@ uintptr_t CSignature::GetEngineSignature(char* chPattern)
 
 	//static void *module = (void *)moduleMap->l_addr;
 	
-	static Elf32_Shdr *textHeader = getSectionHeader(module, XStr(".text"));
+	static Elf32_Shdr *textHeader = getSectionHeader(module, ".text");
 
 	static int textOffset = textHeader->sh_offset;
 

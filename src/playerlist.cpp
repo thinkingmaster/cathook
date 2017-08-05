@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * playerlist.cpp
  *
@@ -33,13 +30,13 @@ bool ShouldSave(const userdata& data) {
 }
 
 void Save() {
-	DIR* cathook_directory = opendir(XStr("cathook"));
+	DIR* cathook_directory = opendir("cathook");
 	if (!cathook_directory) {
-		logging::Info(XStr("[WARNING] cathook data directory doesn't exist! How did the cheat even get injected?"));
-		mkdir(XStr("cathook"), S_IRWXU | S_IRWXG);
+		logging::Info("[WARNING] cathook data directory doesn't exist! How did the cheat even get injected?");
+		mkdir("cathook", S_IRWXU | S_IRWXG);
 	} else closedir(cathook_directory);
 	try {
-		std::ofstream file(XStr("cathook/plist"), std::ios::out | std::ios::binary);
+		std::ofstream file("cathook/plist", std::ios::out | std::ios::binary);
 		file.write(reinterpret_cast<const char*>(&SERIALIZE_VERSION), sizeof(SERIALIZE_VERSION));
 		int size = 0;
 		for (const auto& item : data) {
@@ -52,31 +49,31 @@ void Save() {
 			file.write(reinterpret_cast<const char*>(&item.second), sizeof(item.second));
 		}
 		file.close();
-		logging::Info(XStr("Writing successful"));
+		logging::Info("Writing successful");
 	} catch (std::exception& e) {
-		logging::Info(XStr("Writing unsuccessful: %s"), e.what());
+		logging::Info("Writing unsuccessful: %s", e.what());
 	}
 }
 
 void Load() {
 	data.clear();
-	DIR* cathook_directory = opendir(XStr("cathook"));
+	DIR* cathook_directory = opendir("cathook");
 	if (!cathook_directory) {
-		logging::Info(XStr("[WARNING] cathook data directory doesn't exist! How did the cheat even get injected?"));
-		mkdir(XStr("cathook"), S_IRWXU | S_IRWXG);
+		logging::Info("[WARNING] cathook data directory doesn't exist! How did the cheat even get injected?");
+		mkdir("cathook", S_IRWXU | S_IRWXG);
 	} else closedir(cathook_directory);
 	try {
-		std::ifstream file(XStr("cathook/plist"), std::ios::in | std::ios::binary);
+		std::ifstream file("cathook/plist", std::ios::in | std::ios::binary);
 		int file_serialize = 0;
 		file.read(reinterpret_cast<char*>(&file_serialize), sizeof(file_serialize));
 		if (file_serialize != SERIALIZE_VERSION) {
-			logging::Info(XStr("Outdated/corrupted playerlist file! Cannot load this."));
+			logging::Info("Outdated/corrupted playerlist file! Cannot load this.");
 			file.close();
 			return;
 		}
 		int count = 0;
 		file.read(reinterpret_cast<char*>(&count), sizeof(count));
-		logging::Info(XStr("Reading %i entries..."), count);
+		logging::Info("Reading %i entries...", count);
 		for (int i = 0; i < count; i++) {
 			int steamid;
 			userdata udata;
@@ -85,9 +82,9 @@ void Load() {
 			data.emplace(steamid, udata);
 		}
 		file.close();
-		logging::Info(XStr("Reading successful!"));
+		logging::Info("Reading successful!");
 	} catch (std::exception& e) {
-		logging::Info(XStr("Reading unsuccessful: %s"), e.what());
+		logging::Info("Reading unsuccessful: %s", e.what());
 	}
 }
 
@@ -133,24 +130,24 @@ bool IsDefault(CachedEntity* entity) {
 	return true;
 }
 
-CatCommand pl_save(XStr("pl_save"), XStr("Save playerlist"), Save);
-CatCommand pl_load(XStr("pl_load"), XStr("Load playerlist"), Load);
+CatCommand pl_save("pl_save", "Save playerlist", Save);
+CatCommand pl_load("pl_load", "Load playerlist", Load);
 
-CatCommand pl_set_state(XStr("pl_set_state"), XStr("pl_set_state uniqueid state\nfor example pl_set_state 306902159 0"), [](const CCommand& args) {
+CatCommand pl_set_state("pl_set_state", "pl_set_state uniqueid state\nfor example pl_set_state 306902159 0", [](const CCommand& args) {
 	if (args.ArgC() < 3) {
-		logging::Info(XStr("Invalid call"));
+		logging::Info("Invalid call");
 		return;
 	}
 	unsigned steamid = strtoul(args.Arg(1), nullptr, 10);
 	k_EState state = static_cast<k_EState>(strtol(args.Arg(2), nullptr, 10));
 	if (state < k_EState::DEFAULT || state > k_EState::STATE_LAST) state = k_EState::DEFAULT;
 	AccessData(steamid).state = state;
-	logging::Info(XStr("Set %d to %d"), steamid, state);
+	logging::Info("Set %d to %d", steamid, state);
 });
 
-CatCommand pl_set_color(XStr("pl_set_color"), XStr("pl_set_color uniqueid r g b"), [](const CCommand& args) {
+CatCommand pl_set_color("pl_set_color", "pl_set_color uniqueid r g b", [](const CCommand& args) {
 	if (args.ArgC() < 5) {
-		logging::Info(XStr("Invalid call"));
+		logging::Info("Invalid call");
 		return;
 	}
 	unsigned steamid = strtoul(args.Arg(1), nullptr, 10);
@@ -159,20 +156,20 @@ CatCommand pl_set_color(XStr("pl_set_color"), XStr("pl_set_color uniqueid r g b"
 	int b = strtol(args.Arg(4), nullptr, 10);
 	rgba_t color = colors::FromRGBA8(r, g, b, 255);
 	AccessData(steamid).color = color;
-	logging::Info(XStr("Changed %d's color"), steamid);
+	logging::Info("Changed %d's color", steamid);
 });
 
-CatCommand pl_info(XStr("pl_info"), XStr("pl_info uniqueid"), [](const CCommand& args) {
+CatCommand pl_info("pl_info", "pl_info uniqueid", [](const CCommand& args) {
 	if (args.ArgC() < 2) {
-		logging::Info(XStr("Invalid call"));
+		logging::Info("Invalid call");
 		return;
 	}
 	unsigned steamid = strtoul(args.Arg(1), nullptr, 10);
-	logging::Info(XStr("Data for %i: "), steamid);
-	logging::Info(XStr("   State: %i"), AccessData(steamid).state);
+	logging::Info("Data for %i: ", steamid);
+	logging::Info("   State: %i", AccessData(steamid).state);
 	/*int clr = AccessData(steamid).color;
 	if (clr) {
-		ConColorMsg(*reinterpret_cast<::Color*>(&clr), XStr("[CUSTOM COLOR]\n"));
+		ConColorMsg(*reinterpret_cast<::Color*>(&clr), "[CUSTOM COLOR]\n");
 	}*/
 });
 

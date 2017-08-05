@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * FollowBot.cpp
  *
@@ -23,14 +20,14 @@ namespace hacks { namespace shared { namespace followbot {
 
 	
 // User settings
-CatVar bot(CV_SWITCH, XStr("fb_bot"), XStr("0"), XStr("Master Followbot Switch"), XStr("Set to 1 in followbots' configs"));
-CatVar follow_distance(CV_FLOAT, XStr("fb_distance"), XStr("175"), XStr("Follow Distance"), XStr("How close the bots should stay to the target"));
-CatVar follow_activation(CV_FLOAT, XStr("fb_activation"), XStr("175"), XStr("Activation Distance"), XStr("How close a player should be until the followbot will pick them as a target"));
-CatVar mimic_slot(CV_SWITCH, XStr("fb_mimic_slot"), XStr("0"), XStr("Mimic selected weapon"), XStr("If enabled, this bot will select same weapon slot as the owner"));
-CatVar always_medigun(CV_SWITCH, XStr("fb_always_medigun"), XStr("0"), XStr("Always use Medigun"), XStr("Medics will always use Medigun"));
-CatVar crumb_draw(CV_SWITCH, XStr("fb_crumb_draw"), XStr("1"), XStr("Draw Crumbs"), XStr("Draws the path made for the followbot"));
-CatVar roaming(CV_SWITCH, XStr("fb_roaming"), XStr("0"), XStr("Roaming"), XStr("Allows the bot to find a different target if it cant find one using the steam id"));
-CatVar sync_taunt(CV_SWITCH, XStr("fb_sync_taunt"), XStr("0"), XStr("Mimic taunts"), XStr("Bots will taunt if target is taunting"));
+CatVar bot(CV_SWITCH, "fb_bot", "0", "Master Followbot Switch", "Set to 1 in followbots' configs");
+CatVar follow_distance(CV_FLOAT, "fb_distance", "175", "Follow Distance", "How close the bots should stay to the target");
+CatVar follow_activation(CV_FLOAT, "fb_activation", "175", "Activation Distance", "How close a player should be until the followbot will pick them as a target");
+CatVar mimic_slot(CV_SWITCH, "fb_mimic_slot", "0", "Mimic selected weapon", "If enabled, this bot will select same weapon slot as the owner");
+CatVar always_medigun(CV_SWITCH, "fb_always_medigun", "0", "Always use Medigun", "Medics will always use Medigun");
+CatVar crumb_draw(CV_SWITCH, "fb_crumb_draw", "1", "Draw Crumbs", "Draws the path made for the followbot");
+CatVar roaming(CV_SWITCH, "fb_roaming", "0", "Roaming", "Allows the bot to find a different target if it cant find one using the steam id");
+CatVar sync_taunt(CV_SWITCH, "fb_sync_taunt", "0", "Mimic taunts", "Bots will taunt if target is taunting");
 
 // Var to store the current steamid to follow
 unsigned follow_steamid { 1 };
@@ -80,7 +77,7 @@ void AfterCreateMove() {
 			selection.erase(it++);
 		} else {
 #ifndef TEXTMODE
-			hacks::shared::esp::AddEntityString(entity, XStr("[SELECTED]"), colors::orange);
+			hacks::shared::esp::AddEntityString(entity, "[SELECTED]", colors::orange);
 			if (fmod(g_GlobalVars->curtime, 2.0f) < 1.0f) {
 				hacks::shared::esp::SetEntityColor(entity, colors::yellow);
 			}
@@ -98,7 +95,7 @@ void AfterCreateMove() {
 			selection_secondary.erase(it++);
 		} else {
 #ifndef TEXTMODE
-			hacks::shared::esp::AddEntityString(entity, XStr("[SELECTED (SECONDARY)]"), colors::orange);
+			hacks::shared::esp::AddEntityString(entity, "[SELECTED (SECONDARY)]", colors::orange);
 			if (fmod(g_GlobalVars->curtime, 2.0f) < 1.0f) {
 				hacks::shared::esp::SetEntityColor(entity, colors::yellow);
 			}
@@ -206,7 +203,7 @@ void DoWalking() {
 	if (CE_GOOD(found_entity)) {
 		following_idx2 = found_entity->m_IDX;
 #ifndef TEXTMODE
-		hacks::shared::esp::AddEntityString(found_entity, XStr("[FOLLOWING]"), colors::green);
+		hacks::shared::esp::AddEntityString(found_entity, "[FOLLOWING]", colors::green);
 		hacks::shared::esp::SetEntityColor(found_entity, colors::green);
 #endif
 	} else {
@@ -250,13 +247,13 @@ void DoWalking() {
 				// If the local player is a medic and user settings allow, then keep the medigun out
 				if (g_pLocalPlayer->clazz == tf_medic && always_medigun) {
 					if (my_slot != 1) {
-						g_IEngine->ExecuteClientCmd(XStr("slot2"));
+						g_IEngine->ExecuteClientCmd("slot2");
 					}
 					
 				// Else we attemt to keep our weapon mimiced with our follow target
 				} else {
 					if (my_slot != owner_slot) {
-						g_IEngine->ExecuteClientCmd(format(XStr("slot"), owner_slot + 1).c_str());
+						g_IEngine->ExecuteClientCmd(format("slot", owner_slot + 1).c_str());
 					}
 				}
 			}
@@ -325,7 +322,7 @@ void DoWalking() {
 			if (g_pLocalPlayer->v_Origin.DistTo(breadcrumbs[crumbBottom]) < 40.0F ) {
 				
 				// Debug Logging
-				logging::Info(XStr("Pruning"));
+				logging::Info("Pruning");
 
 				// When the bot is forced to move to the player, since they have reached their destination we reset the var
 				crumbForceMove = false;
@@ -340,7 +337,7 @@ void DoWalking() {
 					// When pruning is finished. Break the loop
 					} else {
 						crumb_prune_timeout = g_GlobalVars->curtime;
-						logging::Info(XStr("Finish Prune"));
+						logging::Info("Finish Prune");
 						break;
 					}
 				}
@@ -355,7 +352,7 @@ void DoWalking() {
 				// If a crumb hasnt been pruned in a while, it probably cant travel to it so reset and wait for the player to collect it.
 				if (g_GlobalVars->curtime - 2.5F > crumb_prune_timeout) {
 					crumbStopped = true;
-					logging::Info(XStr("Cannot goto next crumb!\nCrumb Lost!"));
+					logging::Info("Cannot goto next crumb!\nCrumb Lost!");
 				}
 
 			// If the bot is next to the player then we clear our crumbs as theres no need to follow previously generated ones.
@@ -404,7 +401,7 @@ void DoWalking() {
 				
 				// Check if local player isnt taunting
 				if (!HasCondition<TFCond_Taunting>(LOCAL_E)) {
-					g_IEngine->ExecuteClientCmd(XStr("taunt"));
+					g_IEngine->ExecuteClientCmd("taunt");
 				}
 			}
 		}
@@ -422,7 +419,7 @@ void DoWalking() {
 }
 
 // Used on a bot to select a target to follow
-CatCommand follow(XStr("fb_follow"), XStr("Follows you (or player with SteamID specified)"), [](const CCommand& args) {
+CatCommand follow("fb_follow", "Follows you (or player with SteamID specified)", [](const CCommand& args) {
 	
 	// Set our target steam id to the argument put into the command
 	follow_steamid = strtol(args.Arg(1), nullptr, 10);
@@ -434,7 +431,7 @@ CatCommand follow(XStr("fb_follow"), XStr("Follows you (or player with SteamID s
 });
 	
 // Used by the main player to send an ipc request to the bots to follow
-CatCommand follow_me(XStr("fb_follow_me"), XStr("Makes all bots follow you"), []() {
+CatCommand follow_me("fb_follow_me", "Makes all bots follow you", []() {
 	
 	// Check if the ipc server is connected
 	if (ipc::peer) {
@@ -446,14 +443,14 @@ CatCommand follow_me(XStr("fb_follow_me"), XStr("Makes all bots follow you"), []
 });
 
 // User command for cat_fb_tool
-CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand& args) {
+CatCommand tool("fb_tool", "Followbot multitool", [](const CCommand& args) {
 	
 	// Check if ipc server is connected
 	if (!ipc::peer) return;
 	
-	// If argument is XStr("select")
-	if (!strcmp(args.Arg(1), XStr("select"))) {
-		logging::Info(XStr("FB TOOL -> SELECT"));
+	// If argument is "select"
+	if (!strcmp(args.Arg(1), "select")) {
+		logging::Info("FB TOOL -> SELECT");
 		
 		// Check if the shift key is depressed
 		if (g_IInputSystem->IsButtonDown(ButtonCode_t::KEY_LSHIFT)) {
@@ -461,7 +458,7 @@ CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand&
 			// Shift cleans selection..
 			selection.clear();
 			selection_secondary.clear();
-			logging::Info(XStr("Selection cleared!"));
+			logging::Info("Selection cleared!");
 			
 		// If the shift key isnt depressed
 		} else {
@@ -469,7 +466,7 @@ CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand&
 			// Make a var and try to get an ent of what we are looking at
 			int eindex = 0;
 			WhatIAmLookingAt(&eindex, nullptr);
-			logging::Info(XStr("Selecting entity..."));
+			logging::Info("Selecting entity...");
 			
 			// If the entity isnt null, Add the entity to the selection
 			if (eindex) {
@@ -477,9 +474,9 @@ CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand&
 			}
 		}
 		
-	// If argument is XStr("move")
-	} else if (!strcmp(args.Arg(1), XStr("move"))) {
-		logging::Info(XStr("FB TOOL -> MOVE"));
+	// If argument is "move"
+	} else if (!strcmp(args.Arg(1), "move")) {
+		logging::Info("FB TOOL -> MOVE");
 		
 		// Create a vector and attemt to get an end vector from it
 		Vector destination;
@@ -489,16 +486,16 @@ CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand&
 		float array[3] = { destination.x, destination.y, destination.z };
 		ipc::peer->SendMessage((const char*)array, MakeMask(), ipc::commands::move_to_vector, nullptr, 0);
 		
-	// If argument is XStr("stay")
-	} else if (!strcmp(args.Arg(1), XStr("stay"))) {
-		logging::Info(XStr("FB TOOL -> STAY"));
+	// If argument is "stay"
+	} else if (!strcmp(args.Arg(1), "stay")) {
+		logging::Info("FB TOOL -> STAY");
 		
 		// Send a message through the ipc server to notify the bots to stop moving
 		ipc::peer->SendMessage(nullptr, MakeMask(), ipc::commands::stop_moving, nullptr, 0);
 		
-	// If argument is XStr("follow")
-	} else if (!strcmp(args.Arg(1), XStr("follow"))) {
-		logging::Info(XStr("FB TOOL -> FOLLOW"));
+	// If argument is "follow"
+	} else if (!strcmp(args.Arg(1), "follow")) {
+		logging::Info("FB TOOL -> FOLLOW");
 		
 		// Send a message through the ipc server to notify the bots to start moving
 		ipc::peer->SendMessage(nullptr, MakeMask(), ipc::commands::start_moving, nullptr, 0);
@@ -508,16 +505,16 @@ CatCommand tool(XStr("fb_tool"), XStr("Followbot multitool"), [](const CCommand&
 // Helper Functions for bot selection
 
 void SelectEntity(int idx) {
-	logging::Info(XStr("Selecting entity %i"), idx);
+	logging::Info("Selecting entity %i", idx);
 	CachedEntity* entity = ENTITY(idx);
 	if (CE_BAD(entity)) return;
 	std::set<int>& current_selection = IsBot(entity) ? selection : selection_secondary;
 	if (current_selection.find(idx) != current_selection.end()) {
 		current_selection.erase(current_selection.find(idx));
-		logging::Info(XStr("Deselected!"));
+		logging::Info("Deselected!");
 	} else {
 		current_selection.insert(idx);
-		logging::Info(XStr("Selected!"));
+		logging::Info("Selected!");
 	}
 }
 	
@@ -559,7 +556,7 @@ void AddMessageHandlers(ipc::peer_t* peer) {
 	// When the ipc server gives us a steam id to follow, we run the following
 	peer->SetCommandHandler(ipc::commands::set_follow_steamid, [](cat_ipc::command_s& command, void* payload) {
 		// Log in console the steam id that were following
-		logging::Info(XStr("IPC Message: now following %ld"), *(unsigned*)&command.cmd_data);
+		logging::Info("IPC Message: now following %ld", *(unsigned*)&command.cmd_data);
 		// Set our steam id that we want to follow
 		hacks::shared::followbot::follow_steamid = *(unsigned*)&command.cmd_data;
 		// Tell the followbot to follow entities
@@ -571,7 +568,7 @@ void AddMessageHandlers(ipc::peer_t* peer) {
 		// Create a var to recieve the payload with
 		float* data = (float*)&command.cmd_data;
 		// Log in console the vector that we will attemt to goto
-		logging::Info(XStr("IPC Message: moving to %.2f %.2f %.2f"), data[0], data[1], data[2]);
+		logging::Info("IPC Message: moving to %.2f %.2f %.2f", data[0], data[1], data[2]);
 		// Set our dest info with the payload data
 		destination_point = Vector(data[0], data[1], data[2]);
 		destination_point_time = g_GlobalVars->curtime;
@@ -647,7 +644,7 @@ void CrumbReset() {
     crumb_prune_timeout = g_GlobalVars->curtime;
     crumbFindNew = true;
     crumbStopped = false;
-    logging::Info(XStr("Crumb Reset"));
+    logging::Info("Crumb Reset");
 
 }
 
@@ -665,13 +662,13 @@ void CrumbTopAdd(Vector crumbToAdd) {
     // Put the newly determined crumb into the array and add to the length
     crumbArrayLength++;
     breadcrumbs[crumbTop] = crumbToAdd; 
-    logging::Info(XStr("Crumb Top add"));
+    logging::Info("Crumb Top add");
     
     // The array can only hold so many crumbs, once it goes over its cap, stop the bot to prevent un-needed movement
     if (crumbArrayLength > MAX_CRUMBS) {
 		CrumbReset();
         crumbStopped = true;
-        logging::Info(XStr("Crumb Overload!\nDumping array"));
+        logging::Info("Crumb Overload!\nDumping array");
     }
 }
 
@@ -688,14 +685,14 @@ void CrumbBottomAdd() {
     
     // Subtract from the length to make room for more crumbs 
     crumbArrayLength--;
-    logging::Info(XStr("Crumb Bottom add"));
+    logging::Info("Crumb Bottom add");
     
     // A check to detect if too many crumbs have been removed. Without crumbs the bot will just use random variables in the array.
     // To prevent un-nessasary movement, just clear the array and wait for player
     if (crumbArrayLength < 0) {
 		CrumbReset();
         crumbStopped = true;
-        logging::Info(XStr("Crumb Over-Prune!\nDumping array"));
+        logging::Info("Crumb Over-Prune!\nDumping array");
     }
 }
 #ifndef TEXTMODE
@@ -714,12 +711,12 @@ void Draw() {
 void DrawFollowbot() {
 	
 	// Usefull debug info to know
-	AddSideString(format(XStr("Array Length: "), crumbArrayLength));
-	AddSideString(format(XStr("Top Crumb: "), crumbTop));
-	AddSideString(format(XStr("Bottom Crumb: "), crumbBottom));
-	AddSideString(format(XStr("Crumb Stopped: "), crumbStopped));
-	AddSideString(format(XStr("Curtime: "), g_GlobalVars->curtime));
-	AddSideString(format(XStr("Timeout: "), crumb_prune_timeout));
+	AddSideString(format("Array Length: ", crumbArrayLength));
+	AddSideString(format("Top Crumb: ", crumbTop));
+	AddSideString(format("Bottom Crumb: ", crumbBottom));
+	AddSideString(format("Crumb Stopped: ", crumbStopped));
+	AddSideString(format("Curtime: ", g_GlobalVars->curtime));
+	AddSideString(format("Timeout: ", crumb_prune_timeout));
 	
 	
 	// Disabled as the enum was misbehaving for an unknown reason
@@ -735,7 +732,7 @@ void DrawFollowbot() {
 		break;
 			
 	case EFollowType::ENTITY: // If our follow type is entity, then we draw out the crumbs here
-		logging::Info(XStr("Drawcrumb1"));
+		logging::Info("Drawcrumb1");
 		// Check if we have enough crumbs to draw a line between
 		if (crumbArrayLength < 2) {
 			

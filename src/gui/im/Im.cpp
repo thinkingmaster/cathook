@@ -1,6 +1,3 @@
-
-#include "../../xorstring.hpp"
-
 /*
  * Im.cpp
  *
@@ -44,7 +41,7 @@ void CatVar_Integer(CatVar& var) {
 	}*/
 	if (ImGui::IsItemHovered() && var.desc_long.size()) {
 		ImGui::BeginTooltip();
-			ImGui::Text(XStr("%s"), var.desc_long.c_str());
+			ImGui::Text("%s", var.desc_long.c_str());
 		ImGui::EndTooltip();
 	}
 
@@ -75,7 +72,7 @@ void CatVar_Float(CatVar& var) {
 	}*/
 	if (ImGui::IsItemHovered() && var.desc_long.size()) {
 		ImGui::BeginTooltip();
-			ImGui::Text(XStr("%s"), var.desc_long.c_str());
+			ImGui::Text("%s", var.desc_long.c_str());
 		ImGui::EndTooltip();
 	}
 
@@ -113,7 +110,7 @@ void CatVar_String(CatVar& var) {
 	ImGui::PushID(var.id);
 
 	char buf[256] { 0 };
-	snprintf(buf, 255, XStr("%s"), var.GetString());
+	snprintf(buf, 255, "%s", var.GetString());
 	ImGui::PushItemWidth(100.0f);
 	if (ImGui::InputText(label, buf, 256)) {
 		var.SetValue(std::string(buf));
@@ -121,7 +118,7 @@ void CatVar_String(CatVar& var) {
 
 	if (ImGui::IsItemHovered() && var.desc_long.size()) {
 		ImGui::BeginTooltip();
-			ImGui::Text(XStr("%s"), var.desc_long.c_str());
+			ImGui::Text("%s", var.desc_long.c_str());
 		ImGui::EndTooltip();
 	}
 
@@ -149,7 +146,7 @@ void CatVar_Key(CatVar& var) {
 	}
 	if (ImGui::IsItemHovered() && var.desc_long.size()) {
 		ImGui::BeginTooltip();
-			ImGui::Text(XStr("%s"), var.desc_long.c_str());
+			ImGui::Text("%s", var.desc_long.c_str());
 		ImGui::EndTooltip();
 	}
 
@@ -169,7 +166,7 @@ void CatVar_Switch(CatVar& var) {
 	}
 	if (ImGui::IsItemHovered() && var.desc_long.size()) {
 		ImGui::BeginTooltip();
-			ImGui::Text(XStr("%s"), var.desc_long.c_str());
+			ImGui::Text("%s", var.desc_long.c_str());
 		ImGui::EndTooltip();
 	}
 
@@ -354,22 +351,22 @@ void Render() {
 	if (gui_debug)
 		ImGui::ShowTestWindow();
 	RenderPlayerlist();
-	/*ImGui::Begin(XStr("Colors"));
+	/*ImGui::Begin("Colors");
 		static ImVec3 color_for_text = IM3_RGB(246, 236, 255);
 		static ImVec3 color_for_head = IM3_RGB(209, 96, 165);
 		static ImVec3 color_for_area = IM3_RGB(104, 57, 78);
 		static ImVec3 color_for_body = IM3_RGB(80, 44, 68);
 		static ImVec3 color_for_pops = IM3_RGB(58, 33, 59);
-		if (ImGui::ColorEdit3(XStr("Text"), &color_for_text.x) ||
-			ImGui::ColorEdit3(XStr("Head"), &color_for_head.x) ||
-			ImGui::ColorEdit3(XStr("Area"), &color_for_area.x) ||
-			ImGui::ColorEdit3(XStr("Body"), &color_for_body.x) ||
-			ImGui::ColorEdit3(XStr("Pops"), &color_for_pops.x)) {
+		if (ImGui::ColorEdit3("Text", &color_for_text.x) ||
+			ImGui::ColorEdit3("Head", &color_for_head.x) ||
+			ImGui::ColorEdit3("Area", &color_for_area.x) ||
+			ImGui::ColorEdit3("Body", &color_for_body.x) ||
+			ImGui::ColorEdit3("Pops", &color_for_pops.x)) {
 		    imgui_easy_theming(color_for_text, color_for_head, color_for_area, color_for_body, color_for_pops);
 		}
 	ImGui::End();*/
 	if (!main_list_array.size()) return;
-	ImGui::Begin(XStr("Config Menu"));
+	ImGui::Begin("Config Menu");
 	ImGui::SetWindowSize(ImVec2{900, 600});
 	if (active_list >= main_list_array.size()) active_list = 0;
 	for (int i = 0; i < main_list_array.size(); i++) {

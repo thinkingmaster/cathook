@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * chatlog.cpp
  *
@@ -16,10 +13,10 @@
 
 namespace chatlog {
 
-CatVar enabled(CV_SWITCH, XStr("chat_log"), XStr("0"), XStr("Chat log"), XStr("Log chat to file"));
-CatVar message_template(CV_STRING, XStr("chat_log_template"), XStr("[%t] [U:1:%u] %n: %m"), XStr("Log template"), XStr("%u - SteamID\n%n - name\n%m - message\n%t - time"));
-CatVar dont_log_spam(CV_SWITCH, XStr("chat_log_nospam"), XStr("1"), XStr("No Spam"), XStr("Don't log your messages if spam is active"));
-CatVar dont_log_ipc(CV_SWITCH, XStr("chat_log_noipc"), XStr("1"), XStr("No IPC"), XStr("Don't log messages sent by bots"));
+CatVar enabled(CV_SWITCH, "chat_log", "0", "Chat log", "Log chat to file");
+CatVar message_template(CV_STRING, "chat_log_template", "[%t] [U:1:%u] %n: %m", "Log template", "%u - SteamID\n%n - name\n%m - message\n%t - time");
+CatVar dont_log_spam(CV_SWITCH, "chat_log_nospam", "1", "No Spam", "Don't log your messages if spam is active");
+CatVar dont_log_ipc(CV_SWITCH, "chat_log_noipc", "1", "No IPC", "Don't log messages sent by bots");
 
 class RAIILog {
 public:
@@ -30,22 +27,22 @@ public:
 		stream.close();
 	}
 	void open() {
-		logging::Info(XStr("Trying to open log file"));
+		logging::Info("Trying to open log file");
 		uid_t uid = geteuid();
 		struct passwd *pw = getpwuid(uid);
-		std::string uname = XStr("");
+		std::string uname = "";
 		if (pw) {
 			uname = std::string(pw->pw_name);
 		}
-		stream.open(XStr("cathook/chat-") + uname + XStr(".log"), std::ios::out | std::ios::app);
+		stream.open("cathook/chat-" + uname + ".log", std::ios::out | std::ios::app);
 	}
 	void log(const std::string& msg) {
 		if (stream.bad() or not stream.is_open()) {
-			logging::Info(XStr("[ERROR] RAIILog stream is bad!"));
+			logging::Info("[ERROR] RAIILog stream is bad!");
 			open();
 			return;
 		}
-		stream << msg << XStr("\n");
+		stream << msg << "\n";
 		stream.flush();
 	}
 	std::ofstream stream;
@@ -79,12 +76,12 @@ void LogMessage(int eid, std::string message) {
 	char timeString[9];
 	time(&current_time);
 	time_info = localtime(&current_time);
-	strftime(timeString, sizeof(timeString), XStr("%H:%M:%S"), time_info);
+	strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
 	std::string msg(message_template.GetString());
-	ReplaceString(msg, XStr("%t"), std::string(timeString));
-	ReplaceString(msg, XStr("%u"), std::to_string(info.friendsID));
-	ReplaceString(msg, XStr("%n"), name);
-	ReplaceString(msg, XStr("%m"), message);
+	ReplaceString(msg, "%t", std::string(timeString));
+	ReplaceString(msg, "%u", std::to_string(info.friendsID));
+	ReplaceString(msg, "%n", name);
+	ReplaceString(msg, "%m", message);
 	logger().log(msg);
 }
 

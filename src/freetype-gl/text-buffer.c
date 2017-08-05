@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -30,7 +27,7 @@ text_buffer_new( )
 {
     text_buffer_t *self = (text_buffer_t *) malloc (sizeof(text_buffer_t));
     self->buffer = vertex_buffer_new(
-                                     XStr("vertex:3f,tex_coord:2f,color:4f,ashift:1f,agamma:1f") );
+                                     "vertex:3f,tex_coord:2f,color:4f,ashift:1f,agamma:1f" );
     self->line_start = 0;
     self->line_ascender = 0;
     self->base_color.r = 0.0;
@@ -194,7 +191,7 @@ text_buffer_add_text( text_buffer_t * self,
 
     if( !markup->font )
     {
-        fprintf( stderr, XStr("Houston, we've got a problem !\n") );
+        fprintf( stderr, "Houston, we've got a problem !\n" );
         return;
     }
 

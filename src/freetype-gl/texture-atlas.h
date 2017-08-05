@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -114,7 +111,7 @@ typedef struct texture_atlas_t
     unsigned char * data;
 
     /**
-     * Custom field, XStr("dirty") flag, set to true when atlas is updated.
+     * Custom field, "dirty" flag, set to true when atlas is updated.
      */
     char dirty;
 

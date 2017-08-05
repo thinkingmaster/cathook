@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * utfccp_commands.hpp
  *

@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -185,20 +182,20 @@ vertex_buffer_print( vertex_buffer_t * self )
 {
     int i = 0;
     static char *gltypes[9] = {
-        XStr("GL_BOOL"),
-        XStr("GL_BYTE"),
-        XStr("GL_UNSIGNED_BYTE"),
-        XStr("GL_SHORT"),
-        XStr("GL_UNSIGNED_SHORT"),
-        XStr("GL_INT"),
-        XStr("GL_UNSIGNED_INT"),
-        XStr("GL_FLOAT"),
-        XStr("GL_VOID")
+        "GL_BOOL",
+        "GL_BYTE",
+        "GL_UNSIGNED_BYTE",
+        "GL_SHORT",
+        "GL_UNSIGNED_SHORT",
+        "GL_INT",
+        "GL_UNSIGNED_INT",
+        "GL_FLOAT",
+        "GL_VOID"
     };
 
     assert(self);
 
-    fprintf( stderr, XStr("%ld vertices, %ld indices\n"),
+    fprintf( stderr, "%ld vertices, %ld indices\n",
              vector_size( self->vertices ), vector_size( self->indices ) );
     while( self->attributes[i] )
     {
@@ -215,7 +212,7 @@ vertex_buffer_print( vertex_buffer_t * self )
         case GL_FLOAT:          j=7; break;
         default:                j=8; break;
         }
-        fprintf(stderr, XStr("%s : %dx%s (+%p)\n"),
+        fprintf(stderr, "%s : %dx%s (+%p)\n",
                 self->attributes[i]->name,
                 self->attributes[i]->size,
                 gltypes[j],

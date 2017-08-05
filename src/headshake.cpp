@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * headshake.cpp
  *
@@ -112,7 +109,7 @@ void UpdateEntity(int id) {
 			}
 		} else {
 			if (fabs(dp - packets[data.packet - 1].pitch) < 0.000001) {
-				logging::Info(XStr("[HS] Received packet %d from %d: %.8f"), data.packet, id, dy);
+				logging::Info("[HS] Received packet %d from %d: %.8f", data.packet, id, dy);
 				if (data.packet == PK_CHU) {
 					queue.push(out_smallpacket_s { PK_ACK, (float)id * 0.000001 });
 				}
@@ -142,10 +139,10 @@ struct current_state_s {
 
 current_state_s state;
 
-CatVar enable_hs(CV_SWITCH, XStr("hs_enable"), XStr("1"), XStr("HeadShake"), XStr("Enable HeadShake system to identify other cathook users"));
-static CatVar out_ticks(CV_INT, XStr("hs_out_ticks"), XStr("3"), XStr("Out Ticks"));
+CatVar enable_hs(CV_SWITCH, "hs_enable", "1", "HeadShake", "Enable HeadShake system to identify other cathook users");
+static CatVar out_ticks(CV_INT, "hs_out_ticks", "3", "Out Ticks");
 
-static CatCommand send_chu(XStr("hs_chu"), XStr("Debug CHU"), []() {
+static CatCommand send_chu("hs_chu", "Debug CHU", []() {
 	queue.push(out_smallpacket_s { PK_CHU, 0.0f });
 });
 
@@ -160,7 +157,7 @@ void CreateMove() {
 			g_pUserCmd->viewangles.y = state.origin_y + state.packet.data;
 		}
 		if (++state.ticks > int(out_ticks) * 2) {
-			logging::Info(XStr("[HS] Sent packet: %d %.8f"), state.packet.type, state.packet.data);
+			logging::Info("[HS] Sent packet: %d %.8f", state.packet.type, state.packet.data);
 			state.ticks = 0;
 			state.sending_packet = false;
 		}
@@ -178,7 +175,7 @@ void CreateMove() {
 		state.sending_packet = true;
 		state.ticks = 0;
 		memcpy(&state.packet, &p, sizeof(out_smallpacket_s));
-		logging::Info(XStr("[HS] Ready to send packet %d %.8f"), p.type, p.data);
+		logging::Info("[HS] Ready to send packet %d %.8f", p.type, p.data);
 	}
 }
 

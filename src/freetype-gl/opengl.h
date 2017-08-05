@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -10,7 +7,7 @@
 #define __OPEN_GL_H__
 
 #if defined(__APPLE__)
-#   include XStr("TargetConditionals.h")
+#   include "TargetConditionals.h"
 #   if TARGET_OS_SIMULATOR || TARGET_OS_IPHONE
 #     if defined(FREETYPE_GL_ES_VERSION_3_0)
 #       include <OpenGLES/ES3/gl.h>

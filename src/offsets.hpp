@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * offsets.hpp
  *
@@ -39,7 +36,7 @@ struct offsets {
 			result = offset_osx; break;
 		}
 		// pCompileError.
-		//static_assert(result != -1, XStr("No offset defined for this platform!"));
+		//static_assert(result != -1, "No offset defined for this platform!");
 		return result;
 	}
 	static constexpr uint32_t GetUserCmd() { 		return PlatformOffset(8, -1, -1); }

@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * utfccp_commands.cpp
  *
@@ -12,14 +9,14 @@
 #include "common.h"
 #include "ucccccp_cmds.hpp"
 
-CatCommand utfccp_encrypt(XStr("ucccccp_encrypt"), XStr("Encrypt a message"), [](const CCommand& args) {
-	logging::Info(XStr("%s"), ucccccp::encrypt(std::string(args.ArgS())).c_str());
+CatCommand utfccp_encrypt("ucccccp_encrypt", "Encrypt a message", [](const CCommand& args) {
+	logging::Info("%s", ucccccp::encrypt(std::string(args.ArgS())).c_str());
 });
 
-CatCommand utfccp_decrypt(XStr("ucccccp_decrypt"), XStr("Decrypt a message"), [](const CCommand& args) {
+CatCommand utfccp_decrypt("ucccccp_decrypt", "Decrypt a message", [](const CCommand& args) {
 	if (ucccccp::validate(std::string(args.ArgS()))) {
-		logging::Info(XStr("%s"), ucccccp::decrypt(std::string(args.ArgS())).c_str());
+		logging::Info("%s", ucccccp::decrypt(std::string(args.ArgS())).c_str());
 	} else {
-		logging::Info(XStr("Invalid input data!"));
+		logging::Info("Invalid input data!");
 	}
 });

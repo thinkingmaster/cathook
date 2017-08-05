@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * others.cpp
  *
@@ -17,7 +14,7 @@
 
 #ifndef TEXTMODE
 
-static CatVar no_invisibility(CV_SWITCH, XStr("no_invis"), XStr("0"), XStr("Remove Invisibility"), XStr("Useful with chams!"));
+static CatVar no_invisibility(CV_SWITCH, "no_invis", "0", "Remove Invisibility", "Useful with chams!");
 
 // This hook isn't used yet!
 int C_TFPlayer__DrawModel_hook(IClientEntity* _this, int flags) {
@@ -31,8 +28,8 @@ int C_TFPlayer__DrawModel_hook(IClientEntity* _this, int flags) {
 	*(float*)((uintptr_t)_this + 79u) = old_invis;
 }
 
-static CatVar no_arms(CV_SWITCH, XStr("no_arms"), XStr("0"), XStr("No Arms"), XStr("Removes arms from first person"));
-static CatVar no_hats(CV_SWITCH, XStr("no_hats"), XStr("0"), XStr("No Hats"), XStr("Removes non-stock hats"));
+static CatVar no_arms(CV_SWITCH, "no_arms", "0", "No Arms", "Removes arms from first person");
+static CatVar no_hats(CV_SWITCH, "no_hats", "0", "No Hats", "Removes non-stock hats");
 
 void DrawModelExecute_hook(IVModelRender* _this, const DrawModelState_t& state, const ModelRenderInfo_t& info, matrix3x4_t* matrix) {
 	static const DrawModelExecute_t original = (DrawModelExecute_t)hooks::modelrender.GetMethod(offsets::DrawModelExecute());
@@ -53,9 +50,9 @@ void DrawModelExecute_hook(IVModelRender* _this, const DrawModelState_t& state, 
 			name = g_IModelInfo->GetModelName(info.pModel);
 			if (name) {
 				sname = name;
-				if (no_arms && sname.find(XStr("arms")) != std::string::npos) {
+				if (no_arms && sname.find("arms") != std::string::npos) {
 					return;
-				} else if (no_hats && sname.find(XStr("player/items")) != std::string::npos) {
+				} else if (no_hats && sname.find("player/items") != std::string::npos) {
 					return;
 				}
 			}
@@ -86,8 +83,8 @@ int IN_KeyEvent_hook(void* _this, int eventcode, int keynum, const char* pszCurr
 	return original(_this, eventcode, keynum, pszCurrentBinding);
 }
 
-CatVar override_fov_zoomed(CV_FLOAT, XStr("fov_zoomed"), XStr("0"), XStr("FOV override (zoomed)"), XStr("Overrides FOV with this value when zoomed in (default FOV when zoomed is 20)"));
-CatVar override_fov(CV_FLOAT, XStr("fov"), XStr("0"), XStr("FOV override"), XStr("Overrides FOV with this value"));
+CatVar override_fov_zoomed(CV_FLOAT, "fov_zoomed", "0", "FOV override (zoomed)", "Overrides FOV with this value when zoomed in (default FOV when zoomed is 20)");
+CatVar override_fov(CV_FLOAT, "fov", "0", "FOV override", "Overrides FOV with this value");
 
 void OverrideView_hook(void* _this, CViewSetup* setup) {
 	static const OverrideView_t original = (OverrideView_t)hooks::clientmode.GetMethod(offsets::OverrideView());
@@ -124,7 +121,7 @@ CUserCmd* GetUserCmd_hook(IInput* _this, int sequence_number) {
 
 	def = original(_this, sequence_number);
 	if (def && command_number_mod.find(def->command_number) != command_number_mod.end()) {
-		//logging::Info(XStr("Replacing command %i with %i"), def->command_number, command_number_mod[def->command_number]);
+		//logging::Info("Replacing command %i with %i", def->command_number, command_number_mod[def->command_number]);
 		oldcmd = def->command_number;
 		def->command_number = command_number_mod[def->command_number];
 		def->random_seed = MD5_PseudoRandom(def->command_number) & 0x7fffffff;
@@ -136,27 +133,27 @@ CUserCmd* GetUserCmd_hook(IInput* _this, int sequence_number) {
 	return def;
 }
 
-static CatVar log_sent(CV_SWITCH, XStr("debug_log_sent_messages"), XStr("0"), XStr("Log sent messages"));
+static CatVar log_sent(CV_SWITCH, "debug_log_sent_messages", "0", "Log sent messages");
 
-static CatCommand plus_use_action_slot_item_server(XStr("+cat_use_action_slot_item_server"), XStr("use_action_slot_item_server"), []() {
-	KeyValues* kv = new KeyValues(XStr("+use_action_slot_item_server"));
+static CatCommand plus_use_action_slot_item_server("+cat_use_action_slot_item_server", "use_action_slot_item_server", []() {
+	KeyValues* kv = new KeyValues("+use_action_slot_item_server");
 	g_pLocalPlayer->using_action_slot_item = true;
 	g_IEngine->ServerCmdKeyValues(kv);
 });
 
-static CatCommand minus_use_action_slot_item_server(XStr("-cat_use_action_slot_item_server"), XStr("use_action_slot_item_server"), []() {
-	KeyValues* kv = new KeyValues(XStr("-use_action_slot_item_server"));
+static CatCommand minus_use_action_slot_item_server("-cat_use_action_slot_item_server", "use_action_slot_item_server", []() {
+	KeyValues* kv = new KeyValues("-use_action_slot_item_server");
 	g_pLocalPlayer->using_action_slot_item = false;
 	g_IEngine->ServerCmdKeyValues(kv);
 });
 
-static CatVar newlines_msg(CV_INT, XStr("chat_newlines"), XStr("0"), XStr("Prefix newlines"), XStr("Add # newlines before each your message"), 0, 24);
+static CatVar newlines_msg(CV_INT, "chat_newlines", "0", "Prefix newlines", "Add # newlines before each your message", 0, 24);
 // TODO replace \\n with \n
 // TODO name \\n = \n
-//static CatVar queue_messages(CV_SWITCH, XStr("chat_queue"), XStr("0"), XStr("Queue messages"), XStr("Use this if you want to use spam/killsay and still be able to chat normally (without having your msgs eaten by valve cooldown)"));
+//static CatVar queue_messages(CV_SWITCH, "chat_queue", "0", "Queue messages", "Use this if you want to use spam/killsay and still be able to chat normally (without having your msgs eaten by valve cooldown)");
 
-static CatVar airstuck(CV_KEY, XStr("airstuck"), XStr("0"), XStr("Airstuck"));
-static CatVar crypt_chat(CV_SWITCH, XStr("chat_crypto"), XStr("0"), XStr("Crypto chat"), XStr("Start message with !! and it will be only visible to cathook users"));
+static CatVar airstuck(CV_KEY, "airstuck", "0", "Airstuck");
+static CatVar crypt_chat(CV_SWITCH, "chat_crypto", "0", "Crypto chat", "Start message with !! and it will be only visible to cathook users");
 
 bool SendNetMsg_hook(void* _this, INetMessage& msg, bool bForceReliable = false, bool bVoice = false) {
 	static size_t say_idx, say_team_idx;
@@ -170,17 +167,17 @@ bool SendNetMsg_hook(void* _this, INetMessage& msg, bool bForceReliable = false,
 	// net_StringCmd
 	if (msg.GetType() == 4 && (newlines_msg || crypt_chat)) {
 		std::string str(msg.ToString());
-		say_idx = str.find(XStr("net_StringCmd: \"say \""));
-		say_team_idx = str.find(XStr("net_StringCmd: \"say_team \""));
+		say_idx = str.find("net_StringCmd: \"say \"");
+		say_team_idx = str.find("net_StringCmd: \"say_team \"");
 		if (!say_idx || !say_team_idx) {
 			offset = say_idx ? 26 : 21;
 			bool crpt = false;
 			if (crypt_chat) {
 				std::string msg(str.substr(offset));
 				msg = msg.substr(0, msg.length() - 2);
-				if (msg.find(XStr("!!")) == 0) {
+				if (msg.find("!!") == 0) {
 					msg = ucccccp::encrypt(msg.substr(2));
-					str = str.substr(0, offset) + msg + XStr("\"\"");
+					str = str.substr(0, offset) + msg + "\"\"";
 					crpt = true;
 				}
 			}
@@ -196,7 +193,7 @@ bool SendNetMsg_hook(void* _this, INetMessage& msg, bool bForceReliable = false,
 			//}
 		}
 	}
-	static ConVar* sv_player_usercommand_timeout = g_ICvar->FindVar(XStr("sv_player_usercommand_timeout"));
+	static ConVar* sv_player_usercommand_timeout = g_ICvar->FindVar("sv_player_usercommand_timeout");
 	static float lastcmd = 0.0f;
 	if (lastcmd > g_GlobalVars->absoluteframetime) {
 		lastcmd = g_GlobalVars->absoluteframetime;
@@ -211,17 +208,17 @@ bool SendNetMsg_hook(void* _this, INetMessage& msg, bool bForceReliable = false,
 		}
 	}
 	if (log_sent && msg.GetType() != 3 && msg.GetType() != 9) {
-		logging::Info(XStr("=> %s [%i] %s"), msg.GetName(), msg.GetType(), msg.ToString());
+		logging::Info("=> %s [%i] %s", msg.GetName(), msg.GetType(), msg.ToString());
 		unsigned char buf[4096];
-		bf_write buffer(XStr("cathook_debug_buffer"), buf, 4096);
-		logging::Info(XStr("Writing %i"), msg.WriteToBuffer(buffer));
-		std::string bytes = XStr("");
-		constexpr char h2c[] = XStr("0123456789abcdef");
+		bf_write buffer("cathook_debug_buffer", buf, 4096);
+		logging::Info("Writing %i", msg.WriteToBuffer(buffer));
+		std::string bytes = "";
+		constexpr char h2c[] = "0123456789abcdef";
 		for (int i = 0; i <  buffer.GetNumBytesWritten(); i++) {
 			//bytes += format(h2c[(buf[i] & 0xF0) >> 4], h2c[(buf[i] & 0xF)], ' ');
 			bytes += format((unsigned short)buf[i], ' ');
 		}
-		logging::Info(XStr("%i bytes => %s"), buffer.GetNumBytesWritten(), bytes.c_str());
+		logging::Info("%i bytes => %s", buffer.GetNumBytesWritten(), bytes.c_str());
 	}
 	return original(_this, msg, bForceReliable, bVoice);
 	SEGV_END;
@@ -231,12 +228,12 @@ bool SendNetMsg_hook(void* _this, INetMessage& msg, bool bForceReliable = false,
 void Shutdown_hook(void* _this, const char* reason) {
 	// This is a INetChannel hook - it SHOULDN'T be static because netchannel changes.
 	const Shutdown_t original = (Shutdown_t)hooks::netchannel.GetMethod(offsets::Shutdown());
-	logging::Info(XStr("Disconnect: %s"), reason);
+	logging::Info("Disconnect: %s", reason);
 #if IPC_ENABLED
 	ipc::UpdateServerAddress(true);
 #endif
 	SEGV_BEGIN;
-	if (cathook && (disconnect_reason.convar_parent->m_StringLength > 3) && strstr(reason, XStr("user"))) {
+	if (cathook && (disconnect_reason.convar_parent->m_StringLength > 3) && strstr(reason, "user")) {
 		original(_this, disconnect_reason_newlined);
 	} else {
 		original(_this, reason);
@@ -244,10 +241,10 @@ void Shutdown_hook(void* _this, const char* reason) {
 	SEGV_END;
 }
 
-static CatVar resolver(CV_SWITCH, XStr("resolver"), XStr("0"), XStr("Resolve angles"));
+static CatVar resolver(CV_SWITCH, "resolver", "0", "Resolve angles");
 
-CatEnum namesteal_enum({ XStr("OFF"), XStr("PASSIVE"), XStr("ACTIVE") });
-CatVar namesteal(namesteal_enum, XStr("name_stealer"), XStr("0"), XStr("Name Stealer"), XStr("Attemt to steal your teammates names. Usefull for avoiding kicks\nPassive only changes when the name stolen is no longer the best name to use\nActive Attemps to change the name whenever possible"));
+CatEnum namesteal_enum({ "OFF", "PASSIVE", "ACTIVE" });
+CatVar namesteal(namesteal_enum, "name_stealer", "0", "Name Stealer", "Attemt to steal your teammates names. Usefull for avoiding kicks\nPassive only changes when the name stolen is no longer the best name to use\nActive Attemps to change the name whenever possible");
 
 static std::string stolen_name;
 
@@ -314,7 +311,7 @@ bool StolenName(){
 	return false;											
 }
 
-static CatVar ipc_name(CV_STRING, XStr("name_ipc"), XStr(""), XStr("IPC Name"));
+static CatVar ipc_name(CV_STRING, "name_ipc", "", "IPC Name");
 
 const char* GetFriendPersonaName_hook(ISteamFriends* _this, CSteamID steamID) {
 	static const GetFriendPersonaName_t original = (GetFriendPersonaName_t)hooks::steamfriends.GetMethod(offsets::GetFriendPersonaName());
@@ -324,7 +321,7 @@ const char* GetFriendPersonaName_hook(ISteamFriends* _this, CSteamID steamID) {
 		static std::string namestr(ipc_name.GetString());
 		namestr.assign(ipc_name.GetString());
 		if (namestr.length() > 3) {
-			ReplaceString(namestr, XStr("%%"), std::to_string(ipc::peer->client_id));
+			ReplaceString(namestr, "%%", std::to_string(ipc::peer->client_id));
 			return namestr.c_str();
 		}
 	}
@@ -340,7 +337,7 @@ const char* GetFriendPersonaName_hook(ISteamFriends* _this, CSteamID steamID) {
 			if (StolenName()) {
 				
 				// Return the name that has changed from the func above
-				return format(stolen_name, XStr("\x0F")).c_str();
+				return format(stolen_name, "\x0F").c_str();
 			}
 		}
 	}
@@ -352,16 +349,16 @@ const char* GetFriendPersonaName_hook(ISteamFriends* _this, CSteamID steamID) {
 	return original(_this, steamID);
 }
 
-static CatVar cursor_fix_experimental(CV_SWITCH, XStr("experimental_cursor_fix"), XStr("1"), XStr("Cursor fix"));
+static CatVar cursor_fix_experimental(CV_SWITCH, "experimental_cursor_fix", "1", "Cursor fix");
 
 void FireGameEvent_hook(void* _this, IGameEvent* event) {
 	static const FireGameEvent_t original = (FireGameEvent_t)hooks::clientmode4.GetMethod(offsets::FireGameEvent());
 	const char* name = event->GetName();
 	if (name) {
 		if (event_log) {
-			if (!strcmp(name, XStr("player_connect_client")) ||
-				!strcmp(name, XStr("player_disconnect")) ||
-				!strcmp(name, XStr("player_team"))) {
+			if (!strcmp(name, "player_connect_client") ||
+				!strcmp(name, "player_disconnect") ||
+				!strcmp(name, "player_team")) {
 				return;
 			}
 		}
@@ -428,7 +425,7 @@ void FrameStageNotify_hook(void* _this, int stage) {
 			PROF_SECTION(PT_command_stack);
 			std::lock_guard<std::mutex> guard(hack::command_stack_mutex);
 			while (!hack::command_stack().empty()) {
-				logging::Info(XStr("executing %s"), hack::command_stack().top().c_str());
+				logging::Info("executing %s", hack::command_stack().top().c_str());
 				g_IEngine->ClientCmd_Unrestricted(hack::command_stack().top().c_str());
 				hack::command_stack().pop();
 			}
@@ -471,8 +468,8 @@ void FrameStageNotify_hook(void* _this, int stage) {
 	SEGV_END;
 }
 
-static CatVar clean_chat(CV_SWITCH, XStr("clean_chat"), XStr("0"), XStr("Clean chat"), XStr("Removes newlines from chat"));
-static CatVar dispatch_log(CV_SWITCH, XStr("debug_log_usermessages"), XStr("0"), XStr("Log dispatched user messages"));
+static CatVar clean_chat(CV_SWITCH, "clean_chat", "0", "Clean chat", "Removes newlines from chat");
+static CatVar dispatch_log(CV_SWITCH, "debug_log_usermessages", "0", "Log dispatched user messages");
 
 bool DispatchUserMessage_hook(void* _this, int type, bf_read& buf) {
 	int loop_index, s, i, j;
@@ -500,9 +497,9 @@ bool DispatchUserMessage_hook(void* _this, int type, bf_read& buf) {
 				}
 			}
 			if (crypt_chat) {
-				if (message.find(XStr("!!")) == 0) {
+				if (message.find("!!") == 0) {
 					if (ucccccp::validate(message)) {
-						PrintChat(XStr("\x07%06X%s\x01: %s"), 0xe05938, name.c_str(), ucccccp::decrypt(message).c_str());
+						PrintChat("\x07%06X%s\x01: %s", 0xe05938, name.c_str(), ucccccp::decrypt(message).c_str());
 					}
 				}
 			}
@@ -512,7 +509,7 @@ bool DispatchUserMessage_hook(void* _this, int type, bf_read& buf) {
 		}
 	}
 	if (dispatch_log) {
-		logging::Info(XStr("D> %i"), type);
+		logging::Info("D> %i", type);
 	}
 	return original(_this, type, buf);
 	SEGV_END;
@@ -522,7 +519,7 @@ bool DispatchUserMessage_hook(void* _this, int type, bf_read& buf) {
 void LevelInit_hook(void* _this, const char* newmap) {
 	static const LevelInit_t original = (LevelInit_t)hooks::clientmode.GetMethod(offsets::LevelInit());
 	playerlist::Save();
-	g_IEngine->ClientCmd_Unrestricted(XStr("exec cat_matchexec"));
+	g_IEngine->ClientCmd_Unrestricted("exec cat_matchexec");
 	hacks::shared::aimbot::Reset();
 	chat_stack::Reset();
 	hacks::shared::anticheat::ResetEverything();

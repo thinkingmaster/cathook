@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * HEsp.cpp
  *
@@ -15,44 +12,44 @@
 
 namespace hacks { namespace shared { namespace esp {
 
-CatVar show_weapon(CV_SWITCH, XStr("esp_weapon"), XStr("1"), XStr("Show weapon name"), XStr("Show which weapon does the enemy use"));
-CatEnum tracers_enum({ XStr("OFF"), XStr("CENTER"), XStr("BOTTOM") });
-CatVar tracers(tracers_enum, XStr("esp_tracers"), XStr("0"), XStr("Tracers"), XStr("SDraws a line from the player to a position on your screen"));
-CatVar local_esp(CV_SWITCH, XStr("esp_local"), XStr("1"), XStr("ESP Local Player"), XStr("Shows local player ESP in thirdperson"));
-CatVar buildings(CV_SWITCH, XStr("esp_buildings"), XStr("1"), XStr("Building ESP"), XStr("Show buildings"));
-CatVar enabled(CV_SWITCH, XStr("esp_enabled"), XStr("0"), XStr("ESP"), XStr("Master ESP switch"));
-CatVar entity_info(CV_SWITCH, XStr("esp_entity"), XStr("0"), XStr("Entity ESP"), XStr("Show entity info (debug)"));
-CatVar teammates(CV_SWITCH, XStr("esp_teammates"), XStr("0"), XStr("ESP Teammates"), XStr("Teammate ESP"));
-CatVar item_esp(CV_SWITCH, XStr("esp_item"), XStr("1"), XStr("Item ESP"), XStr("Master Item ESP switch (health packs, etc.)"));
-CatVar show_bot_id(CV_SWITCH, XStr("esp_followbot_id"), XStr("1"), XStr("Followbot ESP"), XStr("Show followbot ID"));
-CatVar item_dropped_weapons(CV_SWITCH, XStr("esp_item_weapons"), XStr("0"), XStr("Dropped weapons"), XStr("Show dropped weapons"));
-CatVar item_ammo_packs(CV_SWITCH, XStr("esp_item_ammo"), XStr("0"), XStr("Ammo packs"), XStr("Show ammo packs"));
-CatVar item_health_packs(CV_SWITCH, XStr("esp_item_health"), XStr("1"), XStr("Health packs"), XStr("Show health packs"));
-CatVar item_powerups(CV_SWITCH, XStr("esp_item_powerups"), XStr("1"), XStr("Powerups"), XStr("Show powerups"));
-CatVar item_money(CV_SWITCH, XStr("esp_money"), XStr("1"), XStr("MvM money"), XStr("Show MvM money"));
-CatVar item_money_red(CV_SWITCH, XStr("esp_money_red"), XStr("1"), XStr("Red MvM money"), XStr("Show red MvM money"));
-CatVar item_spellbooks(CV_SWITCH, XStr("esp_spellbooks"), XStr("1"), XStr("Spellbooks"), XStr("Spell Books"));
-CatVar entity_id(CV_SWITCH, XStr("esp_entity_id"), XStr("1"), XStr("Entity ID"), XStr("Used with Entity ESP. Shows entityID"));
-CatVar tank(CV_SWITCH, XStr("esp_show_tank"), XStr("1"), XStr("Show tank"), XStr("Show tank"));
-CatVar box_esp(CV_SWITCH, XStr("esp_box"), XStr("1"), XStr("Box"), XStr("Draw 2D box with healthbar. fancy."));
-CatVar show_distance(CV_SWITCH, XStr("esp_distance"), XStr("1"), XStr("Distance ESP"), XStr("Show distance to target"));
-CatVar show_name(CV_SWITCH, XStr("esp_name"), XStr("1"), XStr("Name ESP"), XStr("Show name"));
-CatVar show_class(CV_SWITCH, XStr("esp_class"), XStr("1"), XStr("Class ESP"), XStr("Show class"));
-CatVar show_conditions(CV_SWITCH, XStr("esp_conds"), XStr("1"), XStr("Conditions ESP"), XStr("Show conditions"));
-CatVar show_ubercharge(CV_SWITCH, XStr("esp_ubercharge"), XStr("1"), XStr("Ubercharge ESP"), XStr("Show ubercharge percentage while players medigun is out"));
-CatVar vischeck(CV_SWITCH, XStr("esp_vischeck"), XStr("1"), XStr("VisCheck"), XStr("ESP visibility check - makes enemy info behind walls darker, disable this if you get FPS drops"));
-CatVar legit(CV_SWITCH, XStr("esp_legit"), XStr("0"), XStr("Legit Mode"), XStr("Don't show invisible enemies"));
-CatVar show_health(CV_SWITCH, XStr("esp_health_num"), XStr("1"), XStr("Health numbers"), XStr("Show health in numbers"));
-CatEnum proj_esp_enum({ XStr("OFF"), XStr("ALL"), XStr("CRIT") });
-CatVar proj_rockets(proj_esp_enum, XStr("esp_proj_rockets"), XStr("1"), XStr("Rockets"), XStr("Rockets"));
-CatVar proj_arrows(proj_esp_enum, XStr("esp_proj_arrows"), XStr("1"), XStr("Arrows"), XStr("Arrows"));
-CatVar proj_pipes(proj_esp_enum, XStr("esp_proj_pipes"), XStr("1"), XStr("Pipes"), XStr("Pipebombs"));
-CatVar proj_stickies(proj_esp_enum, XStr("esp_proj_stickies"), XStr("1"), XStr("Stickies"), XStr("Stickybombs"));
-CatVar proj_enemy(CV_SWITCH, XStr("esp_proj_enemy"), XStr("1"), XStr("Only enemy projectiles"), XStr("Don't show friendly projectiles"));
-CatVar proj_esp(CV_SWITCH, XStr("esp_proj"), XStr("1"), XStr("Projectile ESP"), XStr("Projectile ESP"));
-CatVar entity_model(CV_SWITCH, XStr("esp_model_name"), XStr("0"), XStr("Model name ESP"), XStr("Model name esp (DEBUG ONLY)"));
-CatVar item_weapon_spawners(CV_SWITCH, XStr("esp_weapon_spawners"), XStr("1"), XStr("Show weapon spawners"), XStr("TF2C deathmatch weapon spawners"));
-CatVar item_adrenaline(CV_SWITCH, XStr("esp_item_adrenaline"), XStr("0"), XStr("Show Adrenaline"), XStr("TF2C adrenaline pills"));
+CatVar show_weapon(CV_SWITCH, "esp_weapon", "1", "Show weapon name", "Show which weapon does the enemy use");
+CatEnum tracers_enum({ "OFF", "CENTER", "BOTTOM" });
+CatVar tracers(tracers_enum, "esp_tracers", "0", "Tracers", "SDraws a line from the player to a position on your screen");
+CatVar local_esp(CV_SWITCH, "esp_local", "1", "ESP Local Player", "Shows local player ESP in thirdperson");
+CatVar buildings(CV_SWITCH, "esp_buildings", "1", "Building ESP", "Show buildings");
+CatVar enabled(CV_SWITCH, "esp_enabled", "0", "ESP", "Master ESP switch");
+CatVar entity_info(CV_SWITCH, "esp_entity", "0", "Entity ESP", "Show entity info (debug)");
+CatVar teammates(CV_SWITCH, "esp_teammates", "0", "ESP Teammates", "Teammate ESP");
+CatVar item_esp(CV_SWITCH, "esp_item", "1", "Item ESP", "Master Item ESP switch (health packs, etc.)");
+CatVar show_bot_id(CV_SWITCH, "esp_followbot_id", "1", "Followbot ESP", "Show followbot ID");
+CatVar item_dropped_weapons(CV_SWITCH, "esp_item_weapons", "0", "Dropped weapons", "Show dropped weapons");
+CatVar item_ammo_packs(CV_SWITCH, "esp_item_ammo", "0", "Ammo packs", "Show ammo packs");
+CatVar item_health_packs(CV_SWITCH, "esp_item_health", "1", "Health packs", "Show health packs");
+CatVar item_powerups(CV_SWITCH, "esp_item_powerups", "1", "Powerups", "Show powerups");
+CatVar item_money(CV_SWITCH, "esp_money", "1", "MvM money", "Show MvM money");
+CatVar item_money_red(CV_SWITCH, "esp_money_red", "1", "Red MvM money", "Show red MvM money");
+CatVar item_spellbooks(CV_SWITCH, "esp_spellbooks", "1", "Spellbooks", "Spell Books");
+CatVar entity_id(CV_SWITCH, "esp_entity_id", "1", "Entity ID", "Used with Entity ESP. Shows entityID");
+CatVar tank(CV_SWITCH, "esp_show_tank", "1", "Show tank", "Show tank");
+CatVar box_esp(CV_SWITCH, "esp_box", "1", "Box", "Draw 2D box with healthbar. fancy.");
+CatVar show_distance(CV_SWITCH, "esp_distance", "1", "Distance ESP", "Show distance to target");
+CatVar show_name(CV_SWITCH, "esp_name", "1", "Name ESP", "Show name");
+CatVar show_class(CV_SWITCH, "esp_class", "1", "Class ESP", "Show class");
+CatVar show_conditions(CV_SWITCH, "esp_conds", "1", "Conditions ESP", "Show conditions");
+CatVar show_ubercharge(CV_SWITCH, "esp_ubercharge", "1", "Ubercharge ESP", "Show ubercharge percentage while players medigun is out");
+CatVar vischeck(CV_SWITCH, "esp_vischeck", "1", "VisCheck", "ESP visibility check - makes enemy info behind walls darker, disable this if you get FPS drops");
+CatVar legit(CV_SWITCH, "esp_legit", "0", "Legit Mode", "Don't show invisible enemies");
+CatVar show_health(CV_SWITCH, "esp_health_num", "1", "Health numbers", "Show health in numbers");
+CatEnum proj_esp_enum({ "OFF", "ALL", "CRIT" });
+CatVar proj_rockets(proj_esp_enum, "esp_proj_rockets", "1", "Rockets", "Rockets");
+CatVar proj_arrows(proj_esp_enum, "esp_proj_arrows", "1", "Arrows", "Arrows");
+CatVar proj_pipes(proj_esp_enum, "esp_proj_pipes", "1", "Pipes", "Pipebombs");
+CatVar proj_stickies(proj_esp_enum, "esp_proj_stickies", "1", "Stickies", "Stickybombs");
+CatVar proj_enemy(CV_SWITCH, "esp_proj_enemy", "1", "Only enemy projectiles", "Don't show friendly projectiles");
+CatVar proj_esp(CV_SWITCH, "esp_proj", "1", "Projectile ESP", "Projectile ESP");
+CatVar entity_model(CV_SWITCH, "esp_model_name", "0", "Model name ESP", "Model name esp (DEBUG ONLY)");
+CatVar item_weapon_spawners(CV_SWITCH, "esp_weapon_spawners", "1", "Show weapon spawners", "TF2C deathmatch weapon spawners");
+CatVar item_adrenaline(CV_SWITCH, "esp_item_adrenaline", "0", "Show Adrenaline", "TF2C adrenaline pills");
 
 std::mutex threadsafe_mutex;
 
@@ -83,7 +80,7 @@ void AddEntityString(CachedEntity* entity, const std::string& string, const rgba
 std::vector<int> entities_need_repaint {};
 std::mutex entities_need_repaint_mutex {};
 
-static CatVar box_corner_size(CV_INT, XStr("esp_box_corner_size"), XStr("10"), XStr("Corner Size"));
+static CatVar box_corner_size(CV_INT, "esp_box_corner_size", "10", "Corner Size");
 
 void BoxCorners(int minx, int miny, int maxx, int maxy, const rgba_t& color, bool transparent) {
 	const rgba_t& black = transparent ? colors::Transparent(colors::black) : colors::black;
@@ -156,12 +153,12 @@ void Draw() {
 	}
 }
 
-static CatEnum esp_box_text_position_enum({XStr("TOP RIGHT"), XStr("BOTTOM RIGHT"), XStr("CENTER"), XStr("ABOVE"), XStr("BELOW") });
-static CatVar esp_box_text_position(esp_box_text_position_enum, XStr("esp_box_text_position"), XStr("0"), XStr("Text position"), XStr("Defines text position"));
-static CatVar box_nodraw(CV_SWITCH, XStr("esp_box_nodraw"), XStr("0"), XStr("Invisible 2D Box"), XStr("Don't draw 2D box"));
-static CatVar box_expand(CV_INT, XStr("esp_box_expand"), XStr("0"), XStr("Expand 2D Box"), XStr("Expand 2D box by N units"));
-static CatVar box_corners(CV_SWITCH, XStr("esp_box_corners"), XStr("1"), XStr("Box Corners"));
-static CatVar powerup_esp(CV_SWITCH, XStr("esp_powerups"), XStr("1"), XStr("Powerup ESP"));
+static CatEnum esp_box_text_position_enum({"TOP RIGHT", "BOTTOM RIGHT", "CENTER", "ABOVE", "BELOW" });
+static CatVar esp_box_text_position(esp_box_text_position_enum, "esp_box_text_position", "0", "Text position", "Defines text position");
+static CatVar box_nodraw(CV_SWITCH, "esp_box_nodraw", "0", "Invisible 2D Box", "Don't draw 2D box");
+static CatVar box_expand(CV_INT, "esp_box_expand", "0", "Expand 2D Box", "Expand 2D box by N units");
+static CatVar box_corners(CV_SWITCH, "esp_box_corners", "1", "Box Corners");
+static CatVar powerup_esp(CV_SWITCH, "esp_powerups", "1", "Powerup ESP");
 
 const Vector dims_player[] = { { -16, -16, -4 }, { 16, 16, 72 } };
 
@@ -182,7 +179,7 @@ void _FASTCALL DrawBox(CachedEntity* ent, const rgba_t& clr, bool healthbar, int
 	cloak = (ent->m_iClassID == RCC_PLAYER) && IsPlayerInvisible(ent);
 
 	//if (!a) return;
-	//logging::Info(XStr("%f %f"), so.x, so.y);
+	//logging::Info("%f %f", so.x, so.y);
 	data.at(ent->m_IDX).esp_origin.Zero();
 
 	Vector points_r[8];
@@ -286,7 +283,7 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 	ESPData& espdata = data[ent->m_IDX];
 
 	if (entity_info) {
-		AddEntityString(ent, format(RAW_ENT(ent)->GetClientClass()->m_pNetworkName, XStr(" ["), ent->m_iClassID, XStr("]")));
+		AddEntityString(ent, format(RAW_ENT(ent)->GetClientClass()->m_pNetworkName, " [", ent->m_iClassID, "]"));
 		if (entity_id) {
 			AddEntityString(ent, std::to_string(ent->m_IDX));
 		}
@@ -300,7 +297,7 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 		if (ent->m_iClassID == CL_CLASS(CTFProjectile_Rocket) || ent->m_iClassID ==  CL_CLASS(CTFProjectile_SentryRocket)) {
 			if (proj_rockets) {
 				if ((int)proj_rockets != 2 || ent->m_bCritProjectile) {
-					AddEntityString(ent, XStr("[ ==> ]"));
+					AddEntityString(ent, "[ ==> ]");
 				}
 			}
 		} else if (ent->m_iClassID == CL_CLASS(CTFGrenadePipebombProjectile)) {
@@ -308,16 +305,16 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 			case 0:
 				if (!proj_pipes) break;
 				if ((int)proj_pipes == 2 && !ent->m_bCritProjectile) break;
-				AddEntityString(ent, XStr("[ (PP) ]"));
+				AddEntityString(ent, "[ (PP) ]");
 				break;
 			case 1:
 				if (!proj_stickies) break;
 				if ((int)proj_stickies == 2 && !ent->m_bCritProjectile) break;
-				AddEntityString(ent, XStr("[ {*} ]"));
+				AddEntityString(ent, "[ {*} ]");
 			}
 		} else if (ent->m_iClassID == CL_CLASS(CTFProjectile_Arrow)) {
 			if ((int)proj_arrows != 2 || ent->m_bCritProjectile) {
-				AddEntityString(ent, XStr("[ >>---> ]"));
+				AddEntityString(ent, "[ >>---> ]");
 			}
 		}
 	}
@@ -326,17 +323,17 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 		if (item_esp && item_dropped_weapons) {
 			if (CE_BYTE(ent, netvar.hOwner) == (unsigned char)-1) {
 				string_count_backup = data[ent->m_IDX].string_count;
-				if (ent->m_iClassID == CL_CLASS(CWeapon_SLAM)) AddEntityString(ent, XStr("SLAM"));
-				else if (ent->m_iClassID == CL_CLASS(CWeapon357)) AddEntityString(ent, XStr(".357"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponAR2)) AddEntityString(ent, XStr("AR2"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponAlyxGun)) AddEntityString(ent, XStr("Alyx Gun"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponAnnabelle)) AddEntityString(ent, XStr("Annabelle"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponBinoculars)) AddEntityString(ent, XStr("Binoculars"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponBugBait)) AddEntityString(ent, XStr("Bug Bait"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponCrossbow)) AddEntityString(ent, XStr("Crossbow"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponShotgun)) AddEntityString(ent, XStr("Shotgun"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponSMG1)) AddEntityString(ent, XStr("SMG"));
-				else if (ent->m_iClassID == CL_CLASS(CWeaponRPG)) AddEntityString(ent, XStr("RPG"));
+				if (ent->m_iClassID == CL_CLASS(CWeapon_SLAM)) AddEntityString(ent, "SLAM");
+				else if (ent->m_iClassID == CL_CLASS(CWeapon357)) AddEntityString(ent, ".357");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponAR2)) AddEntityString(ent, "AR2");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponAlyxGun)) AddEntityString(ent, "Alyx Gun");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponAnnabelle)) AddEntityString(ent, "Annabelle");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponBinoculars)) AddEntityString(ent, "Binoculars");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponBugBait)) AddEntityString(ent, "Bug Bait");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponCrossbow)) AddEntityString(ent, "Crossbow");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponShotgun)) AddEntityString(ent, "Shotgun");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponSMG1)) AddEntityString(ent, "SMG");
+				else if (ent->m_iClassID == CL_CLASS(CWeaponRPG)) AddEntityString(ent, "RPG");
 				if (string_count_backup != data[ent->m_IDX].string_count) {
 					SetEntityColor(ent, colors::yellow);
 				}
@@ -345,54 +342,54 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 	}
 
 	if (ent->m_iClassID == CL_CLASS(CTFTankBoss) && tank) {
-		AddEntityString(ent, XStr("Tank"));
+		AddEntityString(ent, "Tank");
 	} else if (ent->m_iClassID == CL_CLASS(CTFDroppedWeapon) && item_esp && item_dropped_weapons) {
-		AddEntityString(ent, format(XStr("WEAPON "), RAW_ENT(ent)->GetClientClass()->GetName()));
+		AddEntityString(ent, format("WEAPON ", RAW_ENT(ent)->GetClientClass()->GetName()));
 	} else if (ent->m_iClassID == CL_CLASS(CCurrencyPack) && item_money) {
 		if (CE_BYTE(ent, netvar.bDistributed)) {
 			if (item_money_red) {
-				AddEntityString(ent, XStr("~$~"));
+				AddEntityString(ent, "~$~");
 			}
 		} else {
-			AddEntityString(ent, XStr("$$$"));
+			AddEntityString(ent, "$$$");
 		}
 	} else if (ent->m_ItemType != ITEM_NONE && item_esp) {
 		shown = false;
 		if (item_health_packs && (ent->m_ItemType >= ITEM_HEALTH_SMALL && ent->m_ItemType <= ITEM_HEALTH_LARGE || ent->m_ItemType == ITEM_HL_BATTERY)) {
-			if (ent->m_ItemType == ITEM_HEALTH_SMALL) AddEntityString(ent, XStr("[+]"));
-			if (ent->m_ItemType == ITEM_HEALTH_MEDIUM) AddEntityString(ent, XStr("[++]"));
-			if (ent->m_ItemType == ITEM_HEALTH_LARGE) AddEntityString(ent, XStr("[+++]"));
-			if (ent->m_ItemType == ITEM_HL_BATTERY) AddEntityString(ent, XStr("[Z]"));
+			if (ent->m_ItemType == ITEM_HEALTH_SMALL) AddEntityString(ent, "[+]");
+			if (ent->m_ItemType == ITEM_HEALTH_MEDIUM) AddEntityString(ent, "[++]");
+			if (ent->m_ItemType == ITEM_HEALTH_LARGE) AddEntityString(ent, "[+++]");
+			if (ent->m_ItemType == ITEM_HL_BATTERY) AddEntityString(ent, "[Z]");
 		} else if (item_adrenaline && ent->m_ItemType == ITEM_TF2C_PILL) {
-			AddEntityString(ent, XStr("[a]"));
+			AddEntityString(ent, "[a]");
 		} else if (item_ammo_packs && ent->m_ItemType >= ITEM_AMMO_SMALL && ent->m_ItemType <= ITEM_AMMO_LARGE) {
-			if (ent->m_ItemType == ITEM_AMMO_SMALL) AddEntityString(ent, XStr("{i}"));
-			if (ent->m_ItemType == ITEM_AMMO_MEDIUM) AddEntityString(ent, XStr("{ii}"));
-			if (ent->m_ItemType == ITEM_AMMO_LARGE) AddEntityString(ent, XStr("{iii}"));
+			if (ent->m_ItemType == ITEM_AMMO_SMALL) AddEntityString(ent, "{i}");
+			if (ent->m_ItemType == ITEM_AMMO_MEDIUM) AddEntityString(ent, "{ii}");
+			if (ent->m_ItemType == ITEM_AMMO_LARGE) AddEntityString(ent, "{iii}");
 		} else if (item_powerups && ent->m_ItemType >= ITEM_POWERUP_FIRST && ent->m_ItemType <= ITEM_POWERUP_LAST) {
-			AddEntityString(ent, format(powerups[ent->m_ItemType - ITEM_POWERUP_FIRST], XStr(" PICKUP")));
+			AddEntityString(ent, format(powerups[ent->m_ItemType - ITEM_POWERUP_FIRST], " PICKUP"));
 		} else if (item_weapon_spawners && ent->m_ItemType >= ITEM_TF2C_W_FIRST && ent->m_ItemType <= ITEM_TF2C_W_LAST) {
-			AddEntityString(ent, format(tf2c_weapon_names[ent->m_ItemType - ITEM_TF2C_W_FIRST], XStr(" SPAWNER")));
-			if (CE_BYTE(ent, netvar.bRespawning)) AddEntityString(ent, XStr("-- RESPAWNING --"));
+			AddEntityString(ent, format(tf2c_weapon_names[ent->m_ItemType - ITEM_TF2C_W_FIRST], " SPAWNER"));
+			if (CE_BYTE(ent, netvar.bRespawning)) AddEntityString(ent, "-- RESPAWNING --");
 		} else if (item_spellbooks && (ent->m_ItemType == ITEM_SPELL || ent->m_ItemType == ITEM_SPELL_RARE)) {
 			if (ent->m_ItemType == ITEM_SPELL) {
-				AddEntityString(ent, XStr("Spell"), colors::green);
+				AddEntityString(ent, "Spell", colors::green);
 			} else {
-				AddEntityString(ent, XStr("Rare Spell"), colors::FromRGBA8(139, 31, 221, 255));
+				AddEntityString(ent, "Rare Spell", colors::FromRGBA8(139, 31, 221, 255));
 			}
 		}
 	} else if (ent->m_Type == ENTITY_BUILDING && buildings) {
 		if (!ent->m_bEnemy && !teammates) return;
 		level = CE_INT(ent, netvar.iUpgradeLevel);
-		const std::string& name = (ent->m_iClassID == CL_CLASS(CObjectTeleporter) ? XStr("Teleporter") : (ent->m_iClassID == CL_CLASS(CObjectSentrygun) ? XStr("Sentry Gun") : XStr("Dispenser")));
+		const std::string& name = (ent->m_iClassID == CL_CLASS(CObjectTeleporter) ? "Teleporter" : (ent->m_iClassID == CL_CLASS(CObjectSentrygun) ? "Sentry Gun" : "Dispenser"));
 		if (legit && ent->m_iTeam != g_pLocalPlayer->team) {
 			/*if (ent->m_lLastSeen > v_iLegitSeenTicks->GetInt()) {
 				return;
 			}*/
 		}
-		if (show_name || show_class) AddEntityString(ent, format(XStr("LV "), level, ' ', name));
+		if (show_name || show_class) AddEntityString(ent, format("LV ", level, ' ', name));
 		if (show_health) {
-			AddEntityString(ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, XStr(" HP")), colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
+			AddEntityString(ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, " HP"), colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
 		}
 		espdata.needs_paint = true;
 		return;
@@ -413,7 +410,7 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 		if (powerup_esp) {
 			power = GetPowerupOnPlayer(ent);
 			if (power != not_powerup)
-				AddEntityString(ent, format(XStr("^ "), powerups[power], XStr(" ^")));
+				AddEntityString(ent, format("^ ", powerups[power], " ^"));
 		}
 		if (ent->m_bEnemy || teammates || !playerlist::IsDefault(info.friendsID)) {
 			if (show_name)
@@ -426,14 +423,14 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 			if (show_bot_id && ipc::peer && ent != LOCAL_E) {
 				for (unsigned i = 1; i < cat_ipc::max_peers; i++) {
 					if (!ipc::peer->memory->peer_data[i].free && ipc::peer->memory->peer_user_data[i].friendid == info.friendsID) {
-						AddEntityString(ent, format(XStr("BOT #"), i));
+						AddEntityString(ent, format("BOT #", i));
 						break;
 					}
 				}
 			}
 #endif
 			if (show_health) {
-				AddEntityString(ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, XStr(" HP")), colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
+				AddEntityString(ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, " HP"), colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
 			}
 			IF_GAME (IsTF()) {
 				if (show_ubercharge) {
@@ -446,8 +443,8 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 								weapon = ENTITY(eid);
 								if (!CE_BAD(weapon) && weapon->m_iClassID == CL_CLASS(CWeaponMedigun) && weapon) {
 									if (CE_INT(weapon, netvar.iItemDefinitionIndex) != 998) {
-										AddEntityString(ent, format(floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), '%', XStr(" Uber")), colors::Health(( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), 100));
-									} else AddEntityString(ent, format(floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), '%', XStr(" Uber | Charges: "), floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) / 0.25f )), colors::Health(( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), 100));
+										AddEntityString(ent, format(floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), '%', " Uber"), colors::Health(( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), 100));
+									} else AddEntityString(ent, format(floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), '%', " Uber | Charges: ", floor( CE_FLOAT(weapon, netvar.m_flChargeLevel) / 0.25f )), colors::Health(( CE_FLOAT(weapon, netvar.m_flChargeLevel) * 100 ), 100));
 									break;
 								}
 							}
@@ -457,30 +454,30 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 				if (show_conditions) {
 					const auto& clr = colors::EntityF(ent);
 					if (IsPlayerInvisible(ent)) {
-						AddEntityString(ent, XStr("*CLOAKED*"), colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
+						AddEntityString(ent, "*CLOAKED*", colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
 					}
 					if (IsPlayerInvulnerable(ent)) {
-						AddEntityString(ent, XStr("*INVULNERABLE*"));
+						AddEntityString(ent, "*INVULNERABLE*");
 					}
 					if (HasCondition<TFCond_UberBulletResist>(ent)) {
-						AddEntityString(ent, XStr("*VACCINATOR*"));
+						AddEntityString(ent, "*VACCINATOR*");
 					} else if (HasCondition<TFCond_SmallBulletResist>(ent)) {
-						AddEntityString(ent, XStr("*PASSIVE RESIST*"));
+						AddEntityString(ent, "*PASSIVE RESIST*");
 					}
 					if (IsPlayerCritBoosted(ent)) {
-						AddEntityString(ent, XStr("*CRITS*"), colors::orange);
+						AddEntityString(ent, "*CRITS*", colors::orange);
 					}
 					if (HasCondition<TFCond_Zoomed>(ent)) {
-						AddEntityString(ent, XStr("*ZOOMING*"), colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
+						AddEntityString(ent, "*ZOOMING*", colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
 					} else if (HasCondition<TFCond_Slowed>(ent)) {
-						AddEntityString(ent, XStr("*SLOWED*"), colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
+						AddEntityString(ent, "*SLOWED*", colors::FromRGBA8(220.0f, 220.0f, 220.0f, 255.0f));
 					}
 					if (HasCondition<TFCond_Jarated>(ent)) {
-						AddEntityString(ent, XStr("*JARATED*"), colors::yellow);
+						AddEntityString(ent, "*JARATED*", colors::yellow);
 					}
 				}
 			}
-			if (IsHoovy(ent)) AddEntityString(ent, XStr("Hoovy"));
+			if (IsHoovy(ent)) AddEntityString(ent, "Hoovy");
 			int widx = CE_INT(ent, netvar.hActiveWeapon) & 0xFFF;
 			if (IDX_GOOD(widx)) {
 				weapon = ENTITY(widx);
@@ -496,16 +493,16 @@ void _FASTCALL ProcessEntity(CachedEntity* ent) {
 		return;
 	}
 }
-static CatVar box_healthbar(CV_SWITCH, XStr("esp_box_healthbar"), XStr("1"), XStr("Box Healthbar"));
-static CatVar draw_bones(CV_SWITCH, XStr("esp_bones"), XStr("0"), XStr("Draw Bone ID's"));
+static CatVar box_healthbar(CV_SWITCH, "esp_box_healthbar", "1", "Box Healthbar");
+static CatVar draw_bones(CV_SWITCH, "esp_bones", "0", "Draw Bone ID's");
 
-const std::string bonenames_leg_r[] = { XStr("bip_foot_R"), XStr("bip_knee_R"), XStr("bip_hip_R") };
-const std::string bonenames_leg_l[] = { XStr("bip_foot_L"), XStr("bip_knee_L"), XStr("bip_hip_L") };
-const std::string bonenames_bottom[] = { XStr("bip_hip_R"), XStr("bip_pelvis"), XStr("bip_hip_L") };
-const std::string bonenames_spine[] = { XStr("bip_pelvis"), XStr("bip_spine_0"), XStr("bip_spine_1"), XStr("bip_spine_2"), XStr("bip_spine_3"), XStr("bip_neck"), XStr("bip_head") };
-const std::string bonenames_arm_r[] = { XStr("bip_upperArm_R"), XStr("bip_lowerArm_R"), XStr("bip_hand_R") };
-const std::string bonenames_arm_l[] = { XStr("bip_upperArm_L"), XStr("bip_lowerArm_L"), XStr("bip_hand_L") };
-const std::string bonenames_up[] = { XStr("bip_upperArm_R"), XStr("bip_spine_3"), XStr("bip_upperArm_L") };
+const std::string bonenames_leg_r[] = { "bip_foot_R", "bip_knee_R", "bip_hip_R" };
+const std::string bonenames_leg_l[] = { "bip_foot_L", "bip_knee_L", "bip_hip_L" };
+const std::string bonenames_bottom[] = { "bip_hip_R", "bip_pelvis", "bip_hip_L" };
+const std::string bonenames_spine[] = { "bip_pelvis", "bip_spine_0", "bip_spine_1", "bip_spine_2", "bip_spine_3", "bip_neck", "bip_head" };
+const std::string bonenames_arm_r[] = { "bip_upperArm_R", "bip_lowerArm_R", "bip_hand_R" };
+const std::string bonenames_arm_l[] = { "bip_upperArm_L", "bip_lowerArm_L", "bip_hand_L" };
+const std::string bonenames_up[] = { "bip_upperArm_R", "bip_spine_3", "bip_upperArm_L" };
 
 struct bonelist_s {
 	bool setup { false };
@@ -537,7 +534,7 @@ struct bonelist_s {
 			for (int i = 0; i < 3; i++) up[i] = bones.at(bonenames_up[i]);
 			success = true;
 		} catch (std::exception& ex) {
-			logging::Info(XStr("Bone list exception: %s"), ex.what());
+			logging::Info("Bone list exception: %s", ex.what());
 		}
 		setup = true;
 	}
@@ -588,9 +585,9 @@ struct bonelist_s {
 			Vector screen;
 			if (draw::WorldToScreen(pos, screen)) {
 				if (hdr->pBone(i)->pszName()) {
-					draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, XStr("%s [%d]"), hdr->pBone(i)->pszName(), i);
+					draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, "%s [%d]", hdr->pBone(i)->pszName(), i);
 				} else
-					draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, XStr("%d"), i);
+					draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, "%d", i);
 			}
 		}*/
 	}
@@ -602,11 +599,11 @@ std::unordered_map<studiohdr_t*, bonelist_s> bonelist_map {};
  * According to profiler, this function is the most time-consuming (and gets called up to 200K times a second)
  */
 
-CatEnum emoji_esp({ XStr("None"), XStr("Joy"), XStr("Thinking") });
-CatVar joy_esp(CV_SWITCH, XStr("esp_emoji"), XStr("0"), XStr("Emoji ESP"));
-CatVar joy_esp_size(CV_FLOAT, XStr("esp_emoji_size"), XStr("32"), XStr("Emoji ESP Size"));
-CatVar emoji_esp_scaling(CV_SWITCH, XStr("esp_emoji_scaling"), XStr("1"), XStr("Emoji ESP Scaling"));
-CatVar emoji_min_size(CV_INT, XStr("esp_emoji_min_size"), XStr("20"), XStr("Emoji ESP min size"), XStr("Minimum size for an emoji when you use auto scaling"));
+CatEnum emoji_esp({ "None", "Joy", "Thinking" });
+CatVar joy_esp(CV_SWITCH, "esp_emoji", "0", "Emoji ESP");
+CatVar joy_esp_size(CV_FLOAT, "esp_emoji_size", "32", "Emoji ESP Size");
+CatVar emoji_esp_scaling(CV_SWITCH, "esp_emoji_scaling", "1", "Emoji ESP Scaling");
+CatVar emoji_min_size(CV_INT, "esp_emoji_min_size", "20", "Emoji ESP min size", "Minimum size for an emoji when you use auto scaling");
 textures::AtlasTexture joy_texture(64 * 4, textures::atlas_height - 64 * 4, 64, 64);
 textures::AtlasTexture thinking_texture(64 * 5, textures::atlas_height - 64 * 4, 64, 64);
 
@@ -649,9 +646,9 @@ void _FASTCALL ProcessEntityPT(CachedEntity* ent) {
 				Vector screen;
 				if (draw::WorldToScreen(pos, screen)) {
 					if (hdr->pBone(i)->pszName()) {
-						draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, XStr("%s [%d]"), hdr->pBone(i)->pszName(), i);
+						draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, "%s [%d]", hdr->pBone(i)->pszName(), i);
 					} else
-						draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, XStr("%d"), i);
+						draw::FString(fonts::ESP, screen.x, screen.y, fg, 2, "%d", i);
 				}
 			}*/
 		}

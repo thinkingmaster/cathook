@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * HEsp.h
  *
@@ -60,7 +57,7 @@ extern CatVar item_adrenaline;
 
 class ESPString {
 public:
-	std::string data { XStr("") };
+	std::string data { "" };
 	rgba_t color { colors::empty };
 };
 

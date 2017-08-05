@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 #ifndef min
 #define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif

@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * fidgetspinner.cpp
  *
@@ -10,14 +7,14 @@
 
 #include "fidgetspinner.hpp"
 
-CatVar enable_spinner(CV_SWITCH, XStr("fidgetspinner"), XStr("0"), XStr("Fidget Spinner"), XStr("Part of Cathook Autism Awareness program"));
+CatVar enable_spinner(CV_SWITCH, "fidgetspinner", "0", "Fidget Spinner", "Part of Cathook Autism Awareness program");
 std::vector<textures::AtlasTexture> spinner_states {};
 
 float spinning_speed = 0.0f;
 float angle = 0;
 
 // DEBUG
-/*CatCommand add_spinner_speed(XStr("fidgetspinner_debug_speedup"), XStr("Add speed"), []() {
+/*CatCommand add_spinner_speed("fidgetspinner_debug_speedup", "Add speed", []() {
 	spinning_speed += 100.0f;
 });*/
 
@@ -25,12 +22,12 @@ class SpinnerListener : public IGameEventListener {
 public:
 	virtual void FireGameEvent(KeyValues* event) {
 		std::string name(event->GetName());
-		if (name == XStr("player_death")) {
-			int attacker = event->GetInt(XStr("attacker"));
+		if (name == "player_death") {
+			int attacker = event->GetInt("attacker");
 			int eid = g_IEngine->GetPlayerForUserID(attacker);
 			if (eid == g_IEngine->GetLocalPlayer()) {
 				spinning_speed += 300.0f;
-				//logging::Info(XStr("Spinning %.2f"), spinning_speed);
+				//logging::Info("Spinning %.2f", spinning_speed);
 			}
 		}
 	}
@@ -44,11 +41,11 @@ void InitSpinner() {
 	g_IGameEventManager->AddListener(&listener, false);
 }
 
-CatVar spinner_speed_cap(CV_FLOAT, XStr("fidgetspinner_speed_cap"), XStr("30"), XStr("Speed cap"));
-CatVar spinner_speed_scale(CV_FLOAT, XStr("fidgetspinner_speed_scale"), XStr("0.03"), XStr("Speed scale"));
-CatVar spinner_decay_speed(CV_FLOAT, XStr("fidgetspinner_decay_speed"), XStr("0.1"), XStr("Decay speed"));
-CatVar spinner_scale(CV_FLOAT, XStr("fidgetspinner_scale"), XStr("32"), XStr("Spinner Size"));
-CatVar spinner_min_speed(CV_FLOAT, XStr("fidgetspinner_min_speed"), XStr("2"), XStr("Spinner Min Speed"));
+CatVar spinner_speed_cap(CV_FLOAT, "fidgetspinner_speed_cap", "30", "Speed cap");
+CatVar spinner_speed_scale(CV_FLOAT, "fidgetspinner_speed_scale", "0.03", "Speed scale");
+CatVar spinner_decay_speed(CV_FLOAT, "fidgetspinner_decay_speed", "0.1", "Decay speed");
+CatVar spinner_scale(CV_FLOAT, "fidgetspinner_scale", "32", "Spinner Size");
+CatVar spinner_min_speed(CV_FLOAT, "fidgetspinner_min_speed", "2", "Spinner Min Speed");
 
 void DrawSpinner() {
 	if (not enable_spinner) return;

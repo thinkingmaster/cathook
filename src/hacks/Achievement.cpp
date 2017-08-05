@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /*
  * Achievement.cpp
  *
@@ -14,11 +11,11 @@
 
 namespace hacks { namespace tf2 { namespace achievement {
 
-CatVar safety(CV_SWITCH, XStr("achievement_safety"), XStr("1"), XStr("Achievement commands safety switch"));
+CatVar safety(CV_SWITCH, "achievement_safety", "1", "Achievement commands safety switch");
 
 void Lock() {
 	if (safety) {
-		ConColorMsg({ 255, 0, 0, 255}, XStr("Switch ") CON_PREFIX XStr("achievement_safety to 0 before using any achievement commands!\n"));
+		ConColorMsg({ 255, 0, 0, 255}, "Switch " CON_PREFIX "achievement_safety to 0 before using any achievement commands!\n");
 		return;
 	}
 	g_ISteamUserStats->RequestCurrentStats();
@@ -31,7 +28,7 @@ void Lock() {
 
 void Unlock() {
 	if (safety) {
-		ConColorMsg({ 255, 0, 0, 255}, XStr("Switch ") CON_PREFIX XStr("achievement_safety to 0 before using any achievement commands!\n"));
+		ConColorMsg({ 255, 0, 0, 255}, "Switch " CON_PREFIX "achievement_safety to 0 before using any achievement commands!\n");
 		return;
 	}
 	for (int i = 0; i < g_IAchievementMgr->GetAchievementCount(); i++) {
@@ -39,19 +36,19 @@ void Unlock() {
 	}
 }
 
-CatCommand dump_achievement(XStr("achievement_dump"), XStr("Dump achievements to file (development)"), []() {
-	std::ofstream out(XStr("/tmp/cathook_achievements.txt"), std::ios::out);
+CatCommand dump_achievement("achievement_dump", "Dump achievements to file (development)", []() {
+	std::ofstream out("/tmp/cathook_achievements.txt", std::ios::out);
 	if (out.bad()) return;
 	for (int i = 0; i < g_IAchievementMgr->GetAchievementCount(); i++) {
-		out << '[' << i << XStr("] ") << g_IAchievementMgr->GetAchievementByIndex(i)->GetName() << ' ' << g_IAchievementMgr->GetAchievementByIndex(i)->GetAchievementID() << XStr("\n");
+		out << '[' << i << "] " << g_IAchievementMgr->GetAchievementByIndex(i)->GetName() << ' ' << g_IAchievementMgr->GetAchievementByIndex(i)->GetAchievementID() << "\n";
 	}
 	out.close();
 });
-CatCommand unlock_single(XStr("achievement_unlock_single"), XStr("Unlocks single achievement by ID"), [](const CCommand& args) {
+CatCommand unlock_single("achievement_unlock_single", "Unlocks single achievement by ID", [](const CCommand& args) {
 	char* out = nullptr;
 	int id = strtol(args.Arg(1), &out, 10);
 	if (out == args.Arg(1)) {
-		logging::Info(XStr("NaN achievement ID!"));
+		logging::Info("NaN achievement ID!");
 		return;
 	}
 	IAchievement* ach = reinterpret_cast<IAchievement*>(g_IAchievementMgr->GetAchievementByID(id));
@@ -60,11 +57,11 @@ CatCommand unlock_single(XStr("achievement_unlock_single"), XStr("Unlocks single
 	}
 });
 // For some reason it SEGV's when I try to GetAchievementByID();
-CatCommand lock_single(XStr("achievement_lock_single"), XStr("Locks single achievement by INDEX!"), [](const CCommand& args) {
+CatCommand lock_single("achievement_lock_single", "Locks single achievement by INDEX!", [](const CCommand& args) {
 	char* out = nullptr;
 	int index = strtol(args.Arg(1), &out, 10);
 	if (out == args.Arg(1)) {
-		logging::Info(XStr("NaN achievement INDEX!"));
+		logging::Info("NaN achievement INDEX!");
 		return;
 	}
 	IAchievement* ach = g_IAchievementMgr->GetAchievementByIndex(index);
@@ -75,7 +72,7 @@ CatCommand lock_single(XStr("achievement_lock_single"), XStr("Locks single achie
 		g_ISteamUserStats->RequestCurrentStats();
 	}
 });
-CatCommand lock(XStr("achievement_lock"), XStr("Lock all achievements"), Lock);
-CatCommand unlock(XStr("achievement_unlock"), XStr("Unlock all achievements"), Unlock);
+CatCommand lock("achievement_lock", "Lock all achievements", Lock);
+CatCommand unlock("achievement_unlock", "Unlock all achievements", Unlock);
 
 }}}

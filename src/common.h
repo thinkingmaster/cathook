@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * common.h
  *
@@ -121,12 +118,12 @@ constexpr T _clamp(T _min, T _max, T _val) {
 #define SQR(x) (x) * (x)
 
 #ifndef CATHOOK_BUILD_NUMBER
-#define CATHOOK_BUILD_NUMBER XStr("LATEST")
+#define CATHOOK_BUILD_NUMBER "LATEST"
 #endif
-#define CATHOOK_BUILD_NAME XStr("Cat's Eye")
+#define CATHOOK_BUILD_NAME "Cat's Eye"
 
-#define CON_NAME XStr("cat")
-#define CON_PREFIX CON_NAME XStr("_")
+#define CON_NAME "cat"
+#define CON_PREFIX CON_NAME "_"
 
 #define SUPER_VERBOSE_DEBUG false
 #if SUPER_VERBOSE_DEBUG == true
@@ -149,12 +146,12 @@ constexpr T _clamp(T _min, T _max, T _val) {
 
 #define SEGV_END \
 	} catch (...) { \
-		logging::Info(XStr("SEGV/FPE occured! %s in %s:%d"), __func__, __FILE__, __LINE__); \
+		logging::Info("SEGV/FPE occured! %s in %s:%d", __func__, __FILE__, __LINE__); \
 	}
 
 #define SEGV_END_INFO(x) \
 	} catch (...) { \
-		logging::Info(XStr("SEGV/FPE occured! (%s)"), x); \
+		logging::Info("SEGV/FPE occured! (%s)", x); \
 	}
 
 #define SAFE_CALL(x) \

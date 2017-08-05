@@ -1,6 +1,3 @@
-
-#include "xorstring.hpp"
-
 /*
  * entityhitboxcache.cpp
  *
@@ -82,8 +79,8 @@ bool EntityHitboxCache::VisibilityCheck(int id) {
 	return m_VisCheck[id];
 }
 
-static CatEnum setupbones_time_enum({ XStr("ZERO"),  XStr("CURTIME"), XStr("LP SERVERTIME"), XStr("SIMTIME") });
-static CatVar setupbones_time(setupbones_time_enum, XStr("setupbones_time"), XStr("1"), XStr("Setupbones"), XStr("Defines setupbones 4th argument, change it if your aimbot misses, idk!!"));
+static CatEnum setupbones_time_enum({ "ZERO",  "CURTIME", "LP SERVERTIME", "SIMTIME" });
+static CatVar setupbones_time(setupbones_time_enum, "setupbones_time", "1", "Setupbones", "Defines setupbones 4th argument, change it if your aimbot misses, idk!!");
 
 matrix3x4_t* EntityHitboxCache::GetBones() {
 	static float bones_setup_time = 0.0f;

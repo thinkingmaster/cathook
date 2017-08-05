@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -21,10 +18,10 @@ shader_read( const char *filename )
     char * buffer;
 	size_t size;
 
-    file = fopen( filename, XStr("rb") );
+    file = fopen( filename, "rb" );
     if( !file )
     {
-        fprintf( stderr, XStr("Unable to open file \"%s\".\n"), filename );
+        fprintf( stderr, "Unable to open file \"%s\".\n", filename );
 		return 0;
     }
 	fseek( file, 0, SEEK_END );
@@ -51,7 +48,7 @@ shader_compile( const char* source,
     {
         GLchar messages[256];
         glGetShaderInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, XStr("%s\n"), messages );
+        fprintf( stderr, "%s\n", messages );
         exit( EXIT_FAILURE );
     }
     return handle;
@@ -91,7 +88,7 @@ shader_load( const char * vert_filename,
     {
         GLchar messages[256];
         glGetProgramInfoLog( handle, sizeof(messages), 0, &messages[0] );
-        fprintf( stderr, XStr("%s\n"), messages );
+        fprintf( stderr, "%s\n", messages );
         exit(1);
     }
     return handle;

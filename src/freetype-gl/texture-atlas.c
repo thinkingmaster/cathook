@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 /* Freetype GL - A C OpenGL Freetype engine
  *
  * Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
@@ -30,7 +27,7 @@ texture_atlas_new( const size_t width,
     if( self == NULL)
     {
         fprintf( stderr,
-                 XStr("line %d: No more memory for allocating data\n"), __LINE__ );
+                 "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
     self->nodes = vector_new( sizeof(ivec3) );
@@ -48,7 +45,7 @@ texture_atlas_new( const size_t width,
     if( self->data == NULL)
     {
         fprintf( stderr,
-                 XStr("line %d: No more memory for allocating data\n"), __LINE__ );
+                 "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
 
@@ -220,7 +217,7 @@ texture_atlas_get_region( texture_atlas_t * self,
     if( node == NULL)
     {
         fprintf( stderr,
-                 XStr("line %d: No more memory for allocating data\n"), __LINE__ );
+                 "line %d: No more memory for allocating data\n", __LINE__ );
         exit( EXIT_FAILURE );
     }
     node->x = region.x;

@@ -1,6 +1,3 @@
-
-#include "../xorstring.hpp"
-
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose:
@@ -318,10 +315,10 @@ public:
 
 	// Find a material by name.
 	// The name of a material is a full path to
-	// the vmt file starting from XStr("hl2/materials") (or equivalent) without
+	// the vmt file starting from "hl2/materials" (or equivalent) without
 	// a file extension.
-	// eg. XStr("dev/dev_bumptest") refers to somethign similar to:
-	// XStr("d:/hl2/hl2/materials/dev/dev_bumptest.vmt")
+	// eg. "dev/dev_bumptest" refers to somethign similar to:
+	// "d:/hl2/hl2/materials/dev/dev_bumptest.vmt"
 	//
 	// Most of the texture groups for pTextureGroupName are listed in texture_group_names.h.
 	//
@@ -340,7 +337,7 @@ public:
 	// only way that the directory structure of the materials will be seen through this
 	// interface.
 	// NOTE:  This is mostly for worldcraft to get a list of materials to put
-	// in the XStr("texture") browser.in Worldcraft
+	// in the "texture" browser.in Worldcraft
 	virtual MaterialHandle_t	FirstMaterial() const = 0;
 
 	// returns InvalidMaterial if there isn't another material.
@@ -530,7 +527,7 @@ public:
 
 	virtual void				CompactMemory() = 0;
 
-	// For sv_pure mode. The filesystem figures out which files the client needs to reload to be XStr("pure") ala the server's preferences.
+	// For sv_pure mode. The filesystem figures out which files the client needs to reload to be "pure" ala the server's preferences.
 	virtual void ReloadFilesInList( IFileList *pFilesToReload ) = 0;
 	virtual	bool				AllowThreading( bool bAllow, int nServiceThread ) = 0;
 
@@ -558,7 +555,7 @@ public:
 
 	// Lie to the material system to pretend to be in render target allocation mode at the beginning of time.
 	// This was a thing that mattered a lot to old hardware, but doesn't matter at all to new hardware,
-	// where new is defined to be XStr("anything from the last decade.") However, we want to preserve legacy behavior
+	// where new is defined to be "anything from the last decade." However, we want to preserve legacy behavior
 	// for the old games because it's easier than testing them.
 	virtual void				OverrideRenderTargetAllocation( bool rtAlloc ) = 0;
 
