@@ -73,9 +73,11 @@ T* BruteforceInterface(std::string name, sharedobj::SharedObject& object, int st
 }
 
 void CreateInterfaces() {
+	logging::Info("Making interfaces");
 	g_ICvar = BruteforceInterface<ICvar>("VEngineCvar", sharedobj::vstdlib());
 	g_IEngine = BruteforceInterface<IVEngineClient013>("VEngineClient", sharedobj::engine());
 	g_AppID = g_IEngine->GetAppID();
+	logging::Info("AppID: %d", g_AppID);
 	g_IEntityList = BruteforceInterface<IClientEntityList>("VClientEntityList", sharedobj::client());
 	g_ISteamClient = BruteforceInterface<ISteamClient>("SteamClient", sharedobj::steamclient(), 17);
 	g_IEventManager2 = BruteforceInterface<IGameEventManager2>("GAMEEVENTSMANAGER", sharedobj::engine(), 2);
@@ -83,10 +85,12 @@ void CreateInterfaces() {
 	g_IBaseClient = BruteforceInterface<IBaseClientDLL>("VClient", sharedobj::client());
 	g_ITrace = BruteforceInterface<IEngineTrace>("EngineTraceClient", sharedobj::engine());
 	g_IInputSystem = BruteforceInterface<IInputSystem>("InputSystemVersion", sharedobj::inputsystem());
+	g_IVModelRender = BruteforceInterface<IVModelRender>("VEngineModel", sharedobj::engine(), 16);
+	logging::Info("Using steam interfaces");
 	HSteamPipe sp = g_ISteamClient->CreateSteamPipe();
 	HSteamUser su = g_ISteamClient->ConnectToGlobalUser(sp);
-	g_IVModelRender = BruteforceInterface<IVModelRender>("VEngineModel", sharedobj::engine(), 16);
 	g_ISteamFriends = nullptr;
+	logging::Info("Searching for steam API");
 	IF_GAME (IsTF2()) {
 		uintptr_t sig_steamapi = gSignatures.GetEngineSignature("55 0F 57 C0 89 E5 83 EC 18 F3 0F 11 05 ? ? ? ? F3 0F 11 05 ? ? ? ? F3 0F 10 05 ? ? ? ? C7 04 24 ? ? ? ? F3 0F 11 05 ? ? ? ? F3 0F 11 05 ? ? ? ? E8 ? ? ? ? C7 44 24 08 ? ? ? ? C7 44 24 04 ? ? ? ? C7 04 24 ? ? ? ? E8 ? ? ? ? C9 C3");
 		logging::Info("SteamAPI: 0x%08x", sig_steamapi);
@@ -131,7 +135,7 @@ void CreateInterfaces() {
 	}
 	g_IMaterialSystem = BruteforceInterface<IMaterialSystemFixed>("VMaterialSystem", sharedobj::materialsystem());
 
-#ifndef TEXTMODE
+#if not NO_RENDERING
 	g_IVDebugOverlay = BruteforceInterface<IVDebugOverlay>("VDebugOverlay", sharedobj::engine());
 	g_IPanel = BruteforceInterface<vgui::IPanel>("VGUI_Panel", sharedobj::vgui2());
 	g_ISurface = BruteforceInterface<vgui::ISurface>("VGUI_Surface", sharedobj::vguimatsurface());

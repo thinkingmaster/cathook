@@ -13,7 +13,7 @@
 namespace hacks { namespace shared { namespace misc {
 
 void CreateMove();
-#ifndef TEXTMODE
+#if not NO_RENDERING
 void DrawText();
 #endif
 

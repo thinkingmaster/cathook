@@ -349,7 +349,7 @@ void CreateMove() {
     }
 }
 
-#ifndef TEXTMODE
+#if not NO_RENDERING
 
 void DrawText() {
 	if (crit_info && CE_GOOD(LOCAL_W)) {

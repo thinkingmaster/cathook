@@ -39,7 +39,7 @@ extern int target_eid;
 	
 // Functions called by other functions for when certian game calls are run
 void CreateMove();
-#ifndef TEXTMODE
+#if not NO_RENDERING
 void DrawText();
 #endif
 void Reset();

@@ -43,7 +43,7 @@ SharedObject& vstdlib();
 SharedObject& tier0();
 SharedObject& inputsystem();
 SharedObject& materialsystem();
-#ifndef TEXTMODE
+#if not NO_RENDERING
 SharedObject& vguimatsurface();
 SharedObject& vgui2();
 SharedObject& studiorender();
