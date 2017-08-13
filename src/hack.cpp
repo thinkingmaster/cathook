@@ -40,7 +40,11 @@
 #define STRINGIFY(x) #x
 #define TO_STRING(x) STRINGIFY(x)
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 #include "ftrender.hpp"
 #endif
 
@@ -96,12 +100,17 @@ const std::string& hack::GetType() {
 #else
 		version += " DYNAMIC";
 #endif
+<<<<<<< HEAD
 
 #if NO_RENDERING
 		version += " NO_RENDERING";
 #endif
 
 #if TEXTMODE
+=======
+		
+#ifdef TEXTMODE
+>>>>>>> stash
 		version += " TEXTMODE";
 #endif
 
@@ -116,7 +125,11 @@ std::stack<std::string>& hack::command_stack() {
 	return stack;
 }
 
+<<<<<<< HEAD
 #if not NO_RENDERING /* Why would we need colored chat stuff in textmode? */
+=======
+#ifndef TEXTMODE /* Why would we need colored chat stuff in textmode? */
+>>>>>>> stash
 
 class AdvancedEventListener : public IGameEventListener {
 public:
@@ -167,7 +180,11 @@ void hack::CC_Cat(const CCommand& args) {
 
 void hack::Initialize() {
 	// Essential files must always exist, except when the game is running in text mode.
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 	{
 		std::vector<std::string> essential = {
@@ -186,6 +203,8 @@ void hack::Initialize() {
 
 #endif /* TEXTMODE */
 
+#endif /* TEXTMODE */
+
 	logging::Info("Initializing...");
 	srand(time(0));
 	prctl(PR_SET_DUMPABLE,0,42,42,42);
@@ -200,7 +219,11 @@ void hack::Initialize() {
 	logging::Info("Is TF? %d", IsTF());
 	InitClassTable();
 
+<<<<<<< HEAD
 #if not NO_RENDERING /* We don't need medal to flip 100% when running textmode */
+=======
+#ifndef TEXTMODE /* We don't need medal to flip 100% when running textmode */
+>>>>>>> stash
 
 	IF_GAME (IsTF2()) {
 		uintptr_t mmmf = (gSignatures.GetClientSignature("C7 44 24 04 09 00 00 00 BB ? ? ? ? C7 04 24 00 00 00 00 E8 ? ? ? ? BA ? ? ? ? 85 C0 B8 ? ? ? ? 0F 44 DA") + 37);
@@ -224,7 +247,11 @@ void hack::Initialize() {
 	g_Settings.Init();
 	EndConVars();
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 	draw::Initialize();
 #if ENABLE_GUI
@@ -238,7 +265,11 @@ void hack::Initialize() {
 	InitNetVars();
 	g_pLocalPlayer = new LocalPlayer();
 	g_pPlayerResource = new TFPlayerResource();
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	hooks::panel.Set(g_IPanel);
 	hooks::panel.HookMethod((void*)PaintTraverse_hook, offsets::PaintTraverse());
 	hooks::panel.Apply();
@@ -251,7 +282,11 @@ void hack::Initialize() {
 	}
 	hooks::clientmode.Set((void*)clientMode);
 	hooks::clientmode.HookMethod((void*)CreateMove_hook, offsets::CreateMove());
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	hooks::clientmode.HookMethod((void*)OverrideView_hook, offsets::OverrideView());
 #endif /* TEXTMODE */
 	hooks::clientmode.HookMethod((void*)LevelInit_hook, offsets::LevelInit());
@@ -263,6 +298,7 @@ void hack::Initialize() {
 	hooks::client.Set(g_IBaseClient);
 	hooks::client.HookMethod((void*)FrameStageNotify_hook, offsets::FrameStageNotify());
 	hooks::client.HookMethod((void*)DispatchUserMessage_hook, offsets::DispatchUserMessage());
+<<<<<<< HEAD
 	g_IMaterialSystem->GetMaterial(0);
 #if NULL_GRAPHICS
 	g_IMaterialSystem->SetInStubMode(true);
@@ -283,13 +319,38 @@ void hack::Initialize() {
 #endif
 
 #if not NO_RENDERING
+=======
+
+#if TEXTMODE
+	//g_IMaterialSystem->SetInStubMode(true);
+	/*IF_GAME(IsTF2()) {
+		logging::Info("Graphics Nullified");
+		// TODO offsets::()?
+		hooks::materialsystem.Set((void*)g_IMaterialSystem);
+		uintptr_t base = *(uintptr_t*)(g_IMaterialSystem);
+		hooks::materialsystem.HookMethod((void*)ReloadTextures_null_hook, 70);
+		hooks::materialsystem.HookMethod((void*)ReloadMaterials_null_hook, 71);
+		hooks::materialsystem.HookMethod((void*)FindMaterial_null_hook, 73);
+		hooks::materialsystem.HookMethod((void*)FindTexture_null_hook, 81);
+		hooks::materialsystem.HookMethod((void*)ReloadFilesInList_null_hook, 121);
+		hooks::materialsystem.HookMethod((void*)FindMaterialEx_null_hook, 123);
+		hooks::materialsystem.Apply();
+		//hooks::materialsystem.HookMethod();
+	}*/
+#endif
+#ifndef TEXTMODE
+>>>>>>> stash
 	hooks::client.HookMethod((void*)IN_KeyEvent_hook, offsets::IN_KeyEvent());
 #endif /* TEXTMODE */
 	hooks::client.Apply();
 	hooks::input.Set(g_IInput);
 	hooks::input.HookMethod((void*)GetUserCmd_hook, offsets::GetUserCmd());
 	hooks::input.Apply();
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	hooks::modelrender.Set(g_IVModelRender);
 	hooks::modelrender.HookMethod((void*)DrawModelExecute_hook, offsets::DrawModelExecute());
 	hooks::modelrender.Apply();
@@ -315,7 +376,11 @@ void hack::Initialize() {
 	velocity::Init();
 	playerlist::Load();
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 	InitStrings();
 #if ENABLE_GUI
@@ -339,7 +404,11 @@ void hack::Initialize() {
 	hacks::shared::anticheat::Init();
 	hacks::tf2::healarrow::Init();
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	InitSpinner();
 	logging::Info("Initialized Fidget Spinner");
 	hacks::shared::spam::Init();
@@ -356,7 +425,11 @@ void hack::Initialize() {
 	}
 	logging::Info("Initializer stack done");
 
+<<<<<<< HEAD
 #ifdef NO_RENDERING
+=======
+#ifdef TEXTMODE
+>>>>>>> stash
 	hack::command_stack().push("exec cat_autoexec_textmode");
 #endif
 	hack::command_stack().push("exec cat_autoexec");

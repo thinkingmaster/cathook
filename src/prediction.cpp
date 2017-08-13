@@ -81,7 +81,11 @@ void Prediction_CreateMove() {
 		}
 	}
 }
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 void Prediction_PaintTraverse() {
 	if (!debug_enginepred) return;
 	for (int i = 1; i < predicted_player_count; i++) {

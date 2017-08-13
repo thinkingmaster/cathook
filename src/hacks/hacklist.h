@@ -8,7 +8,11 @@
 #ifndef HACKS_HACKLIST_H_
 #define HACKS_HACKLIST_H_
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 #include "ESP.h"
 #include "SkinChanger.hpp"

@@ -60,6 +60,10 @@ extern VMTHook baseclientstate;
 extern VMTHook baseclientstate8;
 extern VMTHook steamfriends;
 extern VMTHook materialsystem;
+<<<<<<< HEAD
+=======
+extern VMTHook commandline;
+>>>>>>> stash
 
 }
 

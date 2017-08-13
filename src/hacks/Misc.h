@@ -13,7 +13,11 @@
 namespace hacks { namespace shared { namespace misc {
 
 void CreateMove();
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 void DrawText();
 #endif
 

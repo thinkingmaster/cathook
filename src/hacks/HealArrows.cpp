@@ -77,7 +77,11 @@ void CreateMove() {
 }
 
 void Draw() {
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	if (healarrow) {
 		if ((g_GlobalVars->curtime - healarrow_time) < float(healarrow_timeout)) {
 			AddCenterString(format("Heal arrow charge: ", int(min(100.0f, (g_GlobalVars->curtime - healarrow_time) / float(healarrow_timeout)) * 100.0f), '%'), colors::yellow);

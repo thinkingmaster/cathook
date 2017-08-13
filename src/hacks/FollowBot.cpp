@@ -76,7 +76,11 @@ void AfterCreateMove() {
 		if (CE_BAD(entity)) {
 			selection.erase(it++);
 		} else {
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 			hacks::shared::esp::AddEntityString(entity, "[SELECTED]", colors::orange);
 			if (fmod(g_GlobalVars->curtime, 2.0f) < 1.0f) {
 				hacks::shared::esp::SetEntityColor(entity, colors::yellow);
@@ -94,7 +98,11 @@ void AfterCreateMove() {
 		if (CE_BAD(entity)) {
 			selection_secondary.erase(it++);
 		} else {
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 			hacks::shared::esp::AddEntityString(entity, "[SELECTED (SECONDARY)]", colors::orange);
 			if (fmod(g_GlobalVars->curtime, 2.0f) < 1.0f) {
 				hacks::shared::esp::SetEntityColor(entity, colors::yellow);
@@ -203,7 +211,11 @@ void DoWalking() {
 	int following_idx2 = 0;
 	if (CE_GOOD(found_entity)) {
 		following_idx2 = found_entity->m_IDX;
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 		hacks::shared::esp::AddEntityString(found_entity, "[FOLLOWING]", colors::green);
 		hacks::shared::esp::SetEntityColor(found_entity, colors::green);
 #endif
@@ -695,7 +707,11 @@ void CrumbBottomAdd() {
         logging::Info("Crumb Over-Prune!\nDumping array");
     }
 }
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 // Function called when we need to draw onto the screen
 void Draw() {
 	

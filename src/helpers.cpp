@@ -779,7 +779,11 @@ CatCommand print_classnames("debug_print_classnames", "Lists classnames currentl
 });
 
 void PrintChat(const char* fmt, ...) {
+<<<<<<< HEAD
 #if NO_RENDERING
+=======
+#if TEXTMODE
+>>>>>>> stash
 	return;
 #endif
 	CHudBaseChat* chat = (CHudBaseChat*)g_CHUD->FindElement("CHudChat");

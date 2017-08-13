@@ -5,6 +5,8 @@
  *      Author: nullifiedcat
  */
 
+#ifndef TEXTMODE
+
 #include "common.h"
 #include "sdk.h"
 #include "ftrender.hpp"
@@ -111,3 +113,8 @@ bool draw::WorldToScreen(const Vector& origin, Vector& screen) {
 	}
 	return false;
 }
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> stash

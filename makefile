@@ -1,6 +1,6 @@
 ifndef CLANG
-CXX=$(shell sh -c "which g++-6 || which g++")
-CC=$(shell sh -c "which gcc-6 || which gcc")
+CXX=$(shell sh -c "which g++-7 || which g++-6 || which g++")
+CC=$(shell sh -c "which gcc-7 || which gcc-6 || which gcc")
 LD=$(CXX)
 else
 CXX=clang++
@@ -12,6 +12,7 @@ DEFINES=_GLIBCXX_USE_CXX11_ABI=0 _POSIX=1 FREETYPE_GL_USE_VAO RAD_TELEMETRY_DISA
 
 WARNING_FLAGS=-pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef
 COMMON_FLAGS=-fpermissive -O3 -shared -Wno-unknown-pragmas -fmessage-length=0 -m32 -fvisibility=hidden -fPIC -march=native -mtune=native
+
 
 
 ifdef CLANG
@@ -53,6 +54,7 @@ ifndef CLANG
 LDFLAGS+=-flto
 endif
 endif
+<<<<<<< HEAD
 LDLIBS=-lssl -l:libSDL2-2.0.so.0 -static -l:libc.so.6 -static -l:libstdc++.so.6 -l:libtier0.so -l:libvstdlib.so -static -l:libGLEW.so -l:libfreetype.so
 
 OUT_NAME = libcathook.so
@@ -69,6 +71,29 @@ endif
 
 ifdef TEXTMODE_STDIN
 DEFINES+=-DTEXTMODE_STDIN
+=======
+LDLIBS=-lssl -l:libtier0.so -l:libSDL2-2.0.so.0 -l:libvstdlib.so -static -l:libc.so.6 -static -l:libstdc++.so.6 -static -l:libGLEW.so -l:libfreetype.so
+
+OUT_NAME = libcathook.so
+
+ifdef NO_RENDERING
+$(info Everything graphics-related is disabled!)
+N_LDLIBS = -lssl -l:libSDL2-2.0.so.0 -l:libGLEW.so -l:libfreetype.so
+LDLIBS := $(filter-out $(N_LDLIBS),$(LDLIBS))
+N_INCLUDES = -isystemsrc/freetype-gl -isystemsrc/imgui -isystem/usr/local/include/freetype2 -isystem/usr/include/freetype2
+INCLUDES := $(filter-out $(N_INCLUDES),$(INCLUDES))
+DEFINES += NO_RENDERING=1
+#OUT_NAME := libcathook-textmode.so
+
+ifdef TEXTMODE_STDIN
+DEFINES+=TEXTMODE_STDIN=1
+endif
+
+endif
+
+ifdef TEXTMODE_ALLOW_VAC
+DEFINES+=TEXTMODE_ALLOW_VAC=1
+>>>>>>> stash
 endif
 
 SRC_DIR = src
@@ -104,6 +129,18 @@ ifdef GAME
 DEFINES+=GAME=$(GAME)
 endif
 
+ifdef NULL_GRAPHICS
+DEFINES+=NULL_GRAPHICS=1
+endif
+
+ifdef HIDDEN_LOGGING
+DEFINES+=HIDDEN_LOGGING=1
+endif
+
+ifdef DATA_PATH
+DEFINES+=DATA_PATH="\"$(DATA_PATH)\""
+endif
+
 ifdef NOIPC
 $(info IPC disabled)
 DEFINES += NO_IPC
@@ -115,6 +152,7 @@ CFLAGS+=$(addprefix -D,$(DEFINES))
 CXXFLAGS+=$(INCLUDES)
 CFLAGS+=$(INCLUDES)
 
+<<<<<<< HEAD
 ifdef TEXTMODE
 
 N_SOURCES := hacks/ESP.cpp hacks/SkinChanger.cpp hacks/SpyAlert.cpp hacks/Radar.cpp fidgetspinner.cpp ftrender.cpp hooks/sdl.cpp drawmgr.cpp drawgl.cpp hooks/PaintTraverse.cpp EffectChams.cpp EffectGlow.cpp
@@ -125,6 +163,21 @@ SOURCES := $(filter-out $(shell find $(SRC_DIR)/freetype-gl -name "*.c*" -print)
 SOURCES := $(filter-out $(shell find $(SRC_DIR)/imgui -name "*.c*" -print),$(SOURCES))
 SOURCES := $(filter-out $(N_SOURCES),$(SOURCES))
 
+=======
+ifdef NO_RENDERING
+
+$(info NO RENDERING)
+
+N_SOURCES := hacks/ESP.cpp hacks/SkinChanger.cpp hacks/SpyAlert.cpp hacks/Radar.cpp fidgetspinner.cpp ftrender.cpp hooks/sdl.cpp drawing.cpp drawmgr.cpp drawgl.cpp hooks/PaintTraverse.cpp EffectChams.cpp EffectGlow.cpp atlas.cpp
+N_SOURCES := $(addprefix $(SRC_DIR)/,$(N_SOURCES))
+
+SOURCES := $(filter-out $(shell find $(SRC_DIR)/gui -name "*.cpp" -print),$(SOURCES))
+SOURCES := $(filter-out $(shell find $(SRC_DIR)/freetype-gl -name "*.c*" -print),$(SOURCES))
+SOURCES := $(filter-out $(shell find $(SRC_DIR)/imgui -name "*.c*" -print),$(SOURCES))
+SOURCES := $(filter-out $(N_SOURCES),$(SOURCES))
+
+OBJECTS := $(filter-out $(RES_DIR)/bin/atlas.o,$(OBJECTS))
+>>>>>>> stash
 
 else
 
@@ -181,6 +234,10 @@ src/sdk/utlbuffer.o : CFLAGS+=-w
 $(TARGET): $(OBJECTS)
 	@echo Building cathook
 	$(LD) -o $(TARGET) $(LDFLAGS) $(OBJECTS) $(LDLIBS)
+ifndef BUILD_DEBUG
+	@echo Stripping binary
+	strip --strip-all $(TARGET)
+endif
 
 clean:
 	find src -type f -name '*.o' -delete

@@ -42,7 +42,11 @@
 #include "macros.hpp"
 #include "colors.hpp"
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 extern "C" {
 #include <vec234.h>

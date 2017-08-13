@@ -349,7 +349,11 @@ void CreateMove() {
     }
 }
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 void DrawText() {
 	if (crit_info && CE_GOOD(LOCAL_W)) {

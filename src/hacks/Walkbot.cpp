@@ -796,7 +796,11 @@ void RecordNode() {
 	state::active_node = node;
 }
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 // Draws a single colored connection between 2 nodes
 void DrawConnection(index_t a, connection_s& b) {

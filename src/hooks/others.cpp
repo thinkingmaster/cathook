@@ -12,7 +12,11 @@
 #include "ucccccp.hpp"
 #include "hookedmethods.h"
 
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 
 static CatVar no_invisibility(CV_SWITCH, "no_invis", "0", "Remove Invisibility", "Useful with chams!");
 
@@ -385,7 +389,11 @@ void FrameStageNotify_hook(void* _this, int stage) {
 	static const FrameStageNotify_t original = (FrameStageNotify_t)hooks::client.GetMethod(offsets::FrameStageNotify());
 	SEGV_BEGIN;
 	if (!g_IEngine->IsInGame()) g_Settings.bInvalid = true;
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 	{
 		PROF_SECTION(FSN_skinchanger);
 		hacks::tf2::skinchanger::FrameStageNotify(stage);
@@ -436,6 +444,7 @@ void FrameStageNotify_hook(void* _this, int stage) {
 				hack::command_stack().pop();
 			}
 		}
+<<<<<<< HEAD
 #if defined(TEXTMODE_STDIN)
 		static auto last_stdin = std::chrono::system_clock::from_time_t(0);
 		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - last_stdin).count();
@@ -446,6 +455,18 @@ void FrameStageNotify_hook(void* _this, int stage) {
 #endif
 	}
 #if not NO_RENDERING
+=======
+#if defined(TEXTMODE) and defined(TEXTMODE_STDIN)
+		static auto last_stdin = std::chrono::system_clock::from_time_t(0);
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - last_stdin).count();
+		if (ms > 500) {
+			UpdateInput();
+			last_stdin = std::chrono::system_clock::now();
+		}
+#endif
+	}
+#ifndef TEXTMODE
+>>>>>>> stash
 	if (cathook && !g_Settings.bInvalid && stage == FRAME_RENDER_START) {
 #if ENABLE_GUI
 		if (cursor_fix_experimental) {
@@ -469,7 +490,11 @@ void FrameStageNotify_hook(void* _this, int stage) {
 			}
 		}
 	}
+<<<<<<< HEAD
 #endif /* not NO_RENDERING */
+=======
+#endif /* TEXTMODE */
+>>>>>>> stash
 	SAFE_CALL(original(_this, stage));
 	SEGV_END;
 }

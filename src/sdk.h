@@ -24,6 +24,7 @@
 #include <globalvars_base.h>
 #include <materialsystem/itexture.h>
 #include <engine/ivmodelinfo.h>
+#include <tier0/icommandline.h>
 #include <inputsystem/iinputsystem.h>
 #include <mathlib/vector.h>
 #include <icvar.h>

@@ -27,7 +27,11 @@ void LevelInit_hook(void*, const char*);
 void LevelShutdown_hook(void*);
 
 
+<<<<<<< HEAD
 #ifdef TEXTMODE
+=======
+#ifdef NULL_GRAPHICS
+>>>>>>> stash
 typedef ITexture*(*FindTexture_t)(void*, const char*, const char*, bool, int);
 typedef IMaterial*(*FindMaterialEx_t)(void*, const char*, const char*, int, bool, const char*);
 typedef IMaterial*(*FindMaterial_t)(void*, const char*, const char*, bool, const char*);

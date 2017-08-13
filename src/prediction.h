@@ -24,7 +24,11 @@ float PlayerGravityMod(CachedEntity* player);
 
 Vector EnginePrediction(CachedEntity* player, float time);
 void Prediction_CreateMove();
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 void Prediction_PaintTraverse();
 #endif
 

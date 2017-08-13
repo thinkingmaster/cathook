@@ -43,7 +43,11 @@ SharedObject& vstdlib();
 SharedObject& tier0();
 SharedObject& inputsystem();
 SharedObject& materialsystem();
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 SharedObject& vguimatsurface();
 SharedObject& vgui2();
 SharedObject& studiorender();

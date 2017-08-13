@@ -268,7 +268,11 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 			SAFE_CALL(UpdateHoovyList());
 		}
 		g_pLocalPlayer->v_OrigViewangles = cmd->viewangles;
+<<<<<<< HEAD
 #if not NO_RENDERING
+=======
+#ifndef TEXTMODE
+>>>>>>> stash
 		{
 			PROF_SECTION(CM_esp);
 			SAFE_CALL(hacks::shared::esp::CreateMove());
