@@ -12,14 +12,14 @@
 #include <string>
 #include <stdint.h>
 
-class uuid {
+class uuid_t {
 public:
 	union {
 		char 	 d8[16];
 		uint16_t d16[8];
 	};
 
-	inline uuid() {
+	inline uuid_t() {
 		d16[0] = uint16_t(rand());
 		d16[1] = uint16_t(rand());
 		d16[2] = uint16_t(rand());
@@ -30,13 +30,13 @@ public:
 		d16[7] = uint16_t(rand());
 	}
 
-	inline uuid(const uuid& other) {
+	inline uuid_t(const uuid_t& other) {
 		for (int i = 0; i < 8; i++) {
 			d16[i] = other.d16[i];
 		}
 	}
 
-	inline uuid(const std::string& string) {
+	inline uuid_t(const std::string& string) {
 		assign(string);
 	}
 
@@ -46,7 +46,7 @@ public:
 			&d16[4], &d16[5], &d16[6], &d16[7]);
 	}
 
-	inline bool operator==(const uuid& other) const {
+	inline bool operator==(const uuid_t& other) const {
 		for (int i = 0; i < 8; i++) {
 			if (d16[i] != other.d16[i]) return false;
 		}
