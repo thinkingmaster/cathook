@@ -11,6 +11,21 @@
 
 namespace hacks { namespace shared { namespace walkbot {
 
+class Pathing;
+
+template<typename T, typename K>
+class Handle {
+public:
+	Handle(Pathing&);
+
+	bool good() const;
+	T& get() const;
+	T& operator=(const T&);
+	T& operator=(const K&);
+public:
+	Pathing& parent_;
+};
+
 class Pathing {
 public:
 	class ConditionalPath {
@@ -29,13 +44,14 @@ public:
 	Pathing(const nlohmann::json&);
 	operator nlohmann::json() const;
 
+	Path& get() const;
 public:
-	int version { 2 };
+	int version { 3 };
 	nlohmann::json author {};
 	std::string map { "" };
-	std::vector<ConditionalPath> path_conditions {};
-	std::unordered_map<std::string, ComplexCondition> conditions {};
-	std::unordered_map<std::string, Path> pathes {};
+	std::vector<ConditionalPath> path_descriptors {};
+	std::unordered_map<uuid_t, ComplexCondition, uuid_t::hash> conditions {};
+	std::unordered_map<uuid_t, Path, uuid_t::hash> pathes {};
 };
 
 }}}

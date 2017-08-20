@@ -8,18 +8,21 @@
 #pragma once
 
 #include "common.h"
+#include "node.hpp"
 
 namespace hacks { namespace shared { namespace walkbot {
 
+class Node;
+
 class Path {
 public:
-	Path(const nlohmann::json& json);
+	typedef Handle<Path, uuid_t> handle_t;
+public:
+	Path(Pathing& parent, const nlohmann::json& json);
 	operator nlohmann::json() const;
 
-	void resolve_nodes();
-	void resolve_node_connections();
-
 public:
+	uuid_t uuid {};
 	std::string name { "Unnamed" };
 	std::unordered_map<int, std::shared_ptr<Node>> nodes {};
 };

@@ -35,7 +35,6 @@ enum ENodeFlags {
 
 enum EWalkbotState {
 	WB_DISABLED,
-	WB_RECORDING,
 	WB_EDITING,
 	WB_REPLAYING
 };
@@ -358,7 +357,7 @@ index_t CreateNode(const Vector& xyz) {
 	return node;
 }
 
-CatVar active_recording(CV_SWITCH, "wb_recording", "0", "Do recording", "Use BindToggle with this");
+CatVar record_key(CV_SWITCH, "wb_record", "0", "Recording Key", "When you hold the key in editing mode, you will record the path");
 CatVar draw_info(CV_SWITCH, "wb_info", "1", "Walkbot info");
 CatVar draw_path(CV_SWITCH, "wb_path", "1", "Walkbot path");
 CatVar draw_nodes(CV_SWITCH, "wb_nodes", "1", "Walkbot nodes");
@@ -371,7 +370,6 @@ CatVar draw_connection_flags(CV_SWITCH, "wb_connection_flags", "1", "Connection 
 CatVar force_slot(CV_INT, "wb_force_slot", "1", "Force slot", "Walkbot will always select weapon in this slot");
 CatVar leave_if_empty(CV_SWITCH, "wb_leave_if_empty", "0", "Leave if no walkbot", "Leave game if there is no walkbot map");
 
-CatCommand c_start_recording("wb_record", "Start recording", []() { state::state = WB_RECORDING; });
 CatCommand c_start_editing("wb_edit", "Start editing", []() { state::state = WB_EDITING; });
 CatCommand c_start_replaying("wb_replay", "Start replaying", []() {
 	state::last_node = state::active_node;
@@ -893,11 +891,11 @@ void DrawPath() {
 void Draw() {
 	if (state::state == WB_DISABLED) return;
 	switch (state::state) {
-	case WB_RECORDING: {
-		AddSideString("Walkbot: Recording");
-	} break;
 	case WB_EDITING: {
 		AddSideString("Walkbot: Editing");
+		if (record_key.KeyDown()) {
+			AddSideString("[ RECORDING ]");
+		}
 	} break;
 	case WB_REPLAYING: {
 		AddSideString("Walkbot: Replaying");
@@ -976,14 +974,11 @@ void CheckLivingSpace() {
 void Move() {
 	if (state::state == WB_DISABLED) return;
 	switch (state::state) {
-	case WB_RECORDING: {
-		UpdateClosestNode();
-		if (active_recording and ShouldSpawnNode()) {
-			RecordNode();
-		}
-	} break;
 	case WB_EDITING: {
 		UpdateClosestNode();
+		if (record_key.KeyDown() and ShouldSpawnNode()) {
+			RecordNode();
+		}
 	} break;
 	case WB_REPLAYING: {
 		if (leave_if_empty) {

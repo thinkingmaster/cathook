@@ -36,6 +36,7 @@
 
 #include "timer.hpp"
 #include "averager.hpp"
+#include "uuid.hpp"
 
 #include "aftercheaders.h"
 
