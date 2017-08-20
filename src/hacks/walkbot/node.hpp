@@ -33,6 +33,7 @@ public:
 	operator nlohmann::json() const;
 
 	void resolve_connections();
+	bool connected(const Node&) const;
 
 	inline Vector& xyz() {
 		return *reinterpret_cast<Vector*>(&x);
