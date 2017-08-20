@@ -35,7 +35,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.debug.1168214098." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.965909756" name="Linux GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.exe.debug" superClass="cdt.managedbuild.toolchain.gnu.exe.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.debug.1799148153" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.debug"/>
-							<builder arguments="" buildPath="${workspace_loc:/cathook}" command="make" id="cdt.managedbuild.target.gnu.builder.exe.debug.1548213350" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.target.gnu.builder.exe.debug"/>
+							<builder arguments="NO_LTO=1" buildPath="${workspace_loc:/cathook}" command="make" id="cdt.managedbuild.target.gnu.builder.exe.debug.1548213350" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.target.gnu.builder.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.782611349" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.883030293" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.908662295" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
@@ -111,14 +111,25 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="cdt.managedbuild.config.gnu.exe.debug.1168214098.1143688240" name="/" resourcePath="src/hacks/walkbot">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.debug.1016729032" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.debug" unusedChildren="">
+							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1698189514" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.782611349"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.629671177" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.883030293"/>
+							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1430308698" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1506529605"/>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.51691980" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug.622955675"/>
+							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1304314306" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.344565173"/>
+							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1095061679" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug.1494960833"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
 						<entry excluding="memory|classinfo|ncc|source-sdk-2013|autogen|vtables|segvcatch|gui|copypasted|targeting|ipc|mem|hooks|sdk|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="hacks/ac|memory|imgui|classinfo|autogen|vtables|segvcatch|gui|targeting|ipc|mem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry excluding="hacks/walkbot|hacks/ac|memory|imgui|classinfo|autogen|vtables|segvcatch|gui|targeting|ipc|mem" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/classinfo"/>
 						<entry excluding="im|ncc|depr" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/gui"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/gui/im"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/gui/ncc"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/hacks/ac"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/hacks/walkbot"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/imgui"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/segvcatch"/>
 					</sourceEntries>

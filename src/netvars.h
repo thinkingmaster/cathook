@@ -139,6 +139,8 @@ public:
 	offset_t m_angEyeAnglesLocal;
 	offset_t m_nSequence;
 	offset_t m_flSimulationTime;
+
+	offset_t m_iOwner;
 };
 
 extern NetVars netvar;

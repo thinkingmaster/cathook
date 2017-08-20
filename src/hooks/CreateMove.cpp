@@ -201,6 +201,7 @@ bool CreateMove_hook(void* thisptr, float inputSample, CUserCmd* cmd) {
 	{
 		PROF_SECTION(CM_PlayerResource);
 		SAFE_CALL(g_pPlayerResource->Update());
+		SAFE_CALL(objectives::Update());
 	}
 	{
 		PROF_SECTION(CM_LocalPlayer);

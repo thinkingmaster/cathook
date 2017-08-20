@@ -82,6 +82,10 @@ struct connection_s {
 	}
 };
 
+struct condition_s {
+	bool inverted { false };
+};
+
 struct walkbot_node_s {
 	float x { 0 };
 	float y { 0 };

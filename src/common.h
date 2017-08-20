@@ -80,6 +80,7 @@ extern "C" {
 #include "playerresource.h"
 #include "usercmd.h"
 #include "trace.h"
+#include "objectiveresource.hpp"
 #include "cvwrapper.h"
 #include "netvars.h"
 #include "vfunc.h"

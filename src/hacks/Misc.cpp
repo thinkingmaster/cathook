@@ -93,6 +93,28 @@ static CatCommand dump_vars("debug_dump_netvars", "Dump netvars of entity", [](c
 	DumpRecvTable(ent, clz->m_pRecvTable, 0, ft, 0);
 });
 
+static CatCommand dump_ents("debug_dump_entities", "Dump entity list", [](const CCommand& args) {
+	for (int i = 0; i < entity_cache::max; i++) {
+		CachedEntity* e = ENTITY(i);
+		if (CE_GOOD(e)) {
+			logging::Info("[%d] %s", i, RAW_ENT(e)->GetClientClass()->GetName());
+		}
+	}
+});
+
+static CatCommand dump_objectives("debug_dump_objectives", "Dump Objectives", [](const CCommand& args) {
+	for (int i = 0; i < entity_cache::max; i++) {
+		CachedEntity* e = ENTITY(i);
+		if (CE_GOOD(e)) {
+			if (e->m_iClassID == CL_CLASS(CTFObjectiveResource)) {
+				for (int j = 0; j < 8; j++) {
+					logging::Info("[%d] %d", j, CE_INT(e, netvar.m_iOwner + 4 * j));
+				}
+			}
+		}
+	}
+});
+
 CatVar nopush_enabled(CV_SWITCH, "nopush_enabled", "0", "No Push", "Prevents other players from pushing you around.");
 
 IClientEntity* found_crit_weapon = nullptr;
