@@ -17,7 +17,10 @@ public:
 	operator nlohmann::json() const;
 
 public:
-
+	int version { 1 };
+	nlohmann::json author {};
+	std::unordered_map<std::string, ComplexCondition> conditions {};
+	std::unordered_map<std::string, Path> pathes {};
 };
 
 }}}

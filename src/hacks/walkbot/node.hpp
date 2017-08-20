@@ -17,9 +17,16 @@ public:
 		bool jump { false };
 		bool crouch { false };
 	};
-	struct connection_t {
-		std::shared_ptr<Node> target;
-		std::shared_ptr<ComplexCondition> condition;
+	class Connection {
+	public:
+		Connection(nlohmann::json json);
+		operator nlohmann::json() const;
+
+		void resolve();
+	public:
+		uuid_t uuid_ {};
+		std::shared_ptr<Node> target { nullptr };
+		std::shared_ptr<ComplexCondition> condition { nullptr };
 	};
 public:
 	Node(const nlohmann::json& json);
@@ -27,12 +34,17 @@ public:
 
 	void resolve_connections();
 
+	inline Vector& xyz() {
+		return *reinterpret_cast<Vector*>(&x);
+	}
 public:
 	float x { 0.0f };
 	float y { 0.0f };
 	float z { 0.0f };
 
-	std::vector<connection_t> connections {};
+	int id { 0 };
+
+	std::vector<Connection> connections {};
 	options_t options {};
 };
 
