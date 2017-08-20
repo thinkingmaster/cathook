@@ -16,29 +16,39 @@ class uuid {
 public:
 	union {
 		char 	 d8[16];
-		uint16_t d32[8];
+		uint16_t d16[8];
 	};
 
 	inline uuid() {
-		d32[0] = uint16_t(rand());
-		d32[1] = uint16_t(rand());
-		d32[2] = uint16_t(rand());
-		d32[3] = 0x4000 | (uint16_t(rand()) & 0x0FFF);
-		d32[4] = 0x8000 + (uint16_t(rand()) % 0x3FFF);
-		d32[5] = uint16_t(rand());
-		d32[6] = uint16_t(rand());
-		d32[7] = uint16_t(rand());
+		d16[0] = uint16_t(rand());
+		d16[1] = uint16_t(rand());
+		d16[2] = uint16_t(rand());
+		d16[3] = 0x4000 | (uint16_t(rand()) & 0x0FFF);
+		d16[4] = 0x8000 + (uint16_t(rand()) % 0x3FFF);
+		d16[5] = uint16_t(rand());
+		d16[6] = uint16_t(rand());
+		d16[7] = uint16_t(rand());
+	}
+
+	inline uuid(const uuid& other) {
+		for (int i = 0; i < 8; i++) {
+			d16[i] = other.d16[i];
+		}
 	}
 
 	inline uuid(const std::string& string) {
+		assign(string);
+	}
+
+	inline void assign(const std::string& string) {
 		sscanf(string.c_str(), "%04hx%04hx-%04hx-%04hx-%04hx-%04hx%04hx%04hx",
-			&d32[0], &d32[1], &d32[2], &d32[3],
-			&d32[4], &d32[5], &d32[6], &d32[7]);
+			&d16[0], &d16[1], &d16[2], &d16[3],
+			&d16[4], &d16[5], &d16[6], &d16[7]);
 	}
 
 	inline bool operator==(const uuid& other) const {
 		for (int i = 0; i < 8; i++) {
-			if (d32[i] != other.d32[i]) return false;
+			if (d16[i] != other.d16[i]) return false;
 		}
 		return true;
 	}
@@ -46,8 +56,8 @@ public:
 	inline operator std::string() const {
 		char string[37];
 		sprintf(string, "%04hx%04hx-%04hx-%04hx-%04hx-%04hx%04hx%04hx",
-			d32[0], d32[1], d32[2], d32[3],
-			d32[4], d32[5], d32[6], d32[7]);
+			d16[0], d16[1], d16[2], d16[3],
+			d16[4], d16[5], d16[6], d16[7]);
 		return std::string(string);
 	}
 };

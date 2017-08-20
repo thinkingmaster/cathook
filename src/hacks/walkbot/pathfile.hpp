@@ -1,5 +1,5 @@
 /*
- * path.hpp
+ * pathfile.hpp
  *
  *  Created on: Aug 20, 2017
  *      Author: nullifiedcat
@@ -11,17 +11,13 @@
 
 namespace hacks { namespace shared { namespace walkbot {
 
-class Path {
+class Pathfile {
 public:
-	Path(const nlohmann::json& json);
+	Pathfile(const nlohmann::json&);
 	operator nlohmann::json() const;
 
-	void resolve_nodes();
-	void resolve_node_connections();
-
 public:
-	std::string name { "Unnamed" };
-	std::unordered_map<int, std::shared_ptr<Node>> nodes {};
+
 };
 
 }}}

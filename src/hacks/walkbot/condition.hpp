@@ -29,6 +29,7 @@ public:
 	bool pass() const;
 public:
 	std::vector<ConditionPart> conditions_ {};
+	uuid uuid_ {};
 };
 
 }}}
