@@ -18,11 +18,11 @@ class Path {
 public:
 	typedef Handle<Path, uuid_t> handle_t;
 public:
-	Path(Pathing& parent, const nlohmann::json& json);
+	Path(Pathing& parent);
+	Path(Pathing& parent, const uuid_t& uuid, const nlohmann::json& json);
 	operator nlohmann::json() const;
 
 public:
-	uuid_t uuid {};
 	std::string name { "Unnamed" };
 	std::unordered_map<int, std::shared_ptr<Node>> nodes {};
 };

@@ -24,12 +24,13 @@ public:
 	class Connection {
 	public:
 		Connection(nlohmann::json json);
+		Connection(handle_t node);
 		operator nlohmann::json() const;
 
 		bool prioritized() const;
 		bool available() const;
 	public:
-		Handle target;
+		Node::handle_t target;
 		nlohmann::json options;
 		std::shared_ptr<ComplexCondition> condition { nullptr };
 	};
@@ -42,6 +43,9 @@ public:
 	inline Vector& xyz() {
 		return *reinterpret_cast<Vector*>(&x);
 	}
+
+	void link(handle_t node);
+	void unlink(handle_t node);
 public:
 	float x { 0.0f };
 	float y { 0.0f };
