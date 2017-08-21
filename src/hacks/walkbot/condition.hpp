@@ -26,14 +26,13 @@ class ComplexCondition {
 public:
 	typedef Handle<ComplexCondition, uuid_t> handle_t;
 public:
-	ComplexCondition(Pathing& parent);
-	ComplexCondition(Pathing& parent, const uuid_t& uuid, const nlohmann::json& json);
+	ComplexCondition();
+	ComplexCondition(const uuid_t& uuid, const nlohmann::json& json);
 	operator nlohmann::json() const;
 
 	bool pass() const;
 public:
 	std::vector<ConditionPart> conditions_ {};
-	Pathing& parent_;
 };
 
 }}}

@@ -7,7 +7,11 @@
 
 #pragma once
 
+#include "walkbot/pathing.hpp"
+
 namespace hacks { namespace shared { namespace walkbot {
+
+Pathing& pathing();
 
 void Initialize();
 #if ENABLE_VISUALS == 1

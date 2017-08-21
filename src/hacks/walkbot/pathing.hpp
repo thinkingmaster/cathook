@@ -9,6 +9,9 @@
 
 #include "common.h"
 
+#include "path.hpp"
+#include "condition.hpp"
+
 namespace hacks { namespace shared { namespace walkbot {
 
 class Pathing;
@@ -16,35 +19,69 @@ class Pathing;
 template<typename T, typename K>
 class Handle {
 public:
-	Handle(Pathing&);
+	inline Handle(Pathing& parent) : empty_(true) {}
 
-	bool good() const;
-	T& get() const;
-	T& operator=(const T&);
-	T& operator=(const K&);
+	inline void reset() {
+		empty_ = true;
+	}
+	// must return false if empty_
+	bool good() const = delete;
+	// must throw if empty_
+	T& get() const = delete;
+	// must set empty_ to false
+	Handle<T, K>& operator=(const T&) = delete;
+	inline Handle<T, K>& operator=(const K& key) {
+		key_ = key;
+		empty_ = false;
+		return *this;
+	}
+	// sets empty_ to false (if handle isn't empty)
+	inline Handle<T, K>& operator=(const Handle<T, K>& other) {
+		key_ = other.key_;
+		empty_ = other.empty_;
+		return *this;
+	}
+	inline bool operator==(const Handle<T, K>& other) const {
+		return empty_ ? other.empty_ : other.key_ == key_;
+	}
+	inline T& operator()() const {
+		return get();
+	}
+	inline operator bool() const {
+		return not empty_;
+	}
+	inline operator T&() const {
+		return get();
+	}
 public:
-	Pathing& parent_;
+	bool empty_ { true };
+	K key_;
 };
 
 class Pathing {
 public:
 	class ConditionalPath {
 	public:
-		ConditionalPath(const Pathing&, const nlohmann::json&);
+		ConditionalPath(const nlohmann::json&);
 		operator nlohmann::json() const;
 
 		bool pass() const;
-		Path& get() const;
 	public:
+		Path::handle_t path;
 		nlohmann::json json {};
-		Pathing& parent;
 	};
 
 public:
+	Pathing();
 	Pathing(const nlohmann::json&);
 	operator nlohmann::json() const;
 
-	Path& get() const;
+	void reset();
+
+	bool save(const std::string&);
+	bool load(const std::string&);
+
+	Path& active() const;
 public:
 	int version { 3 };
 	nlohmann::json author {};
