@@ -15,7 +15,7 @@
 
 namespace hacks { namespace shared { namespace walkbot {
 
-using node_handle_t = Node::handle_t;
+using node_handle_t = Node::Handle;
 
 bool Save(const std::string& filename);
 bool Load(const std::string& filename);
@@ -726,7 +726,7 @@ void Draw() {
 	} break;
 	}
 	if (draw_info) {
-		AddSideString(format("Active node: ", state::active_node));
+		AddSideString(format("Active node: ", state::selected));
 		AddSideString(format("Highlighted node: ", state::closest_node));
 		AddSideString(format("Last node: ", state::last_node));
 		AddSideString(format("Node count: ", state::nodes.size()));
@@ -741,9 +741,7 @@ void Draw() {
 #endif
 
 void OnLevelInit() {
-	if (leave_if_empty && state::state == WB_REPLAYING) {
-		nodes.clear();
-	}
+	pathing().reset();
 }
 
 static CatVar wb_abandon_too_many_bots(CV_INT, "wb_population_control", "0", "Abandon if bots >");

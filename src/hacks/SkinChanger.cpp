@@ -377,7 +377,6 @@ def_attribute_modifier& GetModifier(int idx) {
 // A map that maps an Item Definition Index to a modifier
 std::unordered_map<int, def_attribute_modifier> modifier_map {};
 // A map that maps an Entity Index to a cookie
-//std::unordered_map<int, patched_weapon_cookie> cookie_map {};
 patched_weapon_cookie cookie { 0 };
 
 }}}

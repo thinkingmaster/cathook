@@ -10,6 +10,7 @@
 #include "sdk.h"
 #include "profiler.h"
 
+#include <sys/stat.h>
 #include <sys/mman.h>
 
 std::vector<ConVar*>& RegisteredVarsList() {
@@ -38,6 +39,14 @@ void BeginConVars() {
 	}
 	logging::Info(":b:");
 	SetCVarInterface(g_ICvar);
+}
+
+bool DirectoryExists(const std::string& path) {
+	struct stat st {};
+	if (stat(path.c_str(), &st) == 0) {
+		return S_ISDIR(st.st_mode);
+	}
+	return false;
 }
 
 void EndConVars() {

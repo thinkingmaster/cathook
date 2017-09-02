@@ -50,6 +50,9 @@ void EndConVars();
 // Calling source engine functions would get me more accurate result at cost of speed, so idk.
 // TODO?
 
+bool DirectoryExists(const std::string& path);
+bool CreateDirectory(const std::string& path);
+
 bool IsPlayerInvulnerable(CachedEntity* player);
 bool IsPlayerCritBoosted(CachedEntity* player);
 bool IsPlayerInvisible(CachedEntity* player);
