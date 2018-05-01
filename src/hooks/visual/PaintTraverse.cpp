@@ -157,7 +157,8 @@ DEFINE_HOOKED_METHOD(PaintTraverse, void, vgui::IPanel *this_,
     if (clean_screenshots && g_IEngine->IsTakingScreenshot())
         return;
 #if ENABLE_GUI
-    g_pGUI->Update();
+    // TODO
+    //g_pGUI->Update();
 #endif
     draw::UpdateWTS();
 }

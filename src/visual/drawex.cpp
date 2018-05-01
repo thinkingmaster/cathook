@@ -31,31 +31,6 @@ namespace api
 bool ready_state = false;
 bool init        = false;
 
-font_handle_t create_font(const char *path, float size)
-{
-    logging::Info("Creating font '%s':%f", path, size);
-    font_handle_t result;
-    result.filename = std::string(path);
-    result.size     = size;
-    result.handle   = GLEZ_FONT_INVALID;
-    return result;
-}
-
-texture_handle_t create_texture(const char *path)
-{
-    return texture_handle_t{ glez_texture_load_png_rgba(path) };
-}
-
-void destroy_font(font_handle_t font)
-{
-    glez_font_unload(font.handle);
-}
-
-void destroy_texture(texture_handle_t texture)
-{
-    glez_texture_unload(texture.handle);
-}
-
 bool ready()
 {
     return ready_state && init;
@@ -82,76 +57,57 @@ void initialize()
     glClearColor(1.0, 0.0, 0.0, 0.5);
     glewExperimental = GL_TRUE;
     glewInit();
-    glez_init(draw::width, draw::height);
+    glez::init(draw::width, draw::height);
 #endif
 }
 
 void draw_rect(float x, float y, float w, float h, const rgba_t &rgba)
 {
-    glez_rect(x, y, w, h, *reinterpret_cast<const glez_rgba_t *>(&rgba));
+    glez::draw::rect(x, y, w, h, *reinterpret_cast<const glez::rgba *>(&rgba));
 }
 
 void draw_rect_outlined(float x, float y, float w, float h, const rgba_t &rgba,
                         float thickness)
 {
-    glez_rect_outline(x, y, w, h, *reinterpret_cast<const glez_rgba_t *>(&rgba),
-                      thickness);
+    glez::draw::rect_outline(x, y, w, h, *reinterpret_cast<const glez::rgba *>(&rgba), thickness);
 }
 
 void draw_line(float x, float y, float dx, float dy, const rgba_t &rgba,
                float thickness)
 {
-    glez_line(x, y, dx, dy, *reinterpret_cast<const glez_rgba_t *>(&rgba),
-              thickness);
+    glez::draw::line(x, y, dx, dy, *reinterpret_cast<const glez::rgba *>(&rgba), thickness);
 }
 
 void draw_rect_textured(float x, float y, float w, float h, const rgba_t &rgba,
-                        texture_handle_t texture, float u, float v, float s,
+                        glez::texture& texture, float u, float v, float s,
                         float t, float a)
 {
-    glez_rect_textured(x, y, w, h,
-                       *reinterpret_cast<const glez_rgba_t *>(&rgba),
-                       texture.handle, u, v, s, t, a);
+    glez::draw::rect_textured(x, y, w, h, *reinterpret_cast<const glez::rgba *>(&rgba), texture, u, v, s, t, a);
 }
 
 void draw_circle(float x, float y, float radius, const rgba_t &rgba,
                  float thickness, int steps)
 {
-    glez_circle(x, y, radius, *reinterpret_cast<const glez_rgba_t *>(&rgba),
-                thickness, steps);
+    glez::draw::circle(x, y, radius, *reinterpret_cast<const glez::rgba *>(&rgba), thickness, steps);
 }
 
-void draw_string(float x, float y, const char *string, font_handle_t &font,
+void draw_string(float x, float y, const char *string, glez::font &font,
                  const rgba_t &rgba)
 {
-    if (font.handle == GLEZ_FONT_INVALID)
-        font.handle = glez_font_load(font.filename.c_str(), font.size);
-    glez_string(x, y, string, font.handle,
-                *reinterpret_cast<const glez_rgba_t *>(&rgba), nullptr,
-                nullptr);
+    glez::draw::string(x, y, string, font, *reinterpret_cast<const glez::rgba *>(&rgba), nullptr, nullptr);
 }
 
 void draw_string_with_outline(float x, float y, const char *string,
-                              font_handle_t &font, const rgba_t &rgba,
+                              glez::font &font, const rgba_t &rgba,
                               const rgba_t &rgba_outline, float thickness)
 {
-    if (font.handle == GLEZ_FONT_INVALID)
-        font.handle = glez_font_load(font.filename.c_str(), font.size);
-    glez_string_with_outline(
-        x, y, string, font.handle,
-        *reinterpret_cast<const glez_rgba_t *>(&rgba),
-        *reinterpret_cast<const glez_rgba_t *>(&rgba_outline), thickness, 1,
-        nullptr, nullptr);
-    // xoverlay_draw_string(x, y, string, font.handle, *reinterpret_cast<const
-    // xoverlay_rgba_t *>(&rgba), nullptr, nullptr);
+    glez::draw::outlined_string(x, y, string, font, *reinterpret_cast<const glez::rgba *>(&rgba), *reinterpret_cast<const glez::rgba *>(&rgba_outline), thickness, nullptr, nullptr);
 }
 
-void get_string_size(const char *string, font_handle_t &font, float *x,
+void get_string_size(const char *string, glez::font &font, float *x,
                      float *y)
 {
-    if (font.handle == GLEZ_FONT_INVALID)
-        font.handle = glez_font_load(font.filename.c_str(), font.size);
-    glez_font_string_size(font.handle, string, x, y);
+    font.getStringSize(string, x, y);
 }
 
 void draw_begin()
@@ -167,7 +123,7 @@ void draw_begin()
     {
         glActiveTexture(GL_TEXTURE0);
         PROF_SECTION(draw_begin__glez_end)
-        glez_begin();
+        glez::begin();
     }
 }
 
@@ -176,7 +132,7 @@ void draw_end()
     PROF_SECTION(DRAWEX_draw_end);
     {
         PROF_SECTION(draw_end__glez_end);
-        glez_end();
+        glez::end();
     }
 #if EXTERNAL_DRAWING
     xoverlay_draw_end();

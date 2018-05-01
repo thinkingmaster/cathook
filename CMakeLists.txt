@@ -6,6 +6,9 @@ endif()
 set(CMAKE_BUILD_TYPE_VALUES "Debug;Release" CACHE INTERNAL "List of supported build")
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_BUILD_TYPE_VALUES})
 
+SET(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
+SET(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
+
 cmake_minimum_required(VERSION 3.0)
 project(cathook VERSION 0.0.1)
 add_library(cathook SHARED "")

@@ -60,7 +60,7 @@ CatVar spinner_decay_speed(CV_FLOAT, "fidgetspinner_decay_speed", "0.1",
 CatVar spinner_scale(CV_FLOAT, "fidgetspinner_scale", "32", "Spinner Size");
 CatVar spinner_min_speed(CV_FLOAT, "fidgetspinner_min_speed", "2",
                          "Spinner Min Speed");
-
+#if 0
 draw_api::texture_handle_t text{ GLEZ_TEXTURE_INVALID };
 
 void DrawSpinner()
@@ -103,5 +103,6 @@ void DrawSpinner()
     if (angle > PI * 4)
         angle -= PI * 4;
 }
+#endif
 
 #endif

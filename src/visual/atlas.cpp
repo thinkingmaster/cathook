@@ -10,7 +10,7 @@
 namespace textures
 {
 
-sprite::sprite(float x, float y, float w, float h, const texture_atlas &atlas)
+sprite::sprite(float x, float y, float w, float h, texture_atlas &atlas)
     : nx(x / atlas.width), ny(y / atlas.height), nw(w / atlas.width),
       nh(h / atlas.height), atlas(atlas)
 {
@@ -24,12 +24,11 @@ void sprite::draw(float scrx, float scry, float scrw, float scrh,
 }
 
 texture_atlas::texture_atlas(std::string filename, float width, float height)
-    : width(width), height(height)
+    : width(width), height(height), texture(filename)
 {
-    texture = draw_api::create_texture(filename.c_str());
 }
 
-sprite texture_atlas::create_sprite(float x, float y, float sx, float sy) const
+sprite texture_atlas::create_sprite(float x, float y, float sx, float sy)
 {
     return sprite(x, y, sx, sy, *this);
 }

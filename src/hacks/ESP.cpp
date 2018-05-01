@@ -374,6 +374,7 @@ void _FASTCALL emoji(CachedEntity *ent)
     if (CE_BAD(ent))
         return;
     // Emoji esp
+#if 0
     if (emoji_esp)
     {
         if (ent->m_Type == ENTITY_PLAYER)
@@ -449,6 +450,7 @@ void _FASTCALL emoji(CachedEntity *ent)
             }
         }
     }
+#endif
 }
 // Used when processing entitys with cached data from createmove in draw
 void _FASTCALL ProcessEntityPT(CachedEntity *ent)

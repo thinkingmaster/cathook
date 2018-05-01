@@ -73,7 +73,7 @@ std::mutex draw::draw_mutex;
 namespace fonts
 {
 
-draw_api::font_handle_t main_font;
+glez::font main_font{DATA_PATH "/fonts/verasans.ttf", 14};
 }
 
 void draw::Initialize()
@@ -82,8 +82,6 @@ void draw::Initialize()
     {
         g_IEngine->GetScreenSize(draw::width, draw::height);
     }
-    fonts::main_font =
-        draw_api::create_font(DATA_PATH "/fonts/verasans.ttf", 14);
 }
 
 bool draw::EntityCenterToScreen(CachedEntity *entity, Vector &out)
