@@ -10,5 +10,5 @@ target_sources(cathook PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/SDLHooks.cpp")
 
 if(EnableGUI)
-#    add_subdirectory(menu)
+    add_subdirectory(menu)
 endif()
