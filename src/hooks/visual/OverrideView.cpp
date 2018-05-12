@@ -6,13 +6,14 @@
 #include <MiscTemporary.hpp>
 #include "HookedMethods.hpp"
 
-CatVar override_fov_zoomed(CV_FLOAT, "fov_zoomed", "0", "FOV override (zoomed)",
-                           "Overrides FOV with this value when zoomed in "
-                                   "(default FOV when zoomed is 20)");
-CatVar override_fov(CV_FLOAT, "fov", "0", "FOV override",
-                    "Overrides FOV with this value");
+static CatVar
+    override_fov_zoomed(CV_FLOAT, "fov_zoomed", "0", "FOV override (zoomed)",
+                        "Overrides FOV with this value when zoomed in "
+                        "(default FOV when zoomed is 20)");
+static CatVar override_fov(CV_FLOAT, "fov", "0", "FOV override",
+                           "Overrides FOV with this value");
 
-CatVar freecam(CV_KEY, "debug_freecam", "0", "Freecam");
+static CatVar freecam(CV_KEY, "debug_freecam", "0", "Freecam");
 
 namespace hooked_methods
 {
@@ -41,12 +42,12 @@ DEFINE_HOOKED_METHOD(OverrideView, void, void *this_, CViewSetup *setup)
         if (CE_GOOD(spec) && !CE_BYTE(spec, netvar.iLifeState))
         {
             setup->origin =
-                    spec->m_vecOrigin + CE_VECTOR(spec, netvar.vViewOffset);
+                spec->m_vecOrigin + CE_VECTOR(spec, netvar.vViewOffset);
             // why not spectate yourself
             if (spec == LOCAL_E)
             {
                 setup->angles =
-                        CE_VAR(spec, netvar.m_angEyeAnglesLocal, QAngle);
+                    CE_VAR(spec, netvar.m_angEyeAnglesLocal, QAngle);
             }
             else
             {

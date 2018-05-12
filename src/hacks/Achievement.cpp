@@ -10,8 +10,8 @@
 namespace hacks::tf2::achievement
 {
 
-CatVar safety(CV_SWITCH, "achievement_safety", "1",
-              "Achievement commands safety switch");
+static CatVar safety(CV_SWITCH, "achievement_safety", "1",
+                     "Achievement commands safety switch");
 
 void Lock()
 {
@@ -111,5 +111,4 @@ CatCommand
                 });
 CatCommand lock("achievement_lock", "Lock all achievements", Lock);
 CatCommand unlock("achievement_unlock", "Unlock all achievements", Unlock);
-
 }

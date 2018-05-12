@@ -7,9 +7,8 @@
 #include <hacks/hacklist.hpp>
 #include "HookedMethods.hpp"
 
-CatVar resolver(CV_SWITCH, "resolver", "0", "Resolve angles");
-CatVar nightmode(CV_SWITCH, "nightmode", "0", "Enable nightmode", "");
-
+static CatVar resolver(CV_SWITCH, "resolver", "0", "Resolve angles");
+static CatVar nightmode(CV_SWITCH, "nightmode", "0", "Enable nightmode", "");
 namespace hooked_methods
 {
 
@@ -23,11 +22,11 @@ DEFINE_HOOKED_METHOD(FrameStageNotify, void, void *this_,
         {
 
             static ConVar *r_DrawSpecificStaticProp =
-                    g_ICvar->FindVar("r_DrawSpecificStaticProp");
+                g_ICvar->FindVar("r_DrawSpecificStaticProp");
             if (!r_DrawSpecificStaticProp)
             {
                 r_DrawSpecificStaticProp =
-                        g_ICvar->FindVar("r_DrawSpecificStaticProp");
+                    g_ICvar->FindVar("r_DrawSpecificStaticProp");
                 return;
             }
             r_DrawSpecificStaticProp->SetValue(0);
@@ -122,9 +121,9 @@ DEFINE_HOOKED_METHOD(FrameStageNotify, void, void *this_,
             if (CE_GOOD(g_pLocalPlayer->entity))
             {
                 CE_FLOAT(g_pLocalPlayer->entity, netvar.deadflag + 4) =
-                        g_Settings.last_angles.x;
+                    g_Settings.last_angles.x;
                 CE_FLOAT(g_pLocalPlayer->entity, netvar.deadflag + 8) =
-                        g_Settings.last_angles.y;
+                    g_Settings.last_angles.y;
             }
         }
     }

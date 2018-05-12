@@ -15,7 +15,8 @@
 namespace effect_chams
 {
 
-CatVar enable(CV_SWITCH, "chams_enable", "0", "Enable", "Main chams switch");
+static CatVar enable(CV_SWITCH, "chams_enable", "0", "Enable",
+                     "Main chams switch");
 static CatVar flat(CV_SWITCH, "chams_flat", "0", "Flat",
                    "Makes chams brighter and more full");
 static CatVar health(CV_SWITCH, "chams_health", "0", "Health",
@@ -128,7 +129,8 @@ rgba_t EffectChams::ChamsColor(IClientEntity *entity)
     switch (ent->m_Type)
     {
     case ENTITY_BUILDING:
-        if (!ent->m_bEnemy && !(teammates || teammate_buildings))
+        if (!ent->m_bEnemy && !(teammates || teammate_buildings) &&
+            (!(chamsR || chamsB || chamsG) && ent != LOCAL_E))
         {
             return colors::empty;
         }
@@ -177,7 +179,7 @@ bool EffectChams::ShouldRenderChams(IClientEntity *entity)
         if (ent->m_iHealth == 0 || !ent->m_iHealth)
             return false;
         if (CE_BYTE(LOCAL_E, netvar.m_bCarryingObject) &&
-            LOCAL_E->m_vecOrigin.DistTo(ent->m_vecOrigin) <= 85.0f)
+            LOCAL_E->m_vecOrigin.DistTo(ent->m_vecOrigin) <= 100.0f)
             return false;
         return true;
     case ENTITY_PLAYER:

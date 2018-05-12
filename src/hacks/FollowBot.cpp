@@ -32,14 +32,14 @@ static CatVar follow_activation(CV_INT, "fb_activation", "175",
                                 "followbot will pick them as a target");
 CatVar follow_steam(CV_INT, "fb_steam", "0", "Follow Steam Id",
                     "Set a steam id to let followbot prioritize players");
-CatVar mimic_slot(CV_SWITCH, "fb_mimic_slot", "0", "Mimic weapon slot",
-                  "Mimic follow target's weapon slot");
-CatVar always_medigun(CV_SWITCH, "fb_always_medigun", "0", "Always Medigun",
-                      "Always use medigun");
-CatVar sync_taunt(CV_SWITCH, "fb_sync_taunt", "0", "Synced taunt",
-                  "Taunt when follow target does");
-CatVar change(CV_SWITCH, "fb_switch", "1", "Change followbot target",
-              "Always change roaming target when possible");
+static CatVar mimic_slot(CV_SWITCH, "fb_mimic_slot", "0", "Mimic weapon slot",
+                         "Mimic follow target's weapon slot");
+static CatVar always_medigun(CV_SWITCH, "fb_always_medigun", "0",
+                             "Always Medigun", "Always use medigun");
+static CatVar sync_taunt(CV_SWITCH, "fb_sync_taunt", "0", "Synced taunt",
+                         "Taunt when follow target does");
+static CatVar change(CV_SWITCH, "fb_switch", "1", "Change followbot target",
+                     "Always change roaming target when possible");
 // Something to store breadcrumbs created by followed players
 static std::vector<Vector> breadcrumbs;
 static const int crumb_limit = 64; // limit
@@ -91,7 +91,9 @@ void WorldTick()
                     continue;
                 player_info_s info;
                 g_IEngine->GetPlayerInfo(entity->m_IDX, &info);
-                if ((int) follow_steam != info.friendsID) // steamid check
+                unsigned int xd = info.friendsID;
+                int xdd         = xd;
+                if ((int) follow_steam != xdd) // steamid check
                     continue;
                 if (!entity->m_bAlivePlayer) // Dont follow dead players
                     continue;
@@ -153,9 +155,12 @@ void WorldTick()
 
     // If the player is close enough, we dont need to follow the path
     CachedEntity *followtar = ENTITY(follow_target);
-    auto tar_orig           = followtar->m_vecOrigin;
-    auto loc_orig           = LOCAL_E->m_vecOrigin;
-    auto dist_to_target     = loc_orig.DistTo(tar_orig);
+    // wtf is this needed
+    if (CE_BAD(followtar))
+        return;
+    auto tar_orig       = followtar->m_vecOrigin;
+    auto loc_orig       = LOCAL_E->m_vecOrigin;
+    auto dist_to_target = loc_orig.DistTo(tar_orig);
     if (dist_to_target < 30)
         breadcrumbs.clear();
 

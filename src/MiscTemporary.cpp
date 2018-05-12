@@ -4,7 +4,6 @@
 */
 
 #include "MiscTemporary.hpp"
-
 CatVar minigun_jump(CV_SWITCH, "minigun_jump", "0", "TF2C minigun jump",
                     "Allows jumping while shooting with minigun");
 
@@ -23,14 +22,22 @@ CatVar fakelag_amount(CV_INT, "fakelag", "0", "Bad Fakelag");
 CatVar serverlag_amount(
     CV_INT, "serverlag", "0", "serverlag",
     "Lag the server by spamming this many voicecommands per tick");
-CatVar semiauto(CV_INT, "semiauto", "0", "Semiauto");
+CatVar serverlag_string(CV_STRING, "serverlag_string", "voicemenu 0 0",
+                        "serverlag string", "String to spam with serverlag");
 CatVar servercrash(CV_SWITCH, "servercrash", "0", "crash servers",
                    "Crash servers by spamming signon net messages");
+CatVar semiauto(CV_INT, "semiauto", "0", "Semiauto");
 bool *bSendPackets;
 
-
 CatVar crypt_chat(
-        CV_SWITCH, "chat_crypto", "1", "Crypto chat",
-        "Start message with !! and it will be only visible to cathook users");
+    CV_SWITCH, "chat_crypto", "1", "Crypto chat",
+    "Start message with !! and it will be only visible to cathook users");
 
 int spectator_target;
+CLC_VoiceData *voicecrash{};
+Timer DelayTimer{};
+CatVar delay(
+    CV_INT, "delay", "0", "Delay",
+    "Delay actions like chat spam and serverlag/crash by this many seconds.");
+CatVar adjust(CV_SWITCH, "serverlag_ramp", "0", "Ramp lag",
+              "increase lag while packet loss is below 80%");

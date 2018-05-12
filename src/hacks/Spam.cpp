@@ -7,6 +7,7 @@
 
 #include <hacks/Spam.hpp>
 #include "common.hpp"
+#include "MiscTemporary.hpp"
 
 namespace hacks
 {
@@ -20,21 +21,23 @@ CatVar spam_source(spam_enum, "spam", "0", "Chat Spam",
                    "Defines source of spam lines. CUSTOM spam file must be set "
                    "in cat_spam_file and loaded with cat_spam_reload (Use "
                    "console!)");
-CatVar random_order(CV_SWITCH, "spam_random", "0", "Random Order");
-CatVar filename(CV_STRING, "spam_file", "spam.txt", "Spam file",
-                "Spam file name. Each line should be no longer than 100 "
-                "characters, file must be located in cathook data folder");
+static CatVar random_order(CV_SWITCH, "spam_random", "0", "Random Order");
+static CatVar
+    filename(CV_STRING, "spam_file", "spam.txt", "Spam file",
+             "Spam file name. Each line should be no longer than 100 "
+             "characters, file must be located in cathook data folder");
 CatCommand reload("spam_reload", "Reload spam file", Reload);
-CatVar spam_delay(CV_INT, "spam_delay", "800", "Spam delay",
-                  "Delay between spam messages (in ms)", 0.0f, 8000.0f);
+static CatVar spam_delay(CV_INT, "spam_delay", "800", "Spam delay",
+                         "Delay between spam messages (in ms)", 0.0f, 8000.0f);
 
 static CatEnum voicecommand_enum({ "DISABLED", "RANDOM", "MEDIC", "THANKS",
                                    "NICE SHOT", "CHEERS", "JEERS" });
-CatVar voicecommand_spam(voicecommand_enum, "spam_voicecommand", "0",
-                         "Voice Command Spam", "Spams tf voice commands");
+static CatVar voicecommand_spam(voicecommand_enum, "spam_voicecommand", "0",
+                                "Voice Command Spam",
+                                "Spams tf voice commands");
 
-CatVar teamname_spam(CV_SWITCH, "spam_teamname", "0", "Teamname Spam",
-                     "Spam changes the tournament name");
+static CatVar teamname_spam(CV_SWITCH, "spam_teamname", "0", "Teamname Spam",
+                            "Spam changes the tournament name");
 
 std::chrono::time_point<std::chrono::system_clock> last_spam_point{};
 
@@ -267,7 +270,8 @@ bool FormatSpamMessage(std::string &message)
 
 void CreateMove()
 {
-
+    if (!DelayTimer.check((int) delay * 1000))
+        return;
     IF_GAME(IsTF2())
     {
         // Spam changes the tournament name in casual and compeditive gamemodes

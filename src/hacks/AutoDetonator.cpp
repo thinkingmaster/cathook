@@ -15,10 +15,11 @@ namespace autodetonator
 {
 
 // Vars for user settings
-CatVar enabled(CV_SWITCH, "detonator_enabled", "0", "Auto-Detonator-detonator",
-               "Master auto detonator switch");
-CatVar legit(CV_SWITCH, "detonator_legit", "0", "Ignore invis",
-             "Ignores invis spies");
+static CatVar enabled(CV_SWITCH, "detonator_enabled", "0",
+                      "Auto-Detonator-detonator",
+                      "Master auto detonator switch");
+static CatVar legit(CV_SWITCH, "detonator_legit", "0", "Ignore invis",
+                    "Ignores invis spies");
 
 // A storage array for ents
 std::vector<CachedEntity *> flares;

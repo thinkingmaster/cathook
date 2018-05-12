@@ -15,11 +15,12 @@
 namespace chatlog
 {
 
-CatVar enabled(CV_SWITCH, "chat_log", "0", "Chat log", "Log chat to file");
-CatVar dont_log_spam(CV_SWITCH, "chat_log_nospam", "1", "No Spam",
-                     "Don't log your messages if spam is active");
-CatVar dont_log_ipc(CV_SWITCH, "chat_log_noipc", "1", "No IPC",
-                    "Don't log messages sent by bots");
+static CatVar enabled(CV_SWITCH, "chat_log", "0", "Chat log",
+                      "Log chat to file");
+static CatVar dont_log_spam(CV_SWITCH, "chat_log_nospam", "1", "No Spam",
+                            "Don't log your messages if spam is active");
+static CatVar dont_log_ipc(CV_SWITCH, "chat_log_noipc", "1", "No IPC",
+                           "Don't log messages sent by bots");
 
 class csv_stream
 {
@@ -132,8 +133,8 @@ void LogMessage(int eid, std::string message)
         if (x == '\n' || x == '\r')
             x = '*';
     }
-
     logger() << std::to_string(time(nullptr)) << std::to_string(info.friendsID)
-             << name << message << csv_stream::end;
+             << name << message << std::to_string(ipc::peer->client_id)
+             << csv_stream::end;
 }
 }

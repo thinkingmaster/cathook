@@ -329,7 +329,8 @@ free(logname);*/
 
     hooks::panel.Set(g_IPanel);
     hooks::panel.HookMethod(hooked_methods::methods::PaintTraverse,
-                            offsets::PaintTraverse(), &hooked_methods::original::PaintTraverse);
+                            offsets::PaintTraverse(),
+                            &hooked_methods::original::PaintTraverse);
     hooks::panel.Apply();
 #endif
 
@@ -426,7 +427,9 @@ free(logname);*/
 #endif
 
     hacks::shared::walkbot::Initialize();
-
+#if ENABLE_VISUALS
+    hacks::shared::esp::Init();
+#endif
     logging::Info("Clearing initializer stack");
     while (!init_stack().empty())
     {

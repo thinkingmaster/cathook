@@ -8,7 +8,6 @@
 #include "common.hpp"
 
 // This is a temporary file to put code that needs moving/refactoring in.
-
 extern bool *bSendPackets;
 extern CatVar no_zoom;
 extern CatVar clean_screenshots;
@@ -21,9 +20,15 @@ extern CatVar joinclass;
 extern CatVar jointeam;
 extern CatVar fakelag_amount;
 extern CatVar serverlag_amount;
+extern CatVar serverlag_string;
+extern CatVar servercrash;
 extern CatVar debug_projectiles;
 extern CatVar semiauto;
 extern CatVar engine_pred;
+extern Timer DelayTimer;
+extern CatVar delay;
+extern CatVar adjust;
 #if ENABLE_VISUALS
 extern int spectator_target;
+extern CLC_VoiceData *voicecrash;
 #endif

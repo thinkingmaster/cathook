@@ -20,28 +20,31 @@ std::array<std::array<textures::sprite, 9>, 3> tx_class;
 std::array<textures::sprite, 2> tx_teams;
 std::array<textures::sprite, 2> tx_items;
 
-CatVar size(CV_INT, "radar_size", "300", "Radar size",
-            "Defines radar size in pixels");
-CatVar zoom(CV_FLOAT, "radar_zoom", "20", "Radar zoom",
-            "Defines radar zoom (1px = Xhu)");
-CatVar healthbar(CV_SWITCH, "radar_health", "1", "Radar healthbar",
-                 "Show radar healthbar");
-CatVar enemies_over_teammates(
+static CatVar size(CV_INT, "radar_size", "300", "Radar size",
+                   "Defines radar size in pixels");
+static CatVar zoom(CV_FLOAT, "radar_zoom", "20", "Radar zoom",
+                   "Defines radar zoom (1px = Xhu)");
+static CatVar healthbar(CV_SWITCH, "radar_health", "1", "Radar healthbar",
+                        "Show radar healthbar");
+static CatVar enemies_over_teammates(
     CV_SWITCH, "radar_enemies_top", "1", "Show enemies on top",
     "If true, radar will render enemies on top of teammates");
-CatVar icon_size(CV_INT, "radar_icon_size", "20", "Icon size",
-                 "Defines radar icon size");
-CatVar radar_enabled(CV_SWITCH, "radar", "0", "Enable", "Enable Radar");
-CatVar radar_x(CV_INT, "radar_x", "100", "Radar X",
-               "Defines radar position (X)");
-CatVar radar_y(CV_INT, "radar_y", "100", "Radar Y",
-               "Defines radar position (Y)");
-CatVar use_icons(CV_SWITCH, "radar_icons", "1", "Use Icons",
-                 "Radar will use class icons instead of class portraits");
-CatVar show_teammates(CV_SWITCH, "radar_teammates", "1", "Show Teammates");
-CatVar show_healthpacks(CV_SWITCH, "radar_healthpacks", "1",
-                        "Show Healthpacks");
-CatVar show_ammopacks(CV_SWITCH, "radar_ammopacks", "1", "Show Ammopacks");
+static CatVar icon_size(CV_INT, "radar_icon_size", "20", "Icon size",
+                        "Defines radar icon size");
+static CatVar radar_enabled(CV_SWITCH, "radar", "0", "Enable", "Enable Radar");
+static CatVar radar_x(CV_INT, "radar_x", "100", "Radar X",
+                      "Defines radar position (X)");
+static CatVar radar_y(CV_INT, "radar_y", "100", "Radar Y",
+                      "Defines radar position (Y)");
+static CatVar
+    use_icons(CV_SWITCH, "radar_icons", "1", "Use Icons",
+              "Radar will use class icons instead of class portraits");
+static CatVar show_teammates(CV_SWITCH, "radar_teammates", "1",
+                             "Show Teammates");
+static CatVar show_healthpacks(CV_SWITCH, "radar_healthpacks", "1",
+                               "Show Healthpacks");
+static CatVar show_ammopacks(CV_SWITCH, "radar_ammopacks", "1",
+                             "Show Ammopacks");
 
 void Init()
 {

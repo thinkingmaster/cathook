@@ -49,12 +49,12 @@ void BeginCheatVisuals()
 
 std::mutex drawing_mutex;
 
-CatVar info_text(CV_SWITCH, "info", "1", "Show info",
-                 "Show cathook version in top left corner");
-CatVar info_text_min(CV_SWITCH, "info_min", "0", "Show minimal info",
-                     "Only show cathook title in top left corner");
-CatVar enable_logo(CV_SWITCH, "nullcore_mode_logo", "1",
-                   "Enable Nullcore watermark", "");
+static CatVar info_text(CV_SWITCH, "info", "1", "Show info",
+                        "Show cathook version in top left corner");
+static CatVar info_text_min(CV_SWITCH, "info_min", "0", "Show minimal info",
+                            "Only show cathook title in top left corner");
+static CatVar enable_logo(CV_SWITCH, "nullcore_mode_logo", "1",
+                          "Enable Nullcore watermark", "");
 
 void DrawCheatVisuals()
 {

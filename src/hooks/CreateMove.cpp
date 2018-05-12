@@ -14,7 +14,6 @@
 
 #include "HookedMethods.hpp"
 
-
 class CMoveData;
 namespace engine_prediction
 {
@@ -31,9 +30,9 @@ void RunEnginePrediction(IClientEntity *ent, CUserCmd *ucmd)
 
     void **predictionVtable = *((void ***) g_IPrediction);
     SetupMoveFn oSetupMove =
-            (SetupMoveFn) (*(unsigned *) (predictionVtable + 19));
+        (SetupMoveFn)(*(unsigned *) (predictionVtable + 19));
     FinishMoveFn oFinishMove =
-            (FinishMoveFn) (*(unsigned *) (predictionVtable + 20));
+        (FinishMoveFn)(*(unsigned *) (predictionVtable + 20));
 
     // CMoveData *pMoveData = (CMoveData*)(sharedobj::client->lmap->l_addr +
     // 0x1F69C0C);  CMoveData movedata {};
@@ -41,8 +40,7 @@ void RunEnginePrediction(IClientEntity *ent, CUserCmd *ucmd)
     CMoveData *pMoveData = (CMoveData *) object;
 
     float frameTime = g_GlobalVars->frametime;
-    float curTime = g_GlobalVars->curtime;
-
+    float curTime   = g_GlobalVars->curtime;
     CUserCmd defaultCmd;
     if (ucmd == NULL)
     {
@@ -52,24 +50,24 @@ void RunEnginePrediction(IClientEntity *ent, CUserCmd *ucmd)
     NET_VAR(ent, 4188, CUserCmd *) = ucmd;
 
     g_GlobalVars->curtime =
-            g_GlobalVars->interval_per_tick * NET_INT(ent, netvar.nTickBase);
+        g_GlobalVars->interval_per_tick * NET_INT(ent, netvar.nTickBase);
     g_GlobalVars->frametime = g_GlobalVars->interval_per_tick;
 
     *g_PredictionRandomSeed =
-            MD5_PseudoRandom(g_pUserCmd->command_number) & 0x7FFFFFFF;
+        MD5_PseudoRandom(g_pUserCmd->command_number) & 0x7FFFFFFF;
     g_IGameMovement->StartTrackPredictionErrors(
-            reinterpret_cast<CBasePlayer *>(ent));
+        reinterpret_cast<CBasePlayer *>(ent));
     oSetupMove(g_IPrediction, ent, ucmd, NULL, pMoveData);
     g_IGameMovement->ProcessMovement(reinterpret_cast<CBasePlayer *>(ent),
                                      pMoveData);
     oFinishMove(g_IPrediction, ent, ucmd, pMoveData);
     g_IGameMovement->FinishTrackPredictionErrors(
-            reinterpret_cast<CBasePlayer *>(ent));
+        reinterpret_cast<CBasePlayer *>(ent));
 
     NET_VAR(ent, 4188, CUserCmd *) = nullptr;
 
     g_GlobalVars->frametime = frameTime;
-    g_GlobalVars->curtime = curTime;
+    g_GlobalVars->curtime   = curTime;
 
     return;
 }
@@ -219,7 +217,7 @@ DEFINE_HOOKED_METHOD(CreateMove, bool, void *this_, float input_sample_time,
             {
                 logging::Info("Trying to change CLASS");
                 g_IEngine->ExecuteClientCmd(
-                        format("join_class ", joinclass.GetString()).c_str());
+                    format("join_class ", joinclass.GetString()).c_str());
             }
             team_joining_state = 0;
         }
@@ -441,7 +439,7 @@ DEFINE_HOOKED_METHOD(CreateMove, bool, void *this_, float input_sample_time,
         speedapplied = false;
         if (roll_speedhack &&
             g_IInputSystem->IsButtonDown(
-                    (ButtonCode_t)((int) roll_speedhack)) &&
+                (ButtonCode_t)((int) roll_speedhack)) &&
             !(cmd->buttons & IN_ATTACK))
         {
             speed = cmd->forwardmove;
@@ -479,17 +477,38 @@ DEFINE_HOOKED_METHOD(CreateMove, bool, void *this_, float input_sample_time,
         if (cmd)
             g_Settings.last_angles = cmd->viewangles;
     }
+    NET_StringCmd senddata(serverlag_string.GetString());
+    INetChannel *ch = (INetChannel *) g_IEngine->GetNetChannelInfo();
+    senddata.SetNetChannel(ch);
+    senddata.SetReliable(false);
+    if (servercrash && DelayTimer.check((int) delay * 1000))
+    {
+        for (int i = 0; i < 7800; i += sizeof(serverlag_string.GetString()))
+            ch->SendNetMsg(senddata);
+        ch->Transmit();
+    }
     if (serverlag_amount || votelogger::antikick_ticks)
     {
+        float latency =
+            g_IEngine->GetNetChannelInfo()->GetAvgPackets(FLOW_INCOMING);
+        logging::Info("%f", latency);
+        if (latency > 200 && adjust)
+            serverlag_amount = (int) serverlag_amount + 1;
+        if (votelogger::antikick_ticks)
+            votelogger::antikick_ticks--;
         if (votelogger::antikick_ticks)
         {
-            votelogger::antikick_ticks--;
-            for (int i = 0; i < (int) 70; i++)
-                g_IEngine->ServerCmd("voicemenu 0 0", false);
+            for (int i = 0; i < 7800; i += sizeof(serverlag_string.GetString()))
+                ch->SendNetMsg(senddata, false);
+            ch->Transmit();
         }
-        else
+        else if (!votelogger::antikick_ticks &&
+                 DelayTimer.check((int) delay * 1000))
+        {
             for (int i = 0; i < (int) serverlag_amount; i++)
-                g_IEngine->ServerCmd("use", false);
+                ch->SendNetMsg(senddata, false);
+            ch->Transmit();
+        }
     }
 
     //	PROF_END("CreateMove");
@@ -502,7 +521,6 @@ DEFINE_HOOKED_METHOD(CreateMove, bool, void *this_, float input_sample_time,
     return ret;
 }
 }
-
 
 /*float o_curtime;
 float o_frametime;
