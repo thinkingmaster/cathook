@@ -3,8 +3,8 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <Window.hpp>
-#include <Menu.hpp>
+#include <ncc/Window.hpp>
+#include <ncc/Menu.hpp>
 
 namespace zerokernel
 {

@@ -3,13 +3,13 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <ObjectFactory.hpp>
-#include <Box.hpp>
-#include <TabContainer.hpp>
-#include <Window.hpp>
+#include <ncc/ObjectFactory.hpp>
+#include <ncc/Box.hpp>
+#include <ncc/TabContainer.hpp>
+#include <ncc/Window.hpp>
 #include <iostream>
-#include <Checkbox.hpp>
-#include <ColorSelector.hpp>
+#include <ncc/Checkbox.hpp>
+#include <ncc/ColorSelector.hpp>
 
 namespace zerokernel
 {

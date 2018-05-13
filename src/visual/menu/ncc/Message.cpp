@@ -3,7 +3,7 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <Message.hpp>
+#include <ncc/Message.hpp>
 
 namespace zerokernel
 {

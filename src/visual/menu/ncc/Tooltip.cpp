@@ -3,9 +3,9 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include "Tooltip.hpp"
+#include "ncc/Tooltip.hpp"
 #include <glez/glez.hpp>
-#include "Menu.hpp"
+#include "ncc/Menu.hpp"
 
 namespace zerokernel
 {

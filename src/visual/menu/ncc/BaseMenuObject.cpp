@@ -3,10 +3,10 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <BaseMenuObject.hpp>
-#include <Menu.hpp>
+#include <ncc/BaseMenuObject.hpp>
+#include <ncc/Menu.hpp>
+#include <ncc/Message.hpp>
 #include <iostream>
-#include <Message.hpp>
 
 namespace zerokernel
 {

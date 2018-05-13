@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "BaseMenuObject.hpp"
+#include "ncc/BaseMenuObject.hpp"
 #include <functional>
-#include <Message.hpp>
+#include <ncc/Message.hpp>
 
 namespace zerokernel
 {

@@ -7,7 +7,7 @@
 #include <sstream>
 #include <glez/color.hpp>
 #include <glez/draw.hpp>
-#include <Menu.hpp>
+#include <ncc/Menu.hpp>
 
 namespace utility
 {

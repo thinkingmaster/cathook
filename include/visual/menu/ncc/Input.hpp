@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "BaseMenuObject.hpp"
-#include "Menu.hpp"
-#include "IValueInterface.hpp"
+#include "ncc/BaseMenuObject.hpp"
+#include "ncc/Menu.hpp"
+#include "ncc/interface/IValueInterface.hpp"
 #include "Message.hpp"
 #include <glez/glez.hpp>
 #include <functional>

@@ -3,8 +3,9 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <ColorSelector.hpp>
-#include <Input.hpp>
+#include <ncc/ColorSelector.hpp>
+#include <ncc/Input.hpp>
+#include <ncc/interface/IValueInterface.hpp>
 
 static void internalValueChangeHandler(const zerokernel::IValueInterface *interface)
 {

@@ -3,24 +3,31 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include "Menu.hpp"
+#include "ncc/Menu.hpp"
 
-#include <Box.hpp>
-#include <Checkbox.hpp>
-#include <Variable.hpp>
-#include <TabSelection.hpp>
-#include <VariableSwitch.hpp>
-#include <Input.hpp>
-#include <TabContainer.hpp>
-#include <VariableInput.hpp>
-#include <VariableFactory.hpp>
-#include <InputButton.hpp>
-#include <Combobox.hpp>
-#include <Slider.hpp>
-#include <Window.hpp>
+#include <ncc/Box.hpp>
+#include <ncc/Checkbox.hpp>
+#include <ncc/Variable.hpp>
+#include <ncc/TabSelection.hpp>
+#include <ncc/VariableSwitch.hpp>
+#include <ncc/Input.hpp>
+#include <ncc/TabContainer.hpp>
+#include <ncc/VariableInput.hpp>
+#include <ncc/VariableFactory.hpp>
+#include <ncc/InputButton.hpp>
+#include <ncc/Combobox.hpp>
+#include <ncc/Slider.hpp>
+#include <ncc/Window.hpp>
 #include <fstream>
 #include <iostream>
+#include <core/cvwrapper.hpp>
+#include <visual/drawing.hpp>
 
+static CatCommand reload("menu_ncc_reload", "Reload the menu", [](const CCommand& args) {
+    tinyxml2::XMLDocument doc{};
+    doc.LoadFile(DATA_PATH "/menu.xml");
+    zerokernel::Menu::instance->loadFromXml(doc.RootElement());
+});
 
 namespace zerokernel
 {
@@ -46,7 +53,7 @@ glez::rgba text_shadow = glez::rgba(0, 0, 0);
 Menu::Menu() : overlay{ nullptr }, tooltip{}, root{ nullptr }
 {
     tinyxml2::XMLDocument doc{};
-    doc.LoadFile("../menu.xml");
+    doc.LoadFile(DATA_PATH "/menu.xml");
     loadFromXml(doc.RootElement());
 
 /*    std::unique_ptr<Window> window = std::make_unique<Window>();
@@ -167,8 +174,8 @@ void Menu::loadFromXml(tinyxml2::XMLElement *element)
 {
     reset();
     root->setOffset(0, 0);
-    root->xSize = 640;
-    root->ySize = 480;
+    root->xSize = draw::width;
+    root->ySize = draw::height;
     root->loadFromXml(element);
     root->move(0, 0);
     root->notifySize();

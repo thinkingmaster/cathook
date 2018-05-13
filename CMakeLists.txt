@@ -34,6 +34,9 @@ if(NOT EnableVisuals)
     set(EnableGUI 0)
 endif()
 
+add_subdirectory(include)
+add_subdirectory(src)
+
 find_package(Git REQUIRED)
 find_package(OpenSSL REQUIRED)
 
@@ -76,7 +79,7 @@ if(EnableVisuals)
     target_include_directories(cathook PRIVATE
             "${SDL2_INCLUDE_DIRS}"
             "${glez_INCLUDE_DIRS}")
-    target_link_libraries(cathook ${ValveLibrarySDL2} glez ${GLEW_LIBRARIES})
+    target_link_libraries(cathook ${ValveLibrarySDL2} ${GLEW_LIBRARIES} glez)
 endif()
 
 configure_file(include/config.h.in ${CMAKE_SOURCE_DIR}/include/config.h @ONLY)
@@ -112,9 +115,6 @@ if(EnableWarnings)
 endif()
 
 target_compile_options(cathook PRIVATE -Wno-unused-parameter)
-
-add_subdirectory(include)
-add_subdirectory(src)
 
 add_custom_target(data
         bash ./install-data "${DataPath}"

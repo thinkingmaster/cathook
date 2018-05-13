@@ -3,9 +3,9 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include "Combobox.hpp"
+#include <ncc/Combobox.hpp>
+#include <ncc/ComboboxList.hpp>
 #include <glez/glez.hpp>
-#include <ComboboxList.hpp>
 
 namespace zerokernel
 {

@@ -3,9 +3,9 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include <Container.hpp>
+#include <ncc/Container.hpp>
 #include <iostream>
-#include <ObjectFactory.hpp>
+#include <ncc/ObjectFactory.hpp>
 
 namespace zerokernel
 {

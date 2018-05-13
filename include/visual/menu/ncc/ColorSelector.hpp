@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <IntegerValueStorage.hpp>
-#include "Container.hpp"
+#include <ncc/value/IntegerValueStorage.hpp>
+#include <ncc/Container.hpp>
 
 namespace zerokernel
 {

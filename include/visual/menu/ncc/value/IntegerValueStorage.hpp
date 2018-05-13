@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "IValueInterface.hpp"
+#include <ncc/interface/IValueInterface.hpp>
 
 namespace zerokernel
 {

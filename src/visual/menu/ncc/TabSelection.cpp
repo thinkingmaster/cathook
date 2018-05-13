@@ -3,8 +3,8 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include "TabSelection.hpp"
-#include "TabButton.hpp"
+#include "ncc/TabSelection.hpp"
+#include "ncc/TabButton.hpp"
 
 namespace zerokernel
 {

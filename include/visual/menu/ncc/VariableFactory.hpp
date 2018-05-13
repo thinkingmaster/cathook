@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "Variable.hpp"
-#include "VariableInput.hpp"
-#include "VariableSwitch.hpp"
-#include "IntegerValueStorage.hpp"
+#include "ncc/Variable.hpp"
+#include "ncc/VariableInput.hpp"
+#include "ncc/VariableSwitch.hpp"
+#include "ncc/value/IntegerValueStorage.hpp"
 #include <memory>
 
 

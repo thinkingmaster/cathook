@@ -3,8 +3,8 @@
   Copyright (c) 2018 nullworks. All rights reserved.
 */
 
-#include "Slider.hpp"
-#include "Menu.hpp"
+#include "ncc/Slider.hpp"
+#include "ncc/Menu.hpp"
 
 namespace zerokernel
 {

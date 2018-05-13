@@ -7,23 +7,9 @@
 
 #pragma once
 
-class IWidget;
 class CatVar;
 
 #include <string>
+#include <visual/menu/ncc/Menu.hpp>
 
 extern CatVar gui_visible;
-
-class CatMenu
-{
-public:
-    static CatMenu& instance()
-    {
-        static CatMenu instance{};
-        return instance;
-    }
-    CatMenu(const CatMenu&) = delete;
-    void operator=(const CatMenu&) = delete;
-
-
-};

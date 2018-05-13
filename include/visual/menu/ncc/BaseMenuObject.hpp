@@ -6,7 +6,7 @@
 #pragma once
 
 #include <SDL2/SDL_events.h>
-#include <IMessageHandler.hpp>
+#include <ncc/interface/IMessageHandler.hpp>
 #include <vector>
 #include "tinyxml2.h"
 

@@ -383,6 +383,7 @@ free(logname);*/
 
     InitStrings();
 #if ENABLE_GUI
+    zerokernel::Menu::init();
     // cat_reloadscheme to load imgui
     hack::command_stack().push("cat_reloadscheme");
 #endif
