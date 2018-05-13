@@ -111,6 +111,8 @@ if(EnableWarnings)
     target_compile_options(cathook PRIVATE -Wall -Wextra)
 endif()
 
+target_compile_options(cathook PRIVATE -Wno-unused-parameter)
+
 add_subdirectory(include)
 add_subdirectory(src)
 
