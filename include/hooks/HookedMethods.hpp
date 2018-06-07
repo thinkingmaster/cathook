@@ -54,6 +54,7 @@ DECLARE_HOOKED_METHOD(SendNetMsg, bool, INetChannel *, INetMessage &, bool,
                       bool);
 DECLARE_HOOKED_METHOD(CanPacket, bool, INetChannel *);
 DECLARE_HOOKED_METHOD(Shutdown, void, INetChannel *, const char *);
+DECLARE_HOOKED_METHOD(SendDatagram, int, INetChannel *, bf_write *);
 // ISteamFriends
 DECLARE_HOOKED_METHOD(GetFriendPersonaName, const char *, ISteamFriends *,
                       CSteamID);
@@ -64,10 +65,11 @@ DECLARE_HOOKED_METHOD(FireEvent, bool, IGameEventManager2 *, IGameEvent *,
                       bool);
 DECLARE_HOOKED_METHOD(FireEventClientSide, bool, IGameEventManager2 *,
                       IGameEvent *);
-
+DECLARE_HOOKED_METHOD(IsPlayingTimeDemo, bool);
 #if ENABLE_VISUALS
 // ClientMode
 DECLARE_HOOKED_METHOD(OverrideView, void, void *, CViewSetup *);
+// g_IEngine
 // IVModelRender
 DECLARE_HOOKED_METHOD(DrawModelExecute, void, IVModelRender *,
                       const DrawModelState_t &, const ModelRenderInfo_t &,

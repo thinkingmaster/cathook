@@ -1,11 +1,13 @@
 # Cathook Training Software
 ![banner](http://i.imgur.com/w96wdtE.png)
+[![pipeline status](https://gitlab.com/nullworks/cathook-ci/badges/master/pipeline.svg)](https://gitlab.com/nullworks/cathook-ci/commits/master)
+
 
 [cathook announcements channel in telegram](https://t.me/cathook_cheat)
 
 ## Risk of VAC detection
 
-The software is most likely detected. Only use it on accounts you won't regret getting VAC banned.
+The software Might be VAC detected. Only use it on accounts you won't regret getting VAC banned.
 
 ## Community
 You can chat with other cathook users in [my official telegram group](https://t.me/nullifiedcat).
@@ -25,8 +27,7 @@ cathook is a training software designed for Team Fortress 2 for Linux. cathook i
 
 and a lot of useful features, including
 
-* Anti Backstab with option to say "No" voice command when spy tries to backstab you
-* Heal Arrows exploit (overheal an enemy for 1200 health with single huntsman arrow, you can also do it with buildings!)
+* Anti Backstab with option to use "No" voice command when spy tries to backstab you
 * Extremely customizable spam (you can make spam lines that'll include name of random dead enemy pyro or sniper)
 * Follow Bots
 * Working crit hack (does not work right now (works right now))
@@ -35,19 +36,29 @@ and a lot of useful features, including
 
 # INSTALLATION
 
+## Automatic: (Ubuntu based only)
+Run in terminal:
+
+* `wget https://raw.githubusercontent.com/nullworks/One-in-all-cathook-install/master/install-all && bash install-all`
+
+## Manual:
 You need CMake to build cathook, CMake should take care of dependencies
 
-Install [libglez](https://github.com/nullworks/libglez), [libxoverlay](https://github.com/nullworks/libxoverlay) and [simple-ipc](https://github.com/nullworks/simple-ipc)
+Install libglez, libxoverlay and simple-ipc
 
-* Clone the repo of library (`git clone <URL>`)
+Clone Cathook (`git clone --recursive https://github.com/nullworks/cathook`)
+
+* `cd <name>`
 * `mkdir build && cd build`
 * `cmake ..`
 * `make && sudo make install`
+* `cd ..`
+
+Repeat until libglez, libxoverlay and simple-ipc are installed
 
 Install cathook
 
-* `git clone --recursive https://github.com/nullworks/cathook`
-* `cd cathook && mkdir build && cd build`
+* `mkdir build && cd build`
 * `cmake .. && make`
 * `sudo make data`
 

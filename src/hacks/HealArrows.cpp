@@ -42,7 +42,7 @@ public:
             return;
         if (CE_BAD(LOCAL_W))
             return;
-        if (LOCAL_W->m_iClassID != CL_CLASS(CTFCompoundBow))
+        if (LOCAL_W->m_iClassID() != CL_CLASS(CTFCompoundBow))
             return;
         std::string name(event->GetName());
         if (name == "player_hurt")
@@ -83,11 +83,13 @@ void Init()
 
 void CreateMove()
 {
+#if ENABLE_VISUALS
+#if not ENABLE_VISUALS
     if (CE_BAD(LOCAL_W))
         return;
     if (healarrow)
     {
-        if (g_pLocalPlayer->weapon()->m_iClassID == CL_CLASS(CTFCompoundBow))
+        if (g_pLocalPlayer->weapon()->m_iClassID() == CL_CLASS(CTFCompoundBow))
         {
             if (healarrow_time > g_GlobalVars->curtime)
                 healarrow_time = 0.0f;
@@ -114,11 +116,14 @@ void CreateMove()
             }
         }
     }
+#endif
+#endif
 }
 
 void Draw()
 {
 #if ENABLE_VISUALS
+#if not ENABLE_VISUALS
     if (healarrow)
     {
         if ((g_GlobalVars->curtime - healarrow_time) < float(healarrow_timeout))
@@ -139,8 +144,7 @@ void Draw()
             AddCenterString("Heal arrow ready", colors::green);
         }
     }
-#else
-    logging::Info("[WTF] THIS SHOULD NEVER BE CALLED!!! CALL THE POLICE!!!");
+#endif
 #endif
 }
 }

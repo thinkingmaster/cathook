@@ -116,6 +116,7 @@ CatCommand
 
 void CreateMove()
 {
+#if not LAGBOT_MODE
     // Crithack
     static IClientEntity *localplayer, *weapon, *last_weapon = nullptr;
     static int tries, cmdn, md5seed, rseed, c, b;
@@ -255,7 +256,7 @@ void CreateMove()
                 g_pUserCmd->buttons & IN_BACK ||
                 g_pUserCmd->buttons & IN_MOVELEFT ||
                 g_pUserCmd->buttons & IN_MOVERIGHT ||
-                g_pUserCmd->buttons & IN_JUMP || !LOCAL_E->m_bAlivePlayer)
+                g_pUserCmd->buttons & IN_JUMP || !LOCAL_E->m_bAlivePlayer())
                 afk_time_idle = g_GlobalVars->curtime;
         }
     }
@@ -354,6 +355,7 @@ void CreateMove()
         if (nopush_enabled == pNoPush->GetBool())
             pNoPush->SetValue(!nopush_enabled);
     }
+#endif
 }
 
 #if ENABLE_VISUALS
@@ -401,7 +403,7 @@ void DrawText()
             CachedEntity *ent = ENTITY(i);
             player_info_s info;
             if (!CE_BAD(ent) && ent != LOCAL_E &&
-                ent->m_Type == ENTITY_PLAYER &&
+                ent->m_Type() == ENTITY_PLAYER &&
                 (CE_INT(ent, netvar.hObserverTarget) & 0xFFF) ==
                     LOCAL_E->m_IDX &&
                 CE_INT(ent, netvar.iObserverMode) >= 4 &&
@@ -454,7 +456,7 @@ void DrawText()
             "clip: ", CE_INT(g_pLocalPlayer->weapon(), netvar.m_iClip1)));
         /*AddSideString(colors::white, "Weapon: %s [%i]",
         RAW_ENT(g_pLocalPlayer->weapon())->GetClientClass()->GetName(),
-        g_pLocalPlayer->weapon()->m_iClassID);
+        g_pLocalPlayer->weapon()->m_iClassID());
         //AddSideString(colors::white, "flNextPrimaryAttack: %f",
         CE_FLOAT(g_pLocalPlayer->weapon(), netvar.flNextPrimaryAttack));
         //AddSideString(colors::white, "nTickBase: %f",
@@ -501,7 +503,7 @@ void DrawText()
         for (int i = 0; i < HIGHEST_ENTITY; i++) {
             CachedEntity* e = ENTITY(i);
             if (CE_GOOD(e)) {
-                if (e->m_Type == EntityType::ENTITY_PROJECTILE) {
+                if (e->m_Type() == EntityType::ENTITY_PROJECTILE) {
                     //logging::Info("Entity %i [%s]: V %.2f (X: %.2f, Y: %.2f,
         Z: %.2f) ACC %.2f (X: %.2f, Y: %.2f, Z: %.2f)", i,
         RAW_ENT(e)->GetClientClass()->GetName(), e->m_vecVelocity.Length(),
@@ -559,13 +561,14 @@ void Schema_Reload()
     rewind(file);
     buffer[len + 1] = 0;
     fread(&buffer, sizeof(char), len, file);
-    fclose(file);
     CUtlBuffer buf(&buffer, 5 * 1000 * 1000, 9);
     if (ferror(file) != 0)
     {
         logging::Info("Error loading file");
+        fclose(file);
         return;
     }
+    fclose(file);
     logging::Info("0x%08x 0x%08x", InitSchema, GetItemSchema);
     bool ret = InitSchema(GetItemSchema(), buf, 133769);
     logging::Info("Loading %s", ret ? "Successful" : "Unsuccessful");

@@ -23,6 +23,10 @@ static CatEnum box_esp_enum({ "None", "Normal", "Corners" });
 static CatVar box_esp(box_esp_enum, "esp_box", "2", "Box", "Draw a 2D box");
 static CatVar box_corner_size(CV_INT, "esp_box_corner_size", "10",
                               "Corner Size");
+static CatVar box_3d_player(CV_SWITCH, "esp_3d_players", "0",
+                            "Draw 3D box over players");
+static CatVar box_3d_building(CV_SWITCH, "esp_3d_buildings", "1",
+                              "Draw 3D box over buildings");
 // Tracers
 static CatEnum tracers_enum({ "OFF", "CENTER", "BOTTOM" });
 static CatVar
@@ -72,6 +76,7 @@ static CatVar
     legit(CV_SWITCH, "esp_legit", "0", "Legit Mode",
           "Don't show invisible enemies\nHides invisable enemies with "
           "visibility enabled");
+static CatVar esp_font_scale(CV_INT, "esp_font_scale", "14", "ESP font scale");
 // Selective esp options
 static CatVar local_esp(CV_SWITCH, "esp_local", "1", "ESP Local Player",
                         "Shows local player ESP in thirdperson");
@@ -273,7 +278,7 @@ struct bonelist_s
             return;
 
         // ent->m_bBonesSetup = false;
-        Vector displacement = RAW_ENT(ent)->GetAbsOrigin() - ent->m_vecOrigin;
+        Vector displacement = RAW_ENT(ent)->GetAbsOrigin() - ent->m_vecOrigin();
         const auto &bones   = ent->hitboxes.GetBones();
         DrawBoneList(bones, leg_r, 3, color, displacement);
         DrawBoneList(bones, leg_l, 3, color, displacement);
@@ -349,15 +354,18 @@ void CreateMove()
 
             if (i <= g_IEngine->GetMaxClients())
             {
-                for (int j            = 0; j < 18; ++j)
-                    hitboxcache[i][j] = ent->hitboxes.GetHitbox(j);
-                if (draw_bones && ent->m_Type == ENTITY_PLAYER)
+                if (!CE_BAD(ent))
                 {
-                    modelcache[i] = RAW_ENT(ent)->GetModel();
-                    if (modelcache[i])
+                    for (int j            = 0; j < 18; ++j)
+                        hitboxcache[i][j] = ent->hitboxes.GetHitbox(j);
+                    if (draw_bones && ent->m_Type() == ENTITY_PLAYER)
                     {
-                        stdiocache[i] =
-                            g_IModelInfo->GetStudiomodel(modelcache[i]);
+                        modelcache[i] = RAW_ENT(ent)->GetModel();
+                        if (modelcache[i])
+                        {
+                            stdiocache[i] =
+                                g_IModelInfo->GetStudiomodel(modelcache[i]);
+                        }
                     }
                 }
             }
@@ -371,9 +379,10 @@ void CreateMove()
                 // If snow distance, add string here
                 if (show_distance)
                 {
-                    AddEntityString(ent, format((int) (ENTITY(i)->m_flDistance /
-                                                       64 * 1.22f),
-                                                'm'));
+                    AddEntityString(
+                        ent,
+                        format((int) (ENTITY(i)->m_flDistance() / 64 * 1.22f),
+                               'm'));
                 }
             }
             // No idea, this is confusing
@@ -387,6 +396,13 @@ static glez_texture_t textur;
 Timer retry{};
 void Init()
 {
+    esp_font_scale.InstallChangeCallback(
+        [](IConVar *var, const char *pszOldValue, float flOldValue) {
+            if (fonts::esp_font.handle != GLEZ_FONT_INVALID)
+                draw_api::destroy_font(fonts::esp_font);
+            fonts::esp_font = draw_api::create_font(
+                DATA_PATH "/fonts/verasans.ttf", esp_font_scale);
+        });
     textur     = glez_texture_load_png_rgba(DATA_PATH "/textures/atlas.png");
     idspecific = glez_texture_load_png_rgba(DATA_PATH "/textures/idspec.png");
     if (textur == GLEZ_TEXTURE_INVALID)
@@ -430,7 +446,7 @@ void _FASTCALL emoji(CachedEntity *ent)
     // Emoji esp
     if (emoji_esp)
     {
-        if (ent->m_Type == ENTITY_PLAYER)
+        if (ent->m_Type() == ENTITY_PLAYER)
         {
 
             if (emoji_ok)
@@ -450,9 +466,7 @@ void _FASTCALL emoji(CachedEntity *ent)
                     if (!size || !float(emoji_min_size))
                         return;
                     if (emoji_esp_scaling && (size < float(emoji_min_size)))
-                    {
-                        size = float(emoji_min_size);
-                    }
+                        size          = float(emoji_min_size);
                     glez_rgba_t white = glez_rgba(255, 255, 255, 255);
                     player_info_s info;
                     unsigned int steamID;
@@ -509,6 +523,8 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     if (CE_BAD(ent))
         return;
 
+    int classid     = ent->m_iClassID();
+    EntityType type = ent->m_Type();
     // Grab esp data
     ESPData &ent_data = data[ent->m_IDX];
 
@@ -521,7 +537,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     // Check if entity is on screen, then save screen position if true
     Vector screen, origin_screen;
     if (!draw::EntityCenterToScreen(ent, screen) &&
-        !draw::WorldToScreen(ent->m_vecOrigin, origin_screen))
+        !draw::WorldToScreen(ent->m_vecOrigin(), origin_screen))
         return;
 
     // Reset the collide cache
@@ -533,7 +549,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
         transparent = true;
 
     // Bone esp
-    if (draw_bones && ent->m_Type == ENTITY_PLAYER)
+    if (draw_bones && type == ENTITY_PLAYER)
     {
         const model_t *model = modelcache[ent->m_IDX];
         if (model)
@@ -544,7 +560,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     }
 
     // Tracers
-    if (tracers && ent->m_Type == ENTITY_PLAYER)
+    if (tracers && type == ENTITY_PLAYER)
     {
 
         // Grab the screen resolution and save to some vars
@@ -559,7 +575,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
 
         // Get world to screen
         Vector scn;
-        draw::WorldToScreen(ent->m_vecOrigin, scn);
+        draw::WorldToScreen(ent->m_vecOrigin(), scn);
 
         // Draw a line
         draw_api::draw_line(scn.x, scn.y, width - scn.x, height - scn.y, fg,
@@ -567,7 +583,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     }
 
     // Sightline esp
-    if (sightlines && ent->m_Type == ENTITY_PLAYER)
+    if (sightlines && type == ENTITY_PLAYER)
     {
 
         // Logic for using the enum to sort out snipers
@@ -670,9 +686,9 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
         }
     }
     // Box esp
-    if (box_esp)
+    if (box_esp || box_3d_player || box_3d_building)
     {
-        switch (ent->m_Type)
+        switch (type)
         {
         case ENTITY_PLAYER:
             if (vischeck && !ent->IsVisible())
@@ -681,7 +697,10 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
                 fg = colors::EntityF(ent);
             if (transparent)
                 fg = colors::Transparent(fg);
-            DrawBox(ent, fg);
+            if (!box_3d_player && box_esp)
+                DrawBox(ent, fg);
+            else if (box_3d_player)
+                Draw3DBox(ent, fg);
             break;
         case ENTITY_BUILDING:
             if (CE_INT(ent, netvar.iTeamNum) == g_pLocalPlayer->team &&
@@ -693,7 +712,10 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
                 fg = colors::EntityF(ent);
             if (transparent)
                 fg = colors::Transparent(fg);
-            DrawBox(ent, fg);
+            if (!box_3d_building && box_esp)
+                DrawBox(ent, fg);
+            else if (box_3d_building)
+                Draw3DBox(ent, fg);
             break;
         }
     }
@@ -703,7 +725,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     {
 
         // We only want health bars on players and buildings
-        if (ent->m_Type == ENTITY_PLAYER || ent->m_Type == ENTITY_BUILDING)
+        if (type == ENTITY_PLAYER || type == ENTITY_BUILDING)
         {
 
             // Get collidable from the cache
@@ -719,11 +741,11 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
                 // Get health values
                 int health    = 0;
                 int healthmax = 0;
-                switch (ent->m_Type)
+                switch (type)
                 {
                 case ENTITY_PLAYER:
                     health    = CE_INT(ent, netvar.iHealth);
-                    healthmax = ent->m_iMaxHealth;
+                    healthmax = ent->m_iMaxHealth();
                     break;
                 case ENTITY_BUILDING:
                     health    = CE_INT(ent, netvar.iBuildingHealth);
@@ -735,7 +757,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
                 rgba_t hp = colors::Transparent(
                     colors::Health(health, healthmax), fg.a);
                 rgba_t border =
-                    ((ent->m_iClassID == RCC_PLAYER) && IsPlayerInvisible(ent))
+                    ((classid == RCC_PLAYER) && IsPlayerInvisible(ent))
                         ? colors::FromRGBA8(160, 160, 160, fg.a * 255.0f)
                         : colors::Transparent(colors::black, fg.a);
                 // Get bar height
@@ -760,7 +782,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
         bool origin_is_zero = true;
 
         // Only get collidable for players and buildings
-        if (ent->m_Type == ENTITY_PLAYER || ent->m_Type == ENTITY_BUILDING)
+        if (type == ENTITY_PLAYER || type == ENTITY_BUILDING)
         {
 
             // Get collidable from the cache
@@ -843,7 +865,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
             {
                 draw_api::draw_string_with_outline(
                     draw_point.x, draw_point.y, string.data.c_str(),
-                    fonts::main_font, color, colors::black, 1.5f);
+                    fonts::esp_font, color, colors::black, 1.5f);
             }
             else
             { /*
@@ -862,7 +884,7 @@ void _FASTCALL ProcessEntityPT(CachedEntity *ent)
     // TODO Add Rotation matix
     // TODO Currently crashes, needs null check somewhere
     // Draw Hitboxes
-    /*if (draw_hitbox && ent->m_Type == ENTITY_PLAYER) {
+    /*if (draw_hitbox && type == ENTITY_PLAYER) {
         PROF_SECTION(PT_esp_drawhitbboxes);
 
         // Loop through hitboxes
@@ -915,12 +937,13 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
     if (CE_BAD(ent))
         return; // CE_BAD check to prevent crashes
 
+    int classid = ent->m_iClassID();
     // Entity esp
     if (entity_info)
     {
         AddEntityString(ent,
                         format(RAW_ENT(ent)->GetClientClass()->m_pNetworkName,
-                               " [", ent->m_iClassID, "]"));
+                               " [", classid, "]"));
         if (entity_id)
         {
             AddEntityString(ent, std::to_string(ent->m_IDX));
@@ -938,17 +961,17 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
     ESPData &espdata = data[ent->m_IDX];
 
     // Projectile esp
-    if (ent->m_Type == ENTITY_PROJECTILE && proj_esp &&
-        (ent->m_bEnemy || (teammates && !proj_enemy)))
+    if (ent->m_Type() == ENTITY_PROJECTILE && proj_esp &&
+        (ent->m_bEnemy() || (teammates && !proj_enemy)))
     {
 
         // Rockets
-        if (ent->m_iClassID == CL_CLASS(CTFProjectile_Rocket) ||
-            ent->m_iClassID == CL_CLASS(CTFProjectile_SentryRocket))
+        if (classid == CL_CLASS(CTFProjectile_Rocket) ||
+            classid == CL_CLASS(CTFProjectile_SentryRocket))
         {
             if (proj_rockets)
             {
-                if ((int) proj_rockets != 2 || ent->m_bCritProjectile)
+                if ((int) proj_rockets != 2 || ent->m_bCritProjectile())
                 {
                     AddEntityString(ent, "[ ==> ]");
                 }
@@ -956,7 +979,7 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
 
             // Pills/Stickys
         }
-        else if (ent->m_iClassID == CL_CLASS(CTFGrenadePipebombProjectile))
+        else if (classid == CL_CLASS(CTFGrenadePipebombProjectile))
         {
             // Switch based on pills/stickys
             switch (CE_INT(ent, netvar.iPipeType))
@@ -964,23 +987,23 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
             case 0: // Pills
                 if (!proj_pipes)
                     break;
-                if ((int) proj_pipes == 2 && !ent->m_bCritProjectile)
+                if ((int) proj_pipes == 2 && !ent->m_bCritProjectile())
                     break;
                 AddEntityString(ent, "[ (PP) ]");
                 break;
             case 1: // Stickys
                 if (!proj_stickies)
                     break;
-                if ((int) proj_stickies == 2 && !ent->m_bCritProjectile)
+                if ((int) proj_stickies == 2 && !ent->m_bCritProjectile())
                     break;
                 AddEntityString(ent, "[ {*} ]");
             }
 
             // Huntsman
         }
-        else if (ent->m_iClassID == CL_CLASS(CTFProjectile_Arrow))
+        else if (classid == CL_CLASS(CTFProjectile_Arrow))
         {
-            if ((int) proj_arrows != 2 || ent->m_bCritProjectile)
+            if ((int) proj_arrows != 2 || ent->m_bCritProjectile())
             {
                 AddEntityString(ent, "[ >>---> ]");
             }
@@ -995,27 +1018,27 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
             if (CE_BYTE(ent, netvar.hOwner) == (unsigned char) -1)
             {
                 int string_count_backup = data[ent->m_IDX].string_count;
-                if (ent->m_iClassID == CL_CLASS(CWeapon_SLAM))
+                if (classid == CL_CLASS(CWeapon_SLAM))
                     AddEntityString(ent, "SLAM");
-                else if (ent->m_iClassID == CL_CLASS(CWeapon357))
+                else if (classid == CL_CLASS(CWeapon357))
                     AddEntityString(ent, ".357");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponAR2))
+                else if (classid == CL_CLASS(CWeaponAR2))
                     AddEntityString(ent, "AR2");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponAlyxGun))
+                else if (classid == CL_CLASS(CWeaponAlyxGun))
                     AddEntityString(ent, "Alyx Gun");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponAnnabelle))
+                else if (classid == CL_CLASS(CWeaponAnnabelle))
                     AddEntityString(ent, "Annabelle");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponBinoculars))
+                else if (classid == CL_CLASS(CWeaponBinoculars))
                     AddEntityString(ent, "Binoculars");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponBugBait))
+                else if (classid == CL_CLASS(CWeaponBugBait))
                     AddEntityString(ent, "Bug Bait");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponCrossbow))
+                else if (classid == CL_CLASS(CWeaponCrossbow))
                     AddEntityString(ent, "Crossbow");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponShotgun))
+                else if (classid == CL_CLASS(CWeaponShotgun))
                     AddEntityString(ent, "Shotgun");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponSMG1))
+                else if (classid == CL_CLASS(CWeaponSMG1))
                     AddEntityString(ent, "SMG");
-                else if (ent->m_iClassID == CL_CLASS(CWeaponRPG))
+                else if (classid == CL_CLASS(CWeaponRPG))
                     AddEntityString(ent, "RPG");
                 if (string_count_backup != data[ent->m_IDX].string_count)
                 {
@@ -1025,14 +1048,15 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
         }
     }
 
+    int itemtype = ent->m_ItemType();
     // Tank esp
-    if (ent->m_iClassID == CL_CLASS(CTFTankBoss) && tank)
+    if (classid == CL_CLASS(CTFTankBoss) && tank)
     {
         AddEntityString(ent, "Tank");
 
         // Dropped weapon esp
     }
-    else if (ent->m_iClassID == CL_CLASS(CTFDroppedWeapon) && item_esp &&
+    else if (classid == CL_CLASS(CTFDroppedWeapon) && item_esp &&
              item_dropped_weapons)
     {
         AddEntityString(
@@ -1040,7 +1064,7 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
 
         // MVM Money esp
     }
-    else if (ent->m_iClassID == CL_CLASS(CCurrencyPack) && item_money)
+    else if (classid == CL_CLASS(CCurrencyPack) && item_money)
     {
         if (CE_BYTE(ent, netvar.bDistributed))
         {
@@ -1056,68 +1080,66 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
 
         // Other item esp
     }
-    else if (ent->m_ItemType != ITEM_NONE && item_esp)
+    else if (itemtype != ITEM_NONE && item_esp)
     {
 
         // Health pack esp
-        if (item_health_packs && (ent->m_ItemType >= ITEM_HEALTH_SMALL &&
-                                      ent->m_ItemType <= ITEM_HEALTH_LARGE ||
-                                  ent->m_ItemType == ITEM_HL_BATTERY))
+        if (item_health_packs &&
+            (itemtype >= ITEM_HEALTH_SMALL && itemtype <= ITEM_HEALTH_LARGE ||
+             itemtype == ITEM_HL_BATTERY))
         {
-            if (ent->m_ItemType == ITEM_HEALTH_SMALL)
+            if (itemtype == ITEM_HEALTH_SMALL)
                 AddEntityString(ent, "[+]");
-            if (ent->m_ItemType == ITEM_HEALTH_MEDIUM)
+            if (itemtype == ITEM_HEALTH_MEDIUM)
                 AddEntityString(ent, "[++]");
-            if (ent->m_ItemType == ITEM_HEALTH_LARGE)
+            if (itemtype == ITEM_HEALTH_LARGE)
                 AddEntityString(ent, "[+++]");
-            if (ent->m_ItemType == ITEM_HL_BATTERY)
+            if (itemtype == ITEM_HL_BATTERY)
                 AddEntityString(ent, "[Z]");
 
             // TF2C Adrenaline esp
         }
-        else if (item_adrenaline && ent->m_ItemType == ITEM_TF2C_PILL)
+        else if (item_adrenaline && itemtype == ITEM_TF2C_PILL)
         {
             AddEntityString(ent, "[a]");
 
             // Ammo pack esp
         }
-        else if (item_ammo_packs && ent->m_ItemType >= ITEM_AMMO_SMALL &&
-                 ent->m_ItemType <= ITEM_AMMO_LARGE)
+        else if (item_ammo_packs && itemtype >= ITEM_AMMO_SMALL &&
+                 itemtype <= ITEM_AMMO_LARGE)
         {
-            if (ent->m_ItemType == ITEM_AMMO_SMALL)
+            if (itemtype == ITEM_AMMO_SMALL)
                 AddEntityString(ent, "{i}");
-            if (ent->m_ItemType == ITEM_AMMO_MEDIUM)
+            if (itemtype == ITEM_AMMO_MEDIUM)
                 AddEntityString(ent, "{ii}");
-            if (ent->m_ItemType == ITEM_AMMO_LARGE)
+            if (itemtype == ITEM_AMMO_LARGE)
                 AddEntityString(ent, "{iii}");
 
             // Powerup esp
         }
-        else if (item_powerups && ent->m_ItemType >= ITEM_POWERUP_FIRST &&
-                 ent->m_ItemType <= ITEM_POWERUP_LAST)
+        else if (item_powerups && itemtype >= ITEM_POWERUP_FIRST &&
+                 itemtype <= ITEM_POWERUP_LAST)
         {
-            AddEntityString(
-                ent, format(powerups[ent->m_ItemType - ITEM_POWERUP_FIRST],
-                            " PICKUP"));
+            AddEntityString(ent, format(powerups[itemtype - ITEM_POWERUP_FIRST],
+                                        " PICKUP"));
 
             // TF2C weapon spawner esp
         }
-        else if (item_weapon_spawners && ent->m_ItemType >= ITEM_TF2C_W_FIRST &&
-                 ent->m_ItemType <= ITEM_TF2C_W_LAST)
+        else if (item_weapon_spawners && itemtype >= ITEM_TF2C_W_FIRST &&
+                 itemtype <= ITEM_TF2C_W_LAST)
         {
             AddEntityString(
-                ent,
-                format(tf2c_weapon_names[ent->m_ItemType - ITEM_TF2C_W_FIRST],
-                       " SPAWNER"));
+                ent, format(tf2c_weapon_names[itemtype - ITEM_TF2C_W_FIRST],
+                            " SPAWNER"));
             if (CE_BYTE(ent, netvar.bRespawning))
                 AddEntityString(ent, "-- RESPAWNING --");
 
             // Halloween spell esp
         }
-        else if (item_spellbooks && (ent->m_ItemType == ITEM_SPELL ||
-                                     ent->m_ItemType == ITEM_SPELL_RARE))
+        else if (item_spellbooks &&
+                 (itemtype == ITEM_SPELL || itemtype == ITEM_SPELL_RARE))
         {
-            if (ent->m_ItemType == ITEM_SPELL)
+            if (itemtype == ITEM_SPELL)
             {
                 AddEntityString(ent, "Spell", colors::green);
             }
@@ -1130,15 +1152,15 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
 
         // Building esp
     }
-    else if (ent->m_Type == ENTITY_BUILDING && buildings)
+    else if (ent->m_Type() == ENTITY_BUILDING && buildings)
     {
 
         // Check if enemy building
-        if (!ent->m_bEnemy && !teammates)
+        if (!ent->m_bEnemy() && !teammates)
             return;
 
         // TODO maybe...
-        /*if (legit && ent->m_iTeam != g_pLocalPlayer->team) {
+        /*if (legit && ent->m_iTeam() != g_pLocalPlayer->team) {
             if (ent->m_lLastSeen > v_iLegitSeenTicks->GetInt()) {
                 return;
             }
@@ -1148,11 +1170,10 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
         if (show_name || show_class)
         {
             const std::string &name =
-                (ent->m_iClassID == CL_CLASS(CObjectTeleporter)
+                (classid == CL_CLASS(CObjectTeleporter)
                      ? "Teleporter"
-                     : (ent->m_iClassID == CL_CLASS(CObjectSentrygun)
-                            ? "Sentry Gun"
-                            : "Dispenser"));
+                     : (classid == CL_CLASS(CObjectSentrygun) ? "Sentry Gun"
+                                                              : "Dispenser"));
             int level = CE_INT(ent, netvar.iUpgradeLevel);
             AddEntityString(ent, format("LV ", level, ' ', name));
         }
@@ -1160,8 +1181,8 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
         if ((int) show_health == 1 || (int) show_health == 3)
         {
             AddEntityString(
-                ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, " HP"),
-                colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
+                ent, format(ent->m_iHealth(), '/', ent->m_iMaxHealth(), " HP"),
+                colors::Health(ent->m_iHealth(), ent->m_iMaxHealth()));
         }
         // Set the entity to repaint
         espdata.needs_paint = true;
@@ -1169,7 +1190,7 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
 
         // Player esp
     }
-    else if (ent->m_Type == ENTITY_PLAYER && ent->m_bAlivePlayer)
+    else if (ent->m_Type() == ENTITY_PLAYER && ent->m_bAlivePlayer())
     {
 
         // Local player handling
@@ -1185,9 +1206,9 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
         if (!g_IEngine->GetPlayerInfo(ent->m_IDX, &info))
             return;
 
-        // TODO, check if u can just use "ent->m_bEnemy" instead of m_iTeam
+        // TODO, check if u can just use "ent->m_bEnemy()" instead of m_iTeam
         // Legit mode handling
-        if (legit && ent->m_iTeam != g_pLocalPlayer->team &&
+        if (legit && ent->m_iTeam() != g_pLocalPlayer->team &&
             playerlist::IsDefault(info.friendsID))
         {
             if (IsPlayerInvisible(ent))
@@ -1209,7 +1230,7 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
         }
 
         // Dont understand reasoning for this check
-        if (ent->m_bEnemy || teammates ||
+        if (ent->m_bEnemy() || teammates ||
             !playerlist::IsDefault(info.friendsID))
         {
 
@@ -1244,8 +1265,9 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
             if ((int) show_health == 1 || (int) show_health == 3)
             {
                 AddEntityString(
-                    ent, format(ent->m_iHealth, '/', ent->m_iMaxHealth, " HP"),
-                    colors::Health(ent->m_iHealth, ent->m_iMaxHealth));
+                    ent,
+                    format(ent->m_iHealth(), '/', ent->m_iMaxHealth(), " HP"),
+                    colors::Health(ent->m_iHealth(), ent->m_iMaxHealth()));
             }
             IF_GAME(IsTF())
             {
@@ -1264,7 +1286,7 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
                             {
                                 CachedEntity *weapon = ENTITY(eid);
                                 if (!CE_BAD(weapon) &&
-                                    weapon->m_iClassID ==
+                                    weapon->m_iClassID() ==
                                         CL_CLASS(CWeaponMedigun) &&
                                     weapon)
                                 {
@@ -1390,6 +1412,70 @@ void _FASTCALL ProcessEntity(CachedEntity *ent)
     }
 }
 
+// Draw 3D box around player/building
+void _FASTCALL Draw3DBox(CachedEntity *ent, const rgba_t &clr)
+{
+    if (CE_BAD(ent))
+        return;
+
+    const Vector &origin = RAW_ENT(ent)->GetCollideable()->GetCollisionOrigin();
+    Vector mins          = RAW_ENT(ent)->GetCollideable()->OBBMins();
+    Vector maxs          = RAW_ENT(ent)->GetCollideable()->OBBMaxs();
+
+    // Create a array for storing box points
+    Vector corners[8]; // World vectors
+    Vector points[8];  // Screen vectors
+
+    // Create points for the box based on max and mins
+    float x    = maxs.x - mins.x;
+    float y    = maxs.y - mins.y;
+    float z    = maxs.z - mins.z;
+    corners[0] = mins;
+    corners[1] = mins + Vector(x, 0, 0);
+    corners[2] = mins + Vector(x, y, 0);
+    corners[3] = mins + Vector(0, y, 0);
+    corners[4] = mins + Vector(0, 0, z);
+    corners[5] = mins + Vector(x, 0, z);
+    corners[6] = mins + Vector(x, y, z);
+    corners[7] = mins + Vector(0, y, z);
+
+    // Rotate the box and check if any point of the box isnt on the screen
+    bool success = true;
+    for (int i = 0; i < 8; i++)
+    {
+        float yaw    = NET_VECTOR(RAW_ENT(ent), netvar.m_angEyeAngles).y;
+        float s      = sinf(DEG2RAD(yaw));
+        float c      = cosf(DEG2RAD(yaw));
+        float xx     = corners[i].x;
+        float yy     = corners[i].y;
+        corners[i].x = (xx * c) - (yy * s);
+        corners[i].y = (xx * s) + (yy * c);
+        corners[i] += origin;
+
+        if (!draw::WorldToScreen(corners[i], points[i]))
+            success = false;
+    }
+
+    // Don't continue if a point isn't on the screen
+    if (!success)
+        return;
+
+    // Draw the actual box
+    for (int i = 1; i <= 4; i++)
+    {
+        draw_api::draw_line((points[i - 1].x), (points[i - 1].y),
+                            (points[i % 4].x) - (points[i - 1].x),
+                            (points[i % 4].y) - (points[i - 1].y), clr, 0.5f);
+        draw_api::draw_line((points[i - 1].x), (points[i - 1].y),
+                            (points[i + 3].x) - (points[i - 1].x),
+                            (points[i + 3].y) - (points[i - 1].y), clr, 0.5f);
+        draw_api::draw_line((points[i + 3].x), (points[i + 3].y),
+                            (points[i % 4 + 4].x) - (points[i + 3].x),
+                            (points[i % 4 + 4].y) - (points[i + 3].y), clr,
+                            0.5f);
+    }
+}
+
 // Draw a box around a player
 void _FASTCALL DrawBox(CachedEntity *ent, const rgba_t &clr)
 {
@@ -1412,9 +1498,10 @@ void _FASTCALL DrawBox(CachedEntity *ent, const rgba_t &clr)
 
     // Depending on whether the player is cloaked, we change the color
     // acordingly
-    rgba_t border = ((ent->m_iClassID == RCC_PLAYER) && IsPlayerInvisible(ent))
-                        ? colors::FromRGBA8(160, 160, 160, clr.a * 255.0f)
-                        : colors::Transparent(colors::black, clr.a);
+    rgba_t border =
+        ((ent->m_iClassID() == RCC_PLAYER) && IsPlayerInvisible(ent))
+            ? colors::FromRGBA8(160, 160, 160, clr.a * 255.0f)
+            : colors::Transparent(colors::black, clr.a);
 
     // With box corners, we draw differently
     if ((int) box_esp == 2)

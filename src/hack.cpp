@@ -8,6 +8,7 @@
 #include <visual/SDLHooks.hpp>
 #include "hack.hpp"
 #include "common.hpp"
+#include "MiscTemporary.hpp"
 
 #include <hacks/hacklist.hpp>
 
@@ -115,7 +116,7 @@ public:
             CachedEntity *player =
                 ENTITY(g_IEngine->GetPlayerForUserID(event->GetInt("userid")));
             PrintChat("\x07%06X%s\x01 \x07%06X%s\x01 disconnected",
-                      colors::chat::team(player->m_iTeam),
+                      colors::chat::team(player->m_iTeam()),
                       event->GetString("name"), 0x914e65,
                       event->GetString("networkid"));
         }
@@ -149,8 +150,9 @@ public:
             CachedEntity *att = ENTITY(g_IEngine->GetPlayerForUserID(attacker));
             PrintChat(
                 "\x07%06X%s\x01 hurt \x07%06X%s\x01 down to \x07%06X%d\x01hp",
-                colors::chat::team(att->m_iTeam), kinfo.name,
-                colors::chat::team(vic->m_iTeam), vinfo.name, 0x2aaf18, health);
+                colors::chat::team(att->m_iTeam()), kinfo.name,
+                colors::chat::team(vic->m_iTeam()), vinfo.name, 0x2aaf18,
+                health);
         }
         else if (!strcmp(name, "player_death"))
         {
@@ -165,8 +167,8 @@ public:
             CachedEntity *vic = ENTITY(g_IEngine->GetPlayerForUserID(victim));
             CachedEntity *att = ENTITY(g_IEngine->GetPlayerForUserID(attacker));
             PrintChat("\x07%06X%s\x01 killed \x07%06X%s\x01",
-                      colors::chat::team(att->m_iTeam), kinfo.name,
-                      colors::chat::team(vic->m_iTeam), vinfo.name);
+                      colors::chat::team(att->m_iTeam()), kinfo.name,
+                      colors::chat::team(vic->m_iTeam()), vinfo.name);
         }
         else if (!strcmp(name, "player_spawn"))
         {
@@ -175,7 +177,7 @@ public:
             g_IEngine->GetPlayerInfo(g_IEngine->GetPlayerForUserID(id), &info);
             CachedEntity *player = ENTITY(g_IEngine->GetPlayerForUserID(id));
             PrintChat("\x07%06X%s\x01 (re)spawned",
-                      colors::chat::team(player->m_iTeam), info.name);
+                      colors::chat::team(player->m_iTeam()), info.name);
         }
         else if (!strcmp(name, "player_changeclass"))
         {
@@ -184,8 +186,8 @@ public:
             g_IEngine->GetPlayerInfo(g_IEngine->GetPlayerForUserID(id), &info);
             CachedEntity *player = ENTITY(g_IEngine->GetPlayerForUserID(id));
             PrintChat("\x07%06X%s\x01 changed to \x07%06X%s\x01",
-                      colors::chat::team(player->m_iTeam), info.name, 0xa06ba0,
-                      classname(event->GetInt("class")));
+                      colors::chat::team(player->m_iTeam()), info.name,
+                      0xa06ba0, classname(event->GetInt("class")));
         }
         else if (!strcmp(name, "vote_cast"))
         {
@@ -346,6 +348,10 @@ free(logname);*/
     hooks::enginevgui.HookMethod(HOOK_ARGS(Paint));
     hooks::enginevgui.Apply();
 
+    hooks::engine.Set(g_IEngine);
+    hooks::engine.HookMethod(HOOK_ARGS(IsPlayingTimeDemo));
+    hooks::engine.Apply();
+
     hooks::eventmanager2.Set(g_IEventManager2);
     hooks::eventmanager2.HookMethod(HOOK_ARGS(FireEvent));
     hooks::eventmanager2.HookMethod(HOOK_ARGS(FireEventClientSide));
@@ -377,11 +383,12 @@ free(logname);*/
         // hooks::materialsystem.HookMethod();
     }
 #endif
-
+#if not LAGBOT_MODE
     // FIXME [MP]
     hacks::shared::killsay::Init();
     hacks::shared::announcer::init();
     hacks::tf2::killstreak::init();
+#endif
     hacks::shared::catbot::init();
     logging::Info("Hooked!");
     velocity::Init();
@@ -412,10 +419,10 @@ free(logname);*/
     g_IGameEventManager->AddListener(&adv_event_listener, false);
 
 #endif /* TEXTMODE */
-
+#if not LAGBOT_MODE
     hacks::shared::anticheat::Init();
     hacks::tf2::healarrow::Init();
-
+#endif
 #if ENABLE_VISUALS
 #ifndef FEATURE_FIDGET_SPINNER_ENABLED
     InitSpinner();
@@ -425,8 +432,9 @@ free(logname);*/
     backpacktf::init();
     logging::Info("Initialized Backpack.TF integration");
 #endif
-
+#if not LAGBOT_MODE
     hacks::shared::walkbot::Initialize();
+#endif
 #if ENABLE_VISUALS
     hacks::shared::esp::Init();
 #endif
@@ -463,8 +471,10 @@ void hack::Shutdown()
 #endif
     logging::Info("Unregistering convars..");
     ConVar_Unregister();
+#if not LAGBOT_MODE
     logging::Info("Shutting down killsay...");
     hacks::shared::killsay::Shutdown();
     hacks::shared::announcer::shutdown();
+#endif
     logging::Info("Success..");
 }

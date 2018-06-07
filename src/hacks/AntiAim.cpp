@@ -15,7 +15,7 @@ namespace shared
 namespace antiaim
 {
 
-CatVar communicate(CV_SWITCH, "identify", "1", "identify",
+CatVar communicate(CV_SWITCH, "identify", "0", "identify",
                    "Auto identify for other cathook users");
 CatVar enabled(CV_SWITCH, "aa_enabled", "0", "Anti-Aim",
                "Master AntiAim switch");
@@ -65,7 +65,7 @@ static CatVar aaaa_mode(aaaa_modes_enum, "aa_aaaa_mode", "0", "Mode",
                         "Anti-Anti-Anti-Aim Mode");
 static CatVar aaaa_flip_key(CV_KEY, "aa_aaaa_flip_key", "0", "Flip key",
                             "If you press that key, current AA will change");
-
+static CatVar test(CV_KEY, "aa_test", "0", "debug", "test");
 float cur_yaw  = 0.0f;
 int safe_space = 0;
 
@@ -260,20 +260,18 @@ bool ShouldAA(CUserCmd *cmd)
         return false;
     if (cmd->buttons & IN_USE)
         return false;
+    int classid = LOCAL_W->m_iClassID();
     if ((cmd->buttons & IN_ATTACK) &&
-        !(IsTF2() &&
-          g_pLocalPlayer->weapon()->m_iClassID == CL_CLASS(CTFCompoundBow)) &&
-        CanShoot())
+        !(IsTF2() && classid == CL_CLASS(CTFCompoundBow)) && CanShoot())
     {
         return false;
     }
-    if ((cmd->buttons & IN_ATTACK2) &&
-        g_pLocalPlayer->weapon()->m_iClassID == CL_CLASS(CTFLunchBox))
+    if ((cmd->buttons & IN_ATTACK2) && classid == CL_CLASS(CTFLunchBox))
         return false;
     switch (GetWeaponMode())
     {
     case weapon_projectile:
-        if (g_pLocalPlayer->weapon()->m_iClassID == CL_CLASS(CTFCompoundBow))
+        if (classid == CL_CLASS(CTFCompoundBow))
         {
             if (!(cmd->buttons & IN_ATTACK))
             {
@@ -467,7 +465,7 @@ void ProcessUserCmd(CUserCmd *cmd)
     static bool angstate = true;
     if (trueang)
         angstate = !angstate;
-    if (!LOCAL_E->m_bAlivePlayer)
+    if (!LOCAL_E->m_bAlivePlayer())
         angstate = true;
     if (lagexploit::ExploitActive() || g_pUserCmd->buttons & IN_ATTACK ||
         g_pUserCmd->buttons & IN_ATTACK2)
@@ -477,6 +475,13 @@ void ProcessUserCmd(CUserCmd *cmd)
     float &y         = cmd->viewangles.y;
     static bool flip = false;
     bool clamp       = !no_clamping;
+    if (test)
+    {
+        cmd->viewangles.x                = FLT_MAX;
+        cmd->viewangles.y                = FLT_MAX;
+        g_pLocalPlayer->bUseSilentAngles = true;
+        return;
+    }
     if (!*bSendPackets)
         switch ((int) true_yaw_mode)
         {

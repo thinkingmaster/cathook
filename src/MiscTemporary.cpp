@@ -12,7 +12,7 @@ CatVar jointeam(CV_SWITCH, "fb_autoteam", "1",
 CatVar joinclass(CV_STRING, "fb_autoclass", "spy",
                  "Class that will be picked after joining a team (NYI)");
 
-CatVar nolerp(CV_SWITCH, "nolerp", "0", "NoLerp mode (experimental)");
+CatVar nolerp(CV_SWITCH, "nolerp", "1", "NoLerp mode (experimental)");
 
 CatVar engine_pred(CV_SWITCH, "engine_prediction", "0", "Engine Prediction");
 CatVar debug_projectiles(CV_SWITCH, "debug_projectiles", "0",
@@ -35,9 +35,12 @@ CatVar crypt_chat(
 
 int spectator_target;
 CLC_VoiceData *voicecrash{};
+bool firstcm = false;
 Timer DelayTimer{};
 CatVar delay(
     CV_INT, "delay", "0", "Delay",
     "Delay actions like chat spam and serverlag/crash by this many seconds.");
-CatVar adjust(CV_SWITCH, "serverlag_ramp", "0", "Ramp lag",
-              "increase lag while packet loss is below 80%");
+CatVar adjust(CV_INT, "serverlag_ramp", "0", "Ramp lag",
+              "keep lag around this many seconds");
+float prevflow    = 0.0f;
+int prevflowticks = 0;

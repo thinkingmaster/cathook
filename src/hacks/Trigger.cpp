@@ -8,6 +8,7 @@
 
 #include <hacks/Trigger.hpp>
 #include "common.hpp"
+#include <hacks/Backtrack.hpp>
 
 namespace hacks
 {
@@ -80,7 +81,48 @@ float target_time = 0.0f;
 
 int last_hb_traced = 0;
 Vector forward;
+bool CanBacktrack()
+{
+    int target   = hacks::shared::backtrack::iBestTarget;
+    int BestTick = hacks::shared::backtrack::BestTick;
+    auto min = hacks::shared::backtrack::headPositions[target][BestTick].min;
+    auto max = hacks::shared::backtrack::headPositions[target][BestTick].max;
+    if (!min.x && !max.x)
+        return false;
 
+    // Get the min and max for the hitbox
+    Vector minz(std::min(min.x, max.x), std::min(min.y, max.y),
+                std::min(min.z, max.z));
+    Vector maxz(std::max(min.x, max.x), std::max(min.y, max.y),
+                std::max(min.z, max.z));
+
+    // Shrink the hitbox here
+    Vector size = maxz - minz;
+    Vector smod = size * 0.05f * (int) accuracy;
+
+    // Save the changes to the vectors
+    minz += smod;
+    maxz -= smod;
+
+    // Trace and test if it hits the smaller hitbox, if it fails
+    // we
+    // return false
+    Vector hit;
+
+    if (!IsVectorVisible(g_pLocalPlayer->v_Eye, minz) &&
+        !IsVectorVisible(g_pLocalPlayer->v_Eye, maxz))
+    {
+        return true;
+    }
+    if (CheckLineBox(minz, maxz, g_pLocalPlayer->v_Eye, forward, hit))
+    {
+        g_pUserCmd->tick_count =
+            hacks::shared::backtrack::headPositions[target][BestTick].tickcount;
+        g_pUserCmd->buttons |= IN_ATTACK;
+        return false;
+    }
+    return true;
+}
 // The main "loop" of the triggerbot
 void CreateMove()
 {
@@ -101,6 +143,10 @@ void CreateMove()
 
     // Get and ent in front of the player
     CachedEntity *ent = FindEntInSight(EffectiveTargetingRange());
+
+    // Check if can backtrack, shoot if we can
+    if (!CanBacktrack())
+        return;
 
     // Check if dormant or null to prevent crashes
     if (CE_BAD(ent))
@@ -133,7 +179,6 @@ void CreateMove()
             g_pUserCmd->buttons |= IN_ATTACK;
         }
     }
-
     return;
 }
 
@@ -219,16 +264,16 @@ bool IsTargetStateGood(CachedEntity *entity)
 {
 
     // Check for Players
-    if (entity->m_Type == ENTITY_PLAYER)
+    if (entity->m_Type() == ENTITY_PLAYER)
     {
         // Check if target is The local player
         if (entity == LOCAL_E)
             return false;
         // Dont aim at dead player
-        if (!entity->m_bAlivePlayer)
+        if (!entity->m_bAlivePlayer())
             return false;
         // Dont aim at teammates
-        if (!entity->m_bEnemy && !teammates)
+        if (!entity->m_bEnemy() && !teammates)
             return false;
 
         IF_GAME(IsTF())
@@ -242,10 +287,10 @@ bool IsTargetStateGood(CachedEntity *entity)
                 if (g_GlobalVars->curtime - g_pLocalPlayer->flZoomBegin <= 1.0f)
                     bdmg = 50.0f;
                 //                if ((bdmg * 3) < (HasDarwins(entity)
-                //                                      ? (entity->m_iHealth *
+                //                                      ? (entity->m_iHealth() *
                 //                                      1.15)
-                //                                      : entity->m_iHealth))
-                if (bdmg * 3 < entity->m_iHealth)
+                //                                      : entity->m_iHealth()))
+                if (bdmg * 3 < entity->m_iHealth())
                 {
                     return false;
                 }
@@ -261,7 +306,7 @@ bool IsTargetStateGood(CachedEntity *entity)
                 return false;
             // If settings allow, dont target vaccinated players
             if (g_pLocalPlayer->weapon_mode == weaponmode::weapon_hitscan ||
-                LOCAL_W->m_iClassID == CL_CLASS(CTFCompoundBow))
+                LOCAL_W->m_iClassID() == CL_CLASS(CTFCompoundBow))
                 if (ignore_vaccinator &&
                     HasCondition<TFCond_UberBulletResist>(entity))
                     return false;
@@ -297,7 +342,6 @@ bool IsTargetStateGood(CachedEntity *entity)
             // Check for null
             if (hb)
             {
-
                 // Get the min and max for the hitbox
                 Vector minz(std::min(hb->min.x, hb->max.x),
                             std::min(hb->min.y, hb->max.y),
@@ -314,36 +358,37 @@ bool IsTargetStateGood(CachedEntity *entity)
                 minz += smod;
                 maxz -= smod;
 
-                // Trace and test if it hits the smaller hitbox, if it fails we
+                // Trace and test if it hits the smaller hitbox, if it fails
+                // we
                 // return false
                 Vector hit;
-                if (!CheckLineBox(minz, maxz, g_pLocalPlayer->v_Eye, forward,
-                                  hit))
+                if (CheckLineBox(minz, maxz, g_pLocalPlayer->v_Eye, forward,
+                                 hit))
                 {
-                    return false;
+                    return true;
                 }
             }
         }
 
         // Target passed the tests so return true
-        return true;
+        return false;
 
         // Check for buildings
     }
-    else if (entity->m_Type == ENTITY_BUILDING)
+    else if (entity->m_Type() == ENTITY_BUILDING)
     {
         // Check if building aimbot is enabled
         if (!(buildings_other || buildings_sentry))
             return false;
         // Check if enemy building
-        if (!entity->m_bEnemy)
+        if (!entity->m_bEnemy())
             return false;
 
         // If needed, Check if building type is allowed
         if (!(buildings_other && buildings_sentry))
         {
             // Check if target is a sentrygun
-            if (entity->m_iClassID == CL_CLASS(CObjectSentrygun))
+            if (entity->m_iClassID() == CL_CLASS(CObjectSentrygun))
             {
                 // If sentrys are not allowed, dont target
                 if (!buildings_sentry)
@@ -363,14 +408,14 @@ bool IsTargetStateGood(CachedEntity *entity)
 
         // Check for stickybombs
     }
-    else if (entity->m_iClassID == CL_CLASS(CTFGrenadePipebombProjectile))
+    else if (entity->m_iClassID() == CL_CLASS(CTFGrenadePipebombProjectile))
     {
         // Check if sticky aimbot is enabled
         if (!stickybot)
             return false;
 
         // Check if thrower is a teammate
-        if (!entity->m_bEnemy)
+        if (!entity->m_bEnemy())
             return false;
 
         // Check if target is a pipe bomb
@@ -442,7 +487,7 @@ bool HeadPreferable(CachedEntity *target)
         // Var to keep if we can bodyshot
         bool headonly = false;
         // Save the local players current weapon to a var
-        int ci = g_pLocalPlayer->weapon()->m_iClassID;
+        int ci = g_pLocalPlayer->weapon()->m_iClassID();
         IF_GAME(IsTF())
         {
             // If user is using a sniper rifle, Set headonly to whether we can
@@ -498,10 +543,10 @@ bool HeadPreferable(CachedEntity *target)
                 // only if they have less than 150 health will it try to
                 // bodyshot
                 if (CanHeadshot() &&
-                    (cdmg >= target->m_iHealth ||
+                    (cdmg >= target->m_iHealth() ||
                      IsPlayerCritBoosted(g_pLocalPlayer->entity) ||
-                     !g_pLocalPlayer->bZoomed || target->m_iHealth <= bdmg) &&
-                    target->m_iHealth <= 150)
+                     !g_pLocalPlayer->bZoomed || target->m_iHealth() <= bdmg) &&
+                    target->m_iHealth() <= 150)
                 {
                     // We dont need to hit the head as a bodyshot will kill
                     headonly = false;
@@ -586,7 +631,8 @@ float EffectiveTargetingRange()
         return re::C_TFWeaponBaseMelee::GetSwingRange(RAW_ENT(LOCAL_W));
         // Pyros only have so much untill their flames hit
     }
-    else if (g_pLocalPlayer->weapon()->m_iClassID == CL_CLASS(CTFFlameThrower))
+    else if (g_pLocalPlayer->weapon()->m_iClassID() ==
+             CL_CLASS(CTFFlameThrower))
     {
         return 185.0f;
     }

@@ -140,7 +140,7 @@ ITexture *GetBuffer(int i)
                 IMAGE_FORMAT_RGBA8888, MATERIAL_RT_DEPTH_SEPARATE, textureFlags,
                 renderTargetFlags);
         }
-
+        delete newname;
         buffers[i].Init(texture);
     }
     return buffers[i];
@@ -244,25 +244,25 @@ rgba_t EffectGlow::GlowColor(IClientEntity *entity)
             return GlowColor(owner);
         }
     }
-    switch (ent->m_Type)
+    switch (ent->m_Type())
     {
     case ENTITY_BUILDING:
         if (health)
         {
-            return colors::Health(ent->m_iHealth, ent->m_iMaxHealth);
+            return colors::Health(ent->m_iHealth(), ent->m_iMaxHealth());
         }
         break;
     case ENTITY_PLAYER:
         if (ent->m_IDX == LOCAL_E->m_IDX && glowteam)
-            if (LOCAL_E->m_iTeam == TEAM_BLU)
+            if (LOCAL_E->m_iTeam() == TEAM_BLU)
                 return colors::blu;
             else
                 return colors::red;
         if (ent->m_IDX == LOCAL_E->m_IDX && glowself && !rainbow)
             return colors::FromRGBA8(glowR, glowG, glowB, 255);
-        if (health)
+        if (health && playerlist::IsDefault(ent))
         {
-            return colors::Health(ent->m_iHealth, ent->m_iMaxHealth);
+            return colors::Health(ent->m_iHealth(), ent->m_iMaxHealth());
         }
         break;
     }
@@ -283,34 +283,34 @@ bool EffectGlow::ShouldRenderGlow(IClientEntity *entity)
         return false;
     if (ent->m_IDX == LOCAL_E->m_IDX && !glowself)
         return false;
-    switch (ent->m_Type)
+    switch (ent->m_Type())
     {
     case ENTITY_BUILDING:
         if (!buildings)
             return false;
-        if (!ent->m_bEnemy && !(teammate_buildings || teammates))
+        if (!ent->m_bEnemy() && !(teammate_buildings || teammates))
             return false;
         return true;
     case ENTITY_PLAYER:
         if (!players)
             return false;
-        if (!teammates && !ent->m_bEnemy && playerlist::IsDefault(ent))
+        if (!teammates && !ent->m_bEnemy() && playerlist::IsDefault(ent))
             return false;
         if (CE_BYTE(ent, netvar.iLifeState) != LIFE_ALIVE)
             return false;
         return true;
         break;
     case ENTITY_PROJECTILE:
-        if (!ent->m_bEnemy)
+        if (!ent->m_bEnemy())
             return false;
         if (stickies &&
-            ent->m_iClassID == CL_CLASS(CTFGrenadePipebombProjectile))
+            ent->m_iClassID() == CL_CLASS(CTFGrenadePipebombProjectile))
         {
             return true;
         }
         break;
     case ENTITY_GENERIC:
-        const auto &type = ent->m_ItemType;
+        const auto &type = ent->m_ItemType();
         if (type >= ITEM_HEALTH_SMALL && type <= ITEM_HEALTH_LARGE)
         {
             return medkits;

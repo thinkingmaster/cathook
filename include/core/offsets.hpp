@@ -98,10 +98,6 @@ struct offsets
     {
         return PlatformOffset(36, undefined, undefined);
     }
-    static constexpr uint32_t WriteUsercmdDeltaToBuffer()
-    {
-        return PlatformOffset(22, undefined, 22);
-    }
     static constexpr uint32_t CanPacket()
     {
         return PlatformOffset(57, undefined, undefined);
@@ -146,7 +142,6 @@ struct offsets
     {
         return PlatformOffset(9, 0, 0);
     }
-
     static constexpr uint32_t AreRandomCritsEnabled()
     {
         return PlatformOffset(466, 0, 466);
@@ -160,6 +155,10 @@ struct offsets
     {
         return PlatformOffset(8, undefined, undefined);
     }
+    static constexpr uint32_t ProcessMovement()
+    {
+        return PlatformOffset(1, undefined, 1);
+    }
     static constexpr uint32_t m_NetChannel()
     {
         return PlatformOffset(196, undefined, undefined);
@@ -171,5 +170,13 @@ struct offsets
     static constexpr uint32_t Paint()
     {
         return PlatformOffset(14, undefined, undefined);
+    }
+    static constexpr uint32_t SendDatagram()
+    {
+        return PlatformOffset(47, undefined, 47);
+    }
+    static constexpr uint32_t IsPlayingTimeDemo()
+    {
+        return PlatformOffset(77, undefined, 77);
     }
 };

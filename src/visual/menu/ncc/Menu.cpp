@@ -295,6 +295,7 @@ static const std::string list_tf2 = R"(
 	    "aimbot_aimkey"
 	    "aimbot_aimkey_mode"
 	    "aimbot_autoshoot"
+        "aimbot_autoshoot_disguised"
 	    "aimbot_hitboxmode"
 	    "aimbot_fov"
 		"aimbot_fov_draw"
@@ -457,7 +458,10 @@ static const std::string list_tf2 = R"(
 			    "esp_enabled"
 				"ESP Preferences"[
 					"ESP Preferences Menu"
+					"esp_font_scale"
 			    	"esp_box"
+					"esp_3d_players"
+					"esp_3d_buildings"
 					"esp_text_position"
 					"esp_expand"
 			    	"esp_local"
@@ -718,12 +722,20 @@ static const std::string list_tf2 = R"(
 				"spyalert_interval"
 				"spyalert_warning"
 				]
+				"Backtrack" [
+				"Backtrack Menu"
+				"backtrack"
+				"backtrack_draw"
+				"backtrack_latency"
+				]
 				"Anti Cheat" [
 				"Anti Cheat Menu"
 				"ac_enabled"
 				"ac_aimbot"
 				"ac_aimbot_detections"
 				"ac_aimbot_angle"
+				"ac_antiaim"
+				"ac_autorage"
 				"ac_bhop_count"
 				"ac_ignore_local"
 				"ac_chat"
@@ -737,13 +749,6 @@ static const std::string list_tf2 = R"(
 				"autojoin_class"
 				"autotaunt"
 				"autotaunt_chance"
-				]
-				"HealArrow" [
-					"HealArrow Menu"
-					"healarrow"
-					"healarrow_timeout"
-					"healarrow_charge"
-					"healarrow_callout"
 				]
 	]
 	"Debug" [

@@ -6,6 +6,7 @@
  */
 
 #include "common.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace votelogger
 {
@@ -19,9 +20,22 @@ static CatVar anti_votekick(CV_SWITCH, "anti_votekick", "0", "anti-votekick",
                             "to enable votelog and that this\nmakes the server "
                             "be down for about 30 seconds\ncl_timeout 60 is a "
                             "must");
-int antikick_ticks = 0;
+static CatVar kick_msg(CV_STRING, "anti_votekick_string",
+                       "Everyone thank $NAME for initiating the votekick! The "
+                       "server will now be shut down!",
+                       "anti-votekick message",
+                       "Send this message on Votekick attempts against "
+                       "you.\n$NAME gets replaced with their name\n$CLASS with "
+                       "their class.");
+Timer antikick{};
+bool active = false;
+
+const std::string tf_classes[] = { "class",   "scout",   "sniper", "soldier",
+                                   "demoman", "medic",   "heavy",  "pyro",
+                                   "spy",     "engineer" };
 void user_message(bf_read &buffer, int type)
 {
+
     bool islocalplayer = false;
     if (!enabled)
         return;
@@ -47,17 +61,30 @@ void user_message(bf_read &buffer, int type)
         unsigned steamID = 0;
         player_info_s info;
         if (g_IEngine->GetPlayerInfo(eid, &info))
-        {
             steamID = info.friendsID;
-        }
-        if (eid == LOCAL_E->m_IDX)
+        if (eid == LOCAL_E->m_IDX ||
+            playerlist::AccessData(steamID).state ==
+                playerlist::k_EState::FRIEND)
         {
             islocalplayer = true;
-            if (anti_votekick && !antikick_ticks)
+            if (anti_votekick && !active)
             {
-                antikick_ticks = 66 * 60;
-                for (int i = 0; i < (int) 70; i++)
-                    g_IEngine->ServerCmd("voicemenu 0 0", false);
+                active = true;
+                antikick.update();
+                std::string msg(kick_msg.GetString());
+                ReplaceString(msg, "$NAME", format(info.name));
+                if (CE_GOOD(ENTITY(eid)))
+                {
+                    int clz = g_pPlayerResource->GetClass(ENTITY(eid));
+                    ReplaceString(msg, "$CLASS", format(tf_classes[clz]));
+                }
+                NET_StringCmd senddata(format("say ", msg).c_str());
+                INetChannel *ch =
+                    (INetChannel *) g_IEngine->GetNetChannelInfo();
+                senddata.SetNetChannel(ch);
+                senddata.SetReliable(true);
+                ch->SendNetMsg(senddata, true);
+                ch->Transmit();
             }
         }
 

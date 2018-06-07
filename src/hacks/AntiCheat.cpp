@@ -17,9 +17,9 @@ namespace shared
 {
 namespace anticheat
 {
-
 static CatVar enabled(CV_SWITCH, "ac_enabled", "0", "Enable AC");
 static CatVar accuse_chat(CV_SWITCH, "ac_chat", "0", "Accuse in chat");
+static CatVar autorage(CV_SWITCH, "ac_autorage", "0", "Auto Rage");
 
 void Accuse(int eid, const std::string &hack, const std::string &details)
 {
@@ -37,7 +37,7 @@ void Accuse(int eid, const std::string &hack, const std::string &details)
         else
         {
             PrintChat("\x07%06X%s\x01 (%s) suspected \x07%06X%s\x01: %s",
-                      colors::chat::team(ENTITY(eid)->m_iTeam), info.name,
+                      colors::chat::team(ENTITY(eid)->m_iTeam()), info.name,
                       classname(CE_INT(ent, netvar.iClass)), 0xe05938,
                       hack.c_str(), details.c_str());
         }
@@ -45,6 +45,13 @@ void Accuse(int eid, const std::string &hack, const std::string &details)
 }
 
 static CatVar skip_local(CV_SWITCH, "ac_ignore_local", "1", "Ignore Local");
+
+void SetRage(player_info_t info)
+{
+    if (autorage)
+        playerlist::AccessData(info.friendsID).state =
+            playerlist::k_EState::RAGE;
+}
 
 void CreateMove()
 {

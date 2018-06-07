@@ -12,12 +12,17 @@ namespace hooked_methods
 
 DEFINE_HOOKED_METHOD(LevelShutdown, void, void *this_)
 {
+    hacks::shared::autojoin::queuetime.update();
     need_name_change = true;
+#if not LAGBOT_MODE
     playerlist::Save();
+#endif
     g_Settings.bInvalid = true;
+#if not LAGBOT_MODE
     hacks::shared::aimbot::Reset();
     chat_stack::Reset();
     hacks::shared::anticheat::ResetEverything();
+#endif
 #if ENABLE_IPC
     if (ipc::peer)
     {

@@ -30,8 +30,18 @@ static CatVar follow_activation(CV_INT, "fb_activation", "175",
                                 "Activation Distance",
                                 "How close a player should be until the "
                                 "followbot will pick them as a target");
-CatVar follow_steam(CV_INT, "fb_steam", "0", "Follow Steam Id",
-                    "Set a steam id to let followbot prioritize players");
+unsigned steamid = 0x0;
+CatCommand follow_steam("fb_steam", "Follow Steam Id",
+                        [](const CCommand &args) {
+                            if (args.ArgC() < 1)
+                            {
+                                steamid = 0x0;
+                                return;
+                            }
+                            unsigned tempid = atol(args.Arg(1));
+                            steamid         = *(unsigned int *) &tempid;
+
+                        });
 static CatVar mimic_slot(CV_SWITCH, "fb_mimic_slot", "0", "Mimic weapon slot",
                          "Mimic follow target's weapon slot");
 static CatVar always_medigun(CV_SWITCH, "fb_always_medigun", "0",
@@ -73,93 +83,88 @@ void WorldTick()
             follow_target = 0;
     }
 
-    // Target Selection
     if (!follow_target)
-    {
         breadcrumbs.clear(); // no target == no path
+    // Target Selection
+    if (steamid)
+    {
+        // Find a target with the steam id, as it is prioritized
+        auto ent_count = HIGHEST_ENTITY;
+        for (int i = 0; i < ent_count; i++)
+        {
+            auto entity = ENTITY(i);
+            if (CE_BAD(entity)) // Exist + dormant
+                continue;
+            if (entity->m_Type() != ENTITY_PLAYER)
+                continue;
+            if (steamid != entity->player_info.friendsID) // steamid check
+                continue;
+            logging::Info("Success");
 
-        if (follow_steam)
-        {
-            // Find a target with the steam id, as it is prioritized
-            auto ent_count = g_IEngine->GetMaxClients();
-            for (int i = 0; i < ent_count; i++)
-            {
-                auto entity = ENTITY(i);
-                if (CE_BAD(entity)) // Exist + dormant
-                    continue;
-                if (entity->m_Type != ENTITY_PLAYER)
-                    continue;
-                player_info_s info;
-                g_IEngine->GetPlayerInfo(entity->m_IDX, &info);
-                unsigned int xd = info.friendsID;
-                int xdd         = xd;
-                if ((int) follow_steam != xdd) // steamid check
-                    continue;
-                if (!entity->m_bAlivePlayer) // Dont follow dead players
-                    continue;
-                if (!VisCheckEntFromEnt(LOCAL_E, entity))
-                    continue;
-                follow_target = entity->m_IDX;
-                break;
-            }
+            if (!entity->m_bAlivePlayer()) // Dont follow dead players
+                continue;
+            if (!VisCheckEntFromEnt(LOCAL_E, entity))
+                continue;
+            follow_target = entity->m_IDX;
+            break;
         }
-        // If we dont have a follow target from that, we look again for someone
-        // else who is suitable
-        if ((!follow_target || change) && roambot)
-        {
-            // Try to get a new target
-            auto ent_count = HIGHEST_ENTITY;
-            for (int i = 0; i < HIGHEST_ENTITY; i++)
-            {
-                auto entity = ENTITY(i);
-                if (CE_BAD(entity)) // Exist + dormant
-                    continue;
-                if (!followcart)
-                    if (entity->m_Type != ENTITY_PLAYER)
-                        continue;
-                if (entity == LOCAL_E) // Follow self lol
-                    continue;
-                if (!entity->m_bAlivePlayer) // Dont follow dead players
-                    continue;
-                if (follow_activation &&
-                    entity->m_flDistance > (float) follow_activation)
-                    continue;
-                if (!VisCheckEntFromEnt(LOCAL_E, entity))
-                    continue;
-                const model_t *model =
-                    ENTITY(follow_target)->InternalEntity()->GetModel();
-                if (followcart && model &&
-                    (lagexploit::pointarr[0] || lagexploit::pointarr[1] ||
-                     lagexploit::pointarr[2] || lagexploit::pointarr[3] ||
-                     lagexploit::pointarr[4]) &&
-                    (model == lagexploit::pointarr[0] ||
-                     model == lagexploit::pointarr[1] ||
-                     model == lagexploit::pointarr[2] ||
-                     model == lagexploit::pointarr[3] ||
-                     model == lagexploit::pointarr[4]))
-                    follow_target = entity->m_IDX;
-                if (entity->m_Type != ENTITY_PLAYER)
-                    continue;
-                if (follow_target &&
-                    ENTITY(follow_target)->m_flDistance >
-                        entity->m_flDistance) // favor closer entitys
-                    continue;
-                // ooooo, a target
-                follow_target = entity->m_IDX;
-            }
-        }
-        // last check for entity before we continue
-        if (!follow_target)
-            return;
     }
+    // If we dont have a follow target from that, we look again for someone
+    // else who is suitable
+    if ((!follow_target || change) && roambot)
+    {
+        // Try to get a new target
+        auto ent_count = HIGHEST_ENTITY;
+        for (int i = 0; i < HIGHEST_ENTITY; i++)
+        {
+            auto entity = ENTITY(i);
+            if (CE_BAD(entity)) // Exist + dormant
+                continue;
+            if (!followcart)
+                if (entity->m_Type() != ENTITY_PLAYER)
+                    continue;
+            if (entity == LOCAL_E) // Follow self lol
+                continue;
+            if (!entity->m_bAlivePlayer()) // Dont follow dead players
+                continue;
+            if (follow_activation &&
+                entity->m_flDistance() > (float) follow_activation)
+                continue;
+            if (!VisCheckEntFromEnt(LOCAL_E, entity))
+                continue;
+            const model_t *model =
+                ENTITY(follow_target)->InternalEntity()->GetModel();
+            if (followcart && model &&
+                (lagexploit::pointarr[0] || lagexploit::pointarr[1] ||
+                 lagexploit::pointarr[2] || lagexploit::pointarr[3] ||
+                 lagexploit::pointarr[4]) &&
+                (model == lagexploit::pointarr[0] ||
+                 model == lagexploit::pointarr[1] ||
+                 model == lagexploit::pointarr[2] ||
+                 model == lagexploit::pointarr[3] ||
+                 model == lagexploit::pointarr[4]))
+                follow_target = entity->m_IDX;
+            if (entity->m_Type() != ENTITY_PLAYER)
+                continue;
+            if (follow_target &&
+                ENTITY(follow_target)->m_flDistance() >
+                    entity->m_flDistance()) // favor closer entitys
+                continue;
+            // ooooo, a target
+            follow_target = entity->m_IDX;
+        }
+    }
+    // last check for entity before we continue
+    if (!follow_target)
+        return;
 
     // If the player is close enough, we dont need to follow the path
     CachedEntity *followtar = ENTITY(follow_target);
     // wtf is this needed
     if (CE_BAD(followtar))
         return;
-    auto tar_orig       = followtar->m_vecOrigin;
-    auto loc_orig       = LOCAL_E->m_vecOrigin;
+    auto tar_orig       = followtar->m_vecOrigin();
+    auto loc_orig       = LOCAL_E->m_vecOrigin();
     auto dist_to_target = loc_orig.DistTo(tar_orig);
     if (dist_to_target < 30)
         breadcrumbs.clear();
